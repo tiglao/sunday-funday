@@ -1,8 +1,7 @@
-import uuid
-from datetime import date
-from typing import Optional
-
 from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import date
+import uuid
 
 
 class Test(BaseModel):

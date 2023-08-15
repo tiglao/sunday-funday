@@ -5,10 +5,5 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
-  },
-<<<<<<< HEAD
-  "cSpell.words": ["invetation", "jsonable"]
-=======
-  "cSpell.words": ["invetation"]
->>>>>>> 6f51f4d59086aacdf1704bbd94d57d00265528bc
+  }
 }
