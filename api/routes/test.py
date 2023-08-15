@@ -1,18 +1,12 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response
 from fastapi.encoders import jsonable_encoder
 from typing import List
-import os
 
-from models.test import Test, TestUpdate
-from pymongo import MongoClient
+from queries.test import Test, TestUpdate
+from queries.client import db
 
 
 router = APIRouter()
-# Connect to MongoDB with authentication
-client = MongoClient(
-    host="mongo", port=27017, username="root", password="example"
-)
-db = client.sunday_funday
 
 
 @router.post(
