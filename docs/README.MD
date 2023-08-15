@@ -42,7 +42,7 @@ Please put any and all documentation for your project in this folder. Other than
 [x] Favorite location (post)
     - Favorite status: bool
 - View location reviews
-- Delete location
+ć- Delete locationg
 
 
 
