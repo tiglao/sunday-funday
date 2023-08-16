@@ -1,10 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from routes import test
+from routes import party_plan, locations, invitations
 
 app = FastAPI()
-app.include_router(test.router, tags=["tests"], prefix="/test")
+app.include_router(
+    party_plan.router, tags=["party_plan"], prefix="/party_plan"
+)
+app.include_router(locations.router, tags=["locations"], prefix="/locations")
+app.include_router(
+    invitations.router, tags=["invitations"], prefix="/invitations"
+)
 
 
 app.add_middleware(
