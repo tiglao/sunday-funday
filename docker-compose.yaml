@@ -8,6 +8,7 @@ services:
       CORS_HOST: http://localhost:3000
       DATABASE_URL: mongodb://root:example@mongo
       DB_NAME: sunday_funday
+      SIGNING_KEY: ${SIGNING_KEY}
     build:
       context: api
       dockerfile: Dockerfile.dev
