@@ -8,8 +8,6 @@ class Location(BaseModel):
     place_id: str
     name: str
     address: str
-    lat: float
-    lon: float
     type: str
     category: str
     favoriteStatus: bool = False
@@ -25,8 +23,6 @@ class Location(BaseModel):
                 "place_id": "76565765",
                 "name": "Drink and Drown",
                 "address": "1234 street",
-                "lat": "12242",
-                "lon": "17043",
                 "type": "?????",
                 "category": "Bars",
                 "notes": "...",
@@ -52,7 +48,7 @@ class LocationUpdate(BaseModel):
     lon: Optional[float]
     type: Optional[str]
     category: Optional[str]
-    favoriteStatus: bool = False
+    favoriteStatus: Optional[bool]
     notes: Optional[str]
     hoursOfOperation: Optional[dict]
     website: Optional[HttpUrl]

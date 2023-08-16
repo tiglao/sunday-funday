@@ -34,7 +34,7 @@ class PartyPlan(BaseModel):
                 },
                 "startTime": "2022-02-22 14:30",
                 "endTime": "2022-02-22 17:30",
-                "partyStatus": "draf",
+                "partyStatus": "draft",
                 "keywords": ["fun", "bar", "burgers"],
                 "generalLocation": "Denver",
                 "favoriteLocations": {
@@ -60,6 +60,7 @@ class PartyPlanUpdate(BaseModel):
     keywords: Optional[List[str]]
     generalLocation: Optional[str]
     favoriteLocations: Optional[Dict[str, str]]
+    chosenLocations: Optional[Dict[str, str]]
     description: Optional[str]
     image: Optional[HttpUrl]
 
@@ -77,7 +78,7 @@ class PartyPlanUpdate(BaseModel):
                 },
                 "startTime": "2022-02-22 14:30",
                 "endTime": "2022-02-22 17:30",
-                "partyStatus": "draf",
+                "partyStatus": "draft",
                 "keywords": ["fun", "bar", "burgers"],
                 "generalLocation": "Denver",
                 "favoriteLocations": {
