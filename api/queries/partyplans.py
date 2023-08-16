@@ -50,3 +50,4 @@ class FavoriteLocations(BaseModel):
     description: str
     picture: str #url
     start_time:str
+
