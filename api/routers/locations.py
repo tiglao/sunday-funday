@@ -1,8 +1,16 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response
+from fastapi import (
+    APIRouter,
+    Body,
+    HTTPException,
+    status,
+    Response,
+    Depends,
+    Request,
+)
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-
+from authenticator import authenticator
 from queries.locations import Location, LocationUpdate
 from queries.client import db
 
@@ -16,7 +24,10 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     response_model=Location,
 )
-def create_location(plan: Location = Body(...)):
+async def create_location(
+    plan: Location = Body(...),
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     plan = jsonable_encoder(plan)
     new_location = db.locations.insert_one(plan)
     created_location = db.locations.find_one({"_id": new_location.inserted_id})
@@ -29,7 +40,9 @@ def create_location(plan: Location = Body(...)):
     response_description="List all parties",
     response_model=List[Location],
 )
-def list_locations():
+def list_locations(
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     parties = list(db.locations.find(limit=100))
     return parties
 
@@ -41,6 +54,7 @@ def list_locations():
 )
 def find_location(
     id: str,
+    account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (location := db.locations.find_one({"_id": id})) is not None:
         return location
@@ -55,7 +69,11 @@ def find_location(
     response_description="Update a location",
     response_model=LocationUpdate,
 )
-def update_location(id: UUID, location: LocationUpdate = Body(...)):
+def update_location(
+    id: UUID,
+    location: LocationUpdate = Body(...),
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     existing_location = db.locations.find_one({"_id": str(id)})
 
     if not existing_location:
@@ -76,7 +94,11 @@ def update_location(id: UUID, location: LocationUpdate = Body(...)):
 
 
 @router.delete("/{id}", response_description="Delete a location plan")
-def delete_location(id: str, response: Response):
+def delete_location(
+    id: str,
+    response: Response,
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     delete_result = db.locations.delete_one({"_id": id})
 
     if delete_result.deleted_count == 1:

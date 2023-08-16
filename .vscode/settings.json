@@ -6,5 +6,5 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "cSpell.words": ["invetation"]
+  "cSpell.words": ["invetation", "jsonable"]
 }

@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response
+from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-
+from authenticator import authenticator
 from queries.invitations import Invitation, InvitationUpdate
 from queries.client import db
 
@@ -16,7 +16,10 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     response_model=Invitation,
 )
-def create_invitation(plan: Invitation = Body(...)):
+def create_invitation(
+    plan: Invitation = Body(...),
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     plan = jsonable_encoder(plan)
     new_invitation = db.invitations.insert_one(plan)
     created_invitation = db.invitations.find_one(
@@ -31,7 +34,9 @@ def create_invitation(plan: Invitation = Body(...)):
     response_description="List all parties",
     response_model=List[Invitation],
 )
-def list_invitations():
+def list_invitations(
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     parties = list(db.invitations.find(limit=100))
     return parties
 
@@ -43,6 +48,7 @@ def list_invitations():
 )
 def find_invitation(
     id: str,
+    account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (invitation := db.invitations.find_one({"_id": id})) is not None:
         return invitation
@@ -57,7 +63,11 @@ def find_invitation(
     response_description="Update a invitation",
     response_model=InvitationUpdate,
 )
-def update_invitation(id: UUID, invitation: InvitationUpdate = Body(...)):
+def update_invitation(
+    id: UUID,
+    invitation: InvitationUpdate = Body(...),
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     existing_invitation = db.invitations.find_one({"_id": str(id)})
 
     if not existing_invitation:
@@ -77,7 +87,11 @@ def update_invitation(id: UUID, invitation: InvitationUpdate = Body(...)):
 
 
 @router.delete("/{id}", response_description="Delete a invitation plan")
-def delete_invitation(id: str, response: Response):
+def delete_invitation(
+    id: str,
+    response: Response,
+    account: dict = Depends(authenticator.get_current_account_data),
+):
     delete_result = db.invitations.delete_one({"_id": id})
 
     if delete_result.deleted_count == 1:
