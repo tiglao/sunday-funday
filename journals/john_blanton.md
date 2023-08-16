@@ -1,0 +1,3 @@
+8/15/23 - I drove and we worked on getting the database setup. We had been having problems figuring out the docker files. Lea drove in the am and we built out a few models of the endpoints. Lea and Ellie created the issues for us to work from. We then picked which issues we wanted to handle. After class i finished building out the api endpoints and getting the correct data in the correct places.
+
+8/16/23 - I drove some today and we worked on the backend auth. It wasn't as hard as I thought it was going to be. We did two merge requests which was Leah's and then mine mine for the backend auth. Need to add more error handling to the endpoints and maybe reshape some of the data. I created a branch for the frontend auth issue and started working on that.
