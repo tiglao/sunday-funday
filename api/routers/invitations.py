@@ -9,7 +9,7 @@ from queries.client import db
 
 router = APIRouter()
 
-
+#server 201/ response 201, 422
 @router.post(
     "/",
     response_description="Create a new invitation",
@@ -18,7 +18,7 @@ router = APIRouter()
 )
 def create_invitation(
     plan: Invitation = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     plan = jsonable_encoder(plan)
     new_invitation = db.invitations.insert_one(plan)
@@ -35,12 +35,12 @@ def create_invitation(
     response_model=List[Invitation],
 )
 def list_invitations(
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     parties = list(db.invitations.find(limit=100))
     return parties
 
-
+# server 200/ response 200, 422
 @router.get(
     "/{id}",
     response_description="Get a single invitation by id",
@@ -48,7 +48,7 @@ def list_invitations(
 )
 def find_invitation(
     id: str,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (invitation := db.invitations.find_one({"_id": id})) is not None:
         return invitation
@@ -57,7 +57,7 @@ def find_invitation(
         detail=f"Invitation with ID {id} not found",
     )
 
-
+# server 200/ response 200, 422
 @router.put(
     "/{id}",
     response_description="Update a invitation",
@@ -66,7 +66,7 @@ def find_invitation(
 def update_invitation(
     id: UUID,
     invitation: InvitationUpdate = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_invitation = db.invitations.find_one({"_id": str(id)})
 
@@ -90,7 +90,7 @@ def update_invitation(
 def delete_invitation(
     id: str,
     response: Response,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.invitations.delete_one({"_id": id})
 
