@@ -26,17 +26,12 @@ function Nav() {
                 aria-current="page"
                 to="/login"
               >
-                login
+                Login
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link text-white" to="#">
-                Logout
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link text-white" to="#">
-                Link
+              <NavLink className="nav-link text-white" to="/Dashboard">
+                Dashboard
               </NavLink>
             </li>
           </ul>
