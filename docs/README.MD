@@ -1,256 +1,85 @@
-## Project Documentation
+# Festive Frameworks
 
-Please put any and all documentation for your project in this folder. Other than the documents that are required at the end of week 13, feel free to organize this however your group sees fit.
+Change event -> party plan
+Change attendee -> invitee
 
-## API Endpoints
+- Tasnia Bhuiyan
+- John Blanton
+- Leah Nagarpowers
+- Jean Martinez
+- Ellie Tiglao
 
-## Full List
+**Festive Frameworks** isn't your typical software company. Think of them as the party planners of the tech world! They whip up digital magic, turning code into confetti and algorithms into adventures. Whether you're after a chill software solution or a wild web whirlwind, they've got the tech tricks to make your project pop. Dive in, and let's get the digital party started! 🎉
 
-- Login \*\*\* free!
-- Logout
-  [x] Create account
-- Request reset password
-- Change password
-- Delete account
-- Edit account information
+## [](#design)Design
 
-[x] Create party plan
+CHANGE THESE LINKS
 
-- Get all list of plans for user
-- Update party plan
-  - Status: Pending, Draft-for-review, Finalize
-- View specific party plan
-  - Party planner: see invitee list read/responded status
-  - Invitee: see own response, see yes list?
-- Share party plan with invitees
-- Delete party plan
+- [API design](/smelli-belli/smelli-belli/-/blob/main/docs/apis.md)
 
-[x] Send invitations to invitees (post)
+- [Data model](/smelli-belli/smelli-belli/-/blob/main/docs/data-model.md)
 
-- Get all user invitations
-- Invitee update invitation
+- [Integrations](/smelli-belli/smelli-belli/-/blob/main/docs/integrations.md)
 
-  - Status: accepted, declined, maybe
+- [GHI](/smelli-belli/smelli-belli/-/blob/main/docs/ghi.md)
 
-- View specific location
-- View all locations
-  - Create ordered itinerary of favorite locations?
-  - View as a map?
-- Update location
-  [x] Favorite location (post) - Favorite status: bool
-- View location reviews
-  ć- Delete locationg
+## [](#intended-market)Intended market
 
-STRETCH
+**Sunday Funday** is for those party planners who want every guest to leave with a story to tell. Whether it's a chill night out or a wild adventure with pals, our app makes sure everyone's vibe is taken into account. With a touch of collaboration magic, hosts and attendees can together whip up an evening that's the talk of the town.
 
-- View all suggestions.
-  - View as a map?
-- View suggestion.
-- View plan for collaboration (add as plan attribute?)
-- Add suggestion to plan
+## Functionality
 
-- Get all user notifications
-- Update notification
-  - Status: Unread, read.
+**Open for All**: No account? No problem. Everyone can create or respond to party plans.
 
-### Log in
+**Profile Perks**: Hop in and set up your own profile. From there, it’s easy-peasy to manage passwords and customize settings.
 
-- Endpoint path: /token
-- Endpoint method: POST
+**Stay Connected**: Plan your party with style! Touch base with your invitees, brainstorm, and while you're at it, let us know how we're doing with some feedback.
 
-- Request shape (form):
+**Crafting the Perfect Event**:
 
-  - username: string
-  - password: string
+- Dive deep with Google Maps API. Just punch in those keywords, and we’ll scout the best spots for you.
 
-- Response: Account information and a token
-- Response shape (JSON):
-  ```json
-  {
-    "account": {
-      «key»: type»,
-    },
-    "token": string
-  }
-  ```
+- Fancy a spot? Mark it as a favorite and build that dream event list.
 
-### Log out
+- Lay it all out visually. Every venue, whether it's a favorite or a new suggestion, can be seen on our sleek Google Map.
 
-- Endpoint path: /token
-- Endpoint method: DELETE
+- When things are looking just right, seal the deal. Share with invitees, lock in that plan, and send out the finalized details.
 
-- Headers:
+**For the Invitees**:
 
-  - Authorization: Bearer token
+- A personal touch for every invitee. Check out invites and RSVP your way – thumbs up or down.
 
-- Response: Always true
-- Response shape (JSON):
-  ```json
-  true
-  ```
+- Feel free to chime in. Maybe later down the road, you can suggest some killer venues to the shared map.
 
-### «Human-readable of the endpoint»
+**Level Up with Extras**:
 
-- Endpoint path: «path to use»
-- Endpoint method: «HTTP method»
-- Query parameters:
+- How about a smart itinerary? We're thinking Google Maps could guide the way.
 
-  - «name»: «purpose»
+- Got the plan down? Why not book or snag tickets straight from trusted names like OpenTable or Yelp.
 
-- Headers:
+- Go a step further, and pencil in specific events with help from platforms like the Yelp API.
 
-  - Authorization: Bearer token
+**Interact & Explore**: Our event form isn’t just any form. With Google Maps API in the mix, you can sift through venues by what catches your eye or fits the vibe you're going for.
 
-- Request shape (JSON):
+**Sunday Funday** at its core? Making your planning game strong, interactive, and yep, a whole lot of fun!
 
-  ```json
-  «JSON-looking thing that has the
-  keys and types in it»
-  ```
+## [](#design)Development details
 
-- Response: «Human-readable description
-  of response»
-- Response shape (JSON):
-  ```json
-  «JSON-looking thing that has the
-  keys and types in it»
-  ```
+CHANGE THESE LINKS
 
-### Create account
+- [Tech stack](/smelli-belli/smelli-belli/-/blob/main/docs/tech-stack.md)
 
-- Endpoint path: /users/create
-- Endpoint method: POST
+- [Roadmap](/smelli-belli/smelli-belli/-/blob/main/docs/roadmap.md)
 
-- Query parameters:
+## [](#project-initialization)Project Initialization
 
-  - N/A
+_UPDATE AT DEPLOYMENT_
+To get the most out of this app on your own computer, just check if you've got Docker handy. If you do, follow these super simple steps:
 
-- Headers:
+1. Clone the repository down to your local machine
+2. CD into the new project directory
+3. Run `docker volume create sunday-funday`
+4. Run `docker compose build`
+5. Run `docker compose up`
 
-  - Content-Type: application/json???
-
-- Request shape (JSON):
-
-  ```json
-      {
-          "username": "string"
-          "firstname": "string"
-          "email": "string"
-          "password": "string"
-          "DOB": "formatted string YYYY-MM-DD"
-          "avatar": "URL string"
-      }
-  ```
-
-- Response: Account information
-- Response shape (JSON):
-  ```json
-      "status": "success or error string"
-      "userId": "<unique identifier">
-  ```
-
-### Create party plan
-
-- Endpoint path: /parties/create
-- Endpoint method: POST
-
-- Query parameters:
-
-  - N/A
-
-- Headers:
-
-  - Authorization: Bearer token
-
-- Request shape (JSON):
-
-  ```json
-      {
-          "username": "string"
-          "notes": "string"
-          "date": "formatted string YYYY-MM-DD"
-          "invitees": "dict/string"
-          "startTime": "formatted string HH:MM"
-          "endTime": "formatted string HH:MM"
-          "partyStatus": "string"
-          "keywords": "string"
-          "generalLocation": "string"
-          "favoriteLocations": "dict/string"
-              "description": "string"
-              "picture": "url"
-              "startTime": "formatted string HH:MM"
-      }
-  ```
-
-- Response: Party information
-- Response shape (JSON):
-  ```json
-      "status": "success or error string"
-      "partyId": "<unique identifier>"
-  ```
-
-### Create location
-
-- Endpoint path: /locations/create
-- Endpoint method: POST
-
-- Query parameters:
-
-  - N/A
-
-- Headers:
-
-  - Authorization: Bearer token
-
-- Request shape (JSON):
-
-  ```json
-      {
-          "notes": "string"
-          "name": "string"
-          "hoursOfOperation": "dict/string"
-          "address": "string"
-          "reviews": "dict/string"
-          "favoriteStatus": "bool string"
-          "website": "URL string"
-          "parties": "dict/string"
-      }
-  ```
-
-- Response: Party information
-- Response shape (JSON):
-  ```json
-      "status": "success or error string"
-      "locationId": "<unique identifier>"
-  ```
-
-### Create invitation
-
-- Endpoint path: /invitations/create
-- Endpoint method: POST
-
-- Query parameters:
-
-  - N/A
-
-- Headers:
-
-  - Authorization: Bearer token
-
-- Request shape (JSON):
-
-  ```json
-      {
-          "firstname": "string"
-          "lastname": "string"
-          "email": "formatted string YYYY-MM-DD"
-          "rsvpStatus": "string"
-      }
-  ```
-
-- Response: Party information
-- Response shape (JSON):
-  ```json
-      "status": "success or error string"
-      "invitationId": "<unique identifier>"
-  ```
+Last updated: 2023 August 16
