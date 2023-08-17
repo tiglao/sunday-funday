@@ -2,8 +2,8 @@ from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-from authenticator import authenticator
-from queries.party_plan import PartyPlan, PartyPlanUpdate
+from utils.authenticator import authenticator
+from queries.party_plans import PartyPlan, PartyPlanUpdate
 from queries.client import db
 
 
@@ -12,11 +12,11 @@ router = APIRouter()
 
 @router.post(
     "/",
-    response_description="Create a new party",
+    response_description="Create a new party plan",
     status_code=status.HTTP_201_CREATED,
     response_model=PartyPlan,
 )
-def create_partyplan(
+def create_party_plan(
     plan: PartyPlan = Body(...),
     account: dict = Depends(authenticator.get_current_account_data),
 ):
@@ -29,10 +29,10 @@ def create_partyplan(
 
 @router.get(
     "/",
-    response_description="List all parties",
+    response_description="List all party plans",
     response_model=List[PartyPlan],
 )
-def list_partyplan(
+def list_party_plans(
     account: dict = Depends(authenticator.get_current_account_data),
 ):
     parties = list(db.party_plan.find(limit=100))
@@ -41,10 +41,10 @@ def list_partyplan(
 
 @router.get(
     "/{id}",
-    response_description="Get a single party by id",
+    response_description="Get a single party plan by ID",
     response_model=PartyPlan,
 )
-def find_party(
+def find_party_plan(
     id: str,
     account: dict = Depends(authenticator.get_current_account_data),
 ):
@@ -58,10 +58,10 @@ def find_party(
 
 @router.put(
     "/{id}",
-    response_description="Update a party",
+    response_description="Update a party plan",
     response_model=PartyPlanUpdate,
 )
-def update_party(
+def update_party_plan(
     id: UUID,
     party: PartyPlanUpdate = Body(...),
     account: dict = Depends(authenticator.get_current_account_data),
@@ -86,7 +86,7 @@ def update_party(
 
 
 @router.delete("/{id}", response_description="Delete a party plan")
-def delete_party(
+def delete_party_plan(
     id: str,
     response: Response,
     account: dict = Depends(authenticator.get_current_account_data),

@@ -10,7 +10,7 @@ from fastapi import (
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-from authenticator import authenticator
+from utils.authenticator import authenticator
 from queries.locations import Location, LocationUpdate
 from queries.client import db
 

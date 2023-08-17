@@ -7,7 +7,7 @@ from fastapi import (
     Request,
 )
 from jwtdown_fastapi.authentication import Token
-from authenticator import authenticator
+from utils.authenticator import authenticator
 
 from pydantic import BaseModel
 
@@ -25,7 +25,8 @@ class AccountForm(BaseModel):
 
 
 class AccountToken(Token):
-    account: AccountOut
+    # account: AccountOut
+    pass
 
 
 class HttpError(BaseModel):
@@ -35,17 +36,39 @@ class HttpError(BaseModel):
 router = APIRouter()
 
 
-@router.get("/token", response_model=AccountToken | None)
-async def get_token(
-    request: Request,
-    account: AccountOut = Depends(authenticator.try_get_current_account_data),
-) -> AccountToken | None:
-    if account and authenticator.cookie_name in request.cookies:
-        return {
-            "access_token": request.cookies[authenticator.cookie_name],
-            "type": "Bearer",
-            "account": account,
-        }
+@router.get("/token", response_model=AccountToken)
+async def get_token(request: Request) -> AccountToken:
+    # check for cookie
+    if authenticator.cookie_name not in request.cookies:
+        raise HTTPException(
+            status_code=400, detail="Required cookie not found"
+        )
+
+    # response body
+    return {
+        "access_token": request.cookies[authenticator.cookie_name],
+        "type": "Bearer",
+    }
+
+
+# AUTH clause. Use this function when ready
+# @router.get("/token", response_model=AccountToken | None)
+# async def get_token(
+#     request: Request,
+#     account: AccountOut = Depends(authenticator.try_get_current_account_data),
+# ) -> AccountToken | None:
+#     print("request is:", request)
+#     if not account:
+#          raise HTTPException(status_code=404, detail="Account not found")
+#     elif authenticator.cookie_name not in request.cookies:
+#         raise HTTPException(
+#             status_code=400, detail="Required cookie not found"
+#         )
+#     elif authenticator.cookie_name in request.cookies:
+#         return {
+#             "access_token": request.cookies[authenticator.cookie_name],
+#             "type": "Bearer",
+#         }
 
 
 @router.post("/api/accounts", response_model=AccountToken | HttpError)

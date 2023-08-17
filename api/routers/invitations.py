@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-from authenticator import authenticator
+from utils.authenticator import authenticator
 from queries.invitations import Invitation, InvitationUpdate
 from queries.client import db
 
@@ -31,7 +31,7 @@ def create_invitation(
 
 @router.get(
     "/",
-    response_description="List all parties",
+    response_description="List all invitations",
     response_model=List[Invitation],
 )
 def list_invitations(
@@ -43,7 +43,7 @@ def list_invitations(
 
 @router.get(
     "/{id}",
-    response_description="Get a single invitation by id",
+    response_description="Get a single invitation by ID",
     response_model=Invitation,
 )
 def find_invitation(
@@ -60,7 +60,7 @@ def find_invitation(
 
 @router.put(
     "/{id}",
-    response_description="Update a invitation",
+    response_description="Update an invitation",
     response_model=InvitationUpdate,
 )
 def update_invitation(
@@ -86,7 +86,7 @@ def update_invitation(
     return db.invitations.find_one({"_id": str(id)})
 
 
-@router.delete("/{id}", response_description="Delete a invitation plan")
+@router.delete("/{id}", response_description="Delete an invitation")
 def delete_invitation(
     id: str,
     response: Response,

@@ -82,4 +82,4 @@ To get the most out of this app on your own computer, just check if you've got D
 4. Run `docker compose build`
 5. Run `docker compose up`
 
-Last updated: 2023 August 16
+Last update: 2023 August 16
