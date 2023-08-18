@@ -1,3 +1,5 @@
 8/15/23 - I drove and we worked on getting the database setup. We had been having problems figuring out the docker files. Lea drove in the am and we built out a few models of the endpoints. Lea and Ellie created the issues for us to work from. We then picked which issues we wanted to handle. After class i finished building out the api endpoints and getting the correct data in the correct places.
 
 8/16/23 - I drove some today and we worked on the backend auth. It wasn't as hard as I thought it was going to be. We did two merge requests which was Leah's and then mine mine for the backend auth. Need to add more error handling to the endpoints and maybe reshape some of the data. I created a branch for the frontend auth issue and started working on that.
+
+8/17/23 - I drove in the AM we were troubleshooting the login function from the frontend. We were unsuccessful and in the PM after re-reading all the jwt documentation and many google searches I got the login to authenticate and provide token.I couldn't get the bootstrap modal to work correctly yet. I want it to close on submit but stay ope with error if no token.
