@@ -40,9 +40,9 @@ function Nav() {
             )}
           </ul>
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <LoginModal />
-            </li>
+            {/* <li className="nav-item"> */}
+            <LoginModal />
+            {/* </li> */}
           </ul>
         </div>
       </div>

@@ -1,8 +1,7 @@
-import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Modal, Button, Spinner } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import useToken from "@galvanize-inc/jwtdown-for-react";
 
 const LoginModal = () => {
   const [show, setShow] = useState(false);
@@ -11,9 +10,9 @@ const LoginModal = () => {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login, token } = useToken();
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
   const handleClose = () => {
     setUsername("");
     setPassword("");
@@ -28,7 +27,8 @@ const LoginModal = () => {
       navigate("/dashboard");
       handleClose();
     }
-  }, [token, navigate, show]);
+  }, [token, navigate]);
+  // }, [token, navigate, show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,7 +70,7 @@ const LoginModal = () => {
       {!token && (
         <li className="nav-item">
           <NavLink
-            className="nav-link active text-white "
+            className="nav-link active text-white"
             aria-current="page"
             onClick={handleShow}
           >
