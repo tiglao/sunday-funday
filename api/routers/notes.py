@@ -5,8 +5,9 @@ from uuid import UUID, uuid4
 from fastapi import (APIRouter, Body, Depends, HTTPException, Request,
                      Response, status)
 from fastapi.encoders import jsonable_encoder
-from queries.client import db
-from queries.notes import Note, NoteCreate, NoteUpdate
+from typing import List
+from datetime import datetime
+from uuid import UUID, uuid4
 from utils.authenticator import authenticator
 
 router = APIRouter()
@@ -53,13 +54,12 @@ async def create_note(
     if note.party_plan_id and note.location_id:
         raise HTTPException(
             status_code=400,
-            detail="A note cannot be associated with both a party plan and a location.",
+            detail="A note cannot be associated with both a party plan and a location."
         )
     if not note.party_plan_id and not note.location_id:
         raise HTTPException(
             status_code=400,
-            detail="A note must be associated with either a party plan or a location.",
-        )
+            detail="A note must be associated with either a party plan or a location.")
 
     new_note = {
         "_id": str(uuid4()),
@@ -67,7 +67,7 @@ async def create_note(
         "comment": note.comment,
         "account_id": current_user,  # Associate with the current user's account_id
         "party_plan_id": note.party_plan_id,
-        "location_id": note.location_id,
+        "location_id": note.location_id
     }
 
     db.notes.insert_one(new_note)
@@ -82,6 +82,7 @@ async def create_note(
         updated_time=None,
     )
     return created_note
+
 
 
 @router.get(
@@ -115,6 +116,7 @@ def find_note(
     )
 
 
+
 @router.put(
     "/{id}",
     response_description="Update a note",
@@ -145,12 +147,8 @@ def update_note(
         updated_time=updated_note["updated_time"],
         comment=updated_note["comment"],
         account_id=UUID(updated_note["account_id"]),
-        party_plan_id=UUID(updated_note["party_plan_id"])
-        if updated_note.get("party_plan_id")
-        else None,
-        location_id=UUID(updated_note["location_id"])
-        if updated_note.get("location_id")
-        else None,
+        party_plan_id=UUID(updated_note["party_plan_id"]) if updated_note.get("party_plan_id") else None,
+        location_id=UUID(updated_note["location_id"]) if updated_note.get("location_id") else None
     )
 
 
