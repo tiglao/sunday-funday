@@ -13,18 +13,22 @@ const LoginModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login, token } = useToken();
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClose = () => {
+    setUsername("");
+    setPassword("");
+    setShow(false);
+  };
 
-  const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    if (token !== null) {
+    if (token !== null && show) {
       setIsError(false);
       navigate("/dashboard");
       handleClose();
     }
-  }, [token, navigate]);
+  }, [token, navigate, show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +42,7 @@ const LoginModal = () => {
         setErrorMessage(
           "Oops! The username or password you entered is incorrect. Please double-check and try again."
         );
-        setPassword(""); // Reset the password field on failed attempt
+        setPassword("");
       } else {
         setUsername("");
         setPassword("");
