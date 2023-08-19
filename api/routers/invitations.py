@@ -57,7 +57,7 @@ def find_invitation(
         detail=f"Invitation with ID {id} not found",
     )
 
-# server 200/ response 200, 422
+# server 200/ response
 @router.put(
     "/{id}",
     response_description="Update a invitation",

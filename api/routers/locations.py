@@ -9,9 +9,9 @@ from fastapi import (
 )
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from uuid import UUID
+from uuid import UUID, uuid4
 from authenticator import authenticator
-from queries.locations import Location, LocationUpdate
+from queries.locations import Location, LocationUpdate, LocationCreate
 from queries.client import db
 
 
@@ -25,26 +25,49 @@ router = APIRouter()
     response_model=Location,
 )
 async def create_location(
-    plan: Location = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    location: LocationCreate = Body(...),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    plan = jsonable_encoder(plan)
-    new_location = db.locations.insert_one(plan)
+    # check place_id error
+    existing_location = db.locations.find_one({"place_id": location.place_id})
+    if existing_location:
+        raise HTTPException(
+            status_code=400,
+            detail="Location with this place_id already exists")
+
+    # conversion
+    # will need to add data validators later
+    location_dict = jsonable_encoder(location)
+
+    # make id
+    # if not location_dict.get("id"):
+    location_dict["id"] = str(uuid4())
+
+    #add index 0 account_ids
+    location_dict["account_ids"] = [location.account_id]
+
+    print("dictionary after making new id:", location_dict)
+
+    # add new location to database
+    new_location = db.locations.insert_one(location_dict)
+
+    # get the new location you just made from the database
     created_location = db.locations.find_one({"_id": new_location.inserted_id})
     created_location["_id"] = str(created_location["_id"])
+
     return created_location
 
 
 @router.get(
     "/",
-    response_description="List all parties",
+    response_description="List all locations",
     response_model=List[Location],
 )
 def list_locations(
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    parties = list(db.locations.find(limit=100))
-    return parties
+    locations = list(db.locations.find(limit=100))
+    return locations
 
 
 @router.get(
@@ -54,7 +77,7 @@ def list_locations(
 )
 def find_location(
     id: str,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (location := db.locations.find_one({"_id": id})) is not None:
         return location
@@ -72,7 +95,7 @@ def find_location(
 def update_location(
     id: UUID,
     location: LocationUpdate = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_location = db.locations.find_one({"_id": str(id)})
 
@@ -93,11 +116,11 @@ def update_location(
     return db.locations.find_one({"_id": str(id)})
 
 
-@router.delete("/{id}", response_description="Delete a location plan")
+@router.delete("/{id}", response_description="Delete a location location")
 def delete_location(
     id: str,
     response: Response,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.locations.delete_one({"_id": id})
 
