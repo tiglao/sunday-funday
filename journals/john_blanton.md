@@ -3,3 +3,7 @@
 8/16/23 - I drove some today and we worked on the backend auth. It wasn't as hard as I thought it was going to be. We did two merge requests which was Leah's and then mine mine for the backend auth. Need to add more error handling to the endpoints and maybe reshape some of the data. I created a branch for the frontend auth issue and started working on that.
 
 8/17/23 - I drove in the AM we were troubleshooting the login function from the frontend. We were unsuccessful and in the PM after re-reading all the jwt documentation and many google searches I got the login to authenticate and provide token.I couldn't get the bootstrap modal to work correctly yet. I want it to close on submit but stay ope with error if no token.
+
+8/19/23 - Its the weekend but I really wanted to finish the login function on the front-end. I used a bootstrap modal for the popup. Created error handling that shows the user their input was wrong. Once the user logs in it takes them to the main dashboard. I committed and did a merge request. Ellie found an error in the useEffect on out loginModal that is causing the modal not to show. She removed the dependency and it now shows for her on her Mac
+
+8/20/23 - I tested the code again after Ellie made changes and it is giving me a dependency error. I was able to use useRef in react to remove the need for the dependency. I committed and and pushed so Ellie can complete the merge request.
