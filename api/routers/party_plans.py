@@ -3,8 +3,8 @@ from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
 from utils.authenticator import authenticator
-from queries.party_plans import PartyPlan, PartyPlanUpdate
-from queries.client import db
+from models.party_plans import PartyPlan, PartyPlanUpdate
+from clients.client import db
 
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 )
 def create_party_plan(
     plan: PartyPlan = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     plan = jsonable_encoder(plan)
     new_plan = db.party_plan.insert_one(plan)
@@ -33,7 +33,7 @@ def create_party_plan(
     response_model=List[PartyPlan],
 )
 def list_party_plans(
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     parties = list(db.party_plan.find(limit=100))
     return parties
@@ -46,7 +46,7 @@ def list_party_plans(
 )
 def find_party_plan(
     id: str,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (party := db.party_plan.find_one({"_id": id})) is not None:
         return party
@@ -64,7 +64,7 @@ def find_party_plan(
 def update_party_plan(
     id: UUID,
     party: PartyPlanUpdate = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_party = db.party_plan.find_one({"_id": str(id)})
 
@@ -74,7 +74,7 @@ def update_party_plan(
             detail=f"Party with ID {id} not found",
         )
 
-    if party.startTime:
+    if party.start_time:
         party.date = party.date.isoformat()
 
     party_data = {k: v for k, v in party.dict().items() if v is not None}
@@ -89,15 +89,17 @@ def update_party_plan(
 def delete_party_plan(
     id: str,
     response: Response,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.party_plan.delete_one({"_id": id})
 
     if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return response
+        return {
+            "status": "success",
+            "message": f"Party plan with id {id}) successfully deleted.",
+        }
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Party with ID {id} not found",
+        detail=f"No party plan with ID {id} found. Deletion incomplete.",
     )

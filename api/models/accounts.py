@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from jwtdown_fastapi.authentication import Token
 
 
 class LogOut(BaseModel):
@@ -30,3 +31,33 @@ class AccountUpdate(BaseModel):
     last_name: str
     date_of_birth: str
     avatar: str
+
+
+class DuplicateAccountError(ValueError):
+    pass
+
+
+class AccountIn(BaseModel):
+    username: str
+    password: str
+    full_name: str
+
+
+class AccountOut(BaseModel):
+    id: str
+    username: str
+    full_name: str
+
+
+class AccountOutWithPassword(AccountOut):
+    hashed_password: str
+
+
+class AccountForm(BaseModel):
+    username: str
+    password: str
+
+
+class AccountToken(Token):
+    # account: AccountOut
+    pass

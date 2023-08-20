@@ -5,14 +5,13 @@ from fastapi import (
     status,
     Response,
     Depends,
-    Request,
 )
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
 from utils.authenticator import authenticator
-from queries.locations import Location, LocationUpdate
-from queries.client import db
+from models.locations import Location, LocationUpdate
+from clients.client import db
 
 
 router = APIRouter()
@@ -26,7 +25,7 @@ router = APIRouter()
 )
 async def create_location(
     plan: Location = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     plan = jsonable_encoder(plan)
     new_location = db.locations.insert_one(plan)
@@ -37,14 +36,14 @@ async def create_location(
 
 @router.get(
     "/",
-    response_description="List all parties",
+    response_description="List all locations",
     response_model=List[Location],
 )
 def list_locations(
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    parties = list(db.locations.find(limit=100))
-    return parties
+    locations = list(db.locations.find(limit=100))
+    return locations
 
 
 @router.get(
@@ -54,7 +53,7 @@ def list_locations(
 )
 def find_location(
     id: str,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (location := db.locations.find_one({"_id": id})) is not None:
         return location
@@ -72,7 +71,7 @@ def find_location(
 def update_location(
     id: UUID,
     location: LocationUpdate = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_location = db.locations.find_one({"_id": str(id)})
 
@@ -81,9 +80,6 @@ def update_location(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Location with ID {id} not found",
         )
-
-    if location.startTime:
-        location.date = location.date.isoformat()
 
     location_data = {k: v for k, v in location.dict().items() if v is not None}
 
@@ -97,15 +93,17 @@ def update_location(
 def delete_location(
     id: str,
     response: Response,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.locations.delete_one({"_id": id})
 
     if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return response
+        return {
+            "status": "success",
+            "message": f"Location with id {id}) successfully deleted.",
+        }
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Location with ID {id} not found",
+        detail=f"No location with ID {id} found. Deletion incomplete.",
     )

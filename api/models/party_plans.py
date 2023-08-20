@@ -9,13 +9,13 @@ class PartyPlan(BaseModel):
     username: str
     notes: str
     date: date
-    invitees: Dict[str, str]
+    invitations: Optional[Dict[str, str]]
     start_time: datetime
     end_time: datetime
     party_status: str
     keywords: List[str]
     general_location: str
-    favorite_locations: Dict[str, str]
+    favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
 
@@ -53,14 +53,14 @@ class PartyPlanUpdate(BaseModel):
     username: Optional[str]
     notes: Optional[str]
     date: Optional[date]
-    invitees: Optional[Dict[str, str]]
-    startTime: datetime
-    endTime: datetime
-    partyStatus: Optional[str]
+    invitations: Optional[Dict[str, str]]
+    start_time: datetime
+    end_time: datetime
+    party_status: Optional[str]
     keywords: Optional[List[str]]
-    generalLocation: Optional[str]
-    favoriteLocations: Optional[Dict[str, str]]
-    chosenLocations: Optional[Dict[str, str]]
+    general_location: Optional[str]
+    favorite_locations: Optional[Dict[str, str]]
+    chosen_locations: Optional[Dict[str, str]]
     description: Optional[str]
     image: Optional[HttpUrl]
 

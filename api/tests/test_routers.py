@@ -2,8 +2,8 @@ from fastapi import APIRouter, Body, HTTPException, status, Response
 from fastapi.encoders import jsonable_encoder
 from typing import List
 
-from queries.test import Test, TestUpdate
-from queries.client import db
+from test import Test, TestUpdate
+from clients.client import db
 
 
 router = APIRouter()
