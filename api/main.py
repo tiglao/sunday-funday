@@ -15,7 +15,6 @@ app.include_router(
     invitations.router, tags=["invitations"], prefix="/invitations"
 )
 app.include_router(authenticator.router)
-# app.include_router(accounts.router)
 app.include_router(accounts.router, tags=["accounts"], prefix="/accounts")
 
 
