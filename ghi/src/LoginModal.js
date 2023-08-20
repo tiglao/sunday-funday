@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRef } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
@@ -13,22 +14,28 @@ const LoginModal = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login, token } = useToken();
   const navigate = useNavigate();
+
+  const showRef = useRef(show);
+
   const handleClose = () => {
     setUsername("");
     setPassword("");
     setShow(false);
+    showRef.current = false;
   };
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+    showRef.current = true;
+  };
 
   useEffect(() => {
-    if (token !== null && show) {
+    if (token !== null && showRef.current) {
       setIsError(false);
       navigate("/dashboard");
       handleClose();
     }
   }, [token, navigate]);
-  // }, [token, navigate, show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
