@@ -1,78 +1,90 @@
-from pydantic import BaseModel
-from queries.client import db
+from fastapi import (
+    Depends,
+    HTTPException,
+    status,
+    Response,
+    APIRouter,
+    Request,
+)
 
-collection = db["accounts"]
-
-
-class DuplicateAccountError(ValueError):
-    pass
-
-
-class AccountIn(BaseModel):
-    username: str
-    password: str
-    full_name: str
-
-
-class AccountOut(BaseModel):
-    id: str
-    username: str
-    full_name: str
-
-
-class AccountOutWithPassword(AccountOut):
-    hashed_password: str
+from utils.authenticator import authenticator
+from models.accounts import (
+    AccountIn,
+    AccountOut,
+    AccountForm,
+    AccountToken,
+    DuplicateAccountError,
+)
+from models.apis import HttpError
+from repositories.accounts import AccountRepo
 
 
-class AccountRepo(BaseModel):
-    def get(self, username: str) -> AccountOutWithPassword:
-        acc = collection.find_one({"username": username})
-        print
-        if not acc:
-            return None
-        acc["id"] = str(acc["_id"])
-        return AccountOutWithPassword(**acc)
-
-    def create(
-        self, info: AccountIn, hashed_password: str
-    ) -> AccountOutWithPassword:
-        info = info.dict()
-        if self.get(info["username"]) is not None:
-            raise DuplicateAccountError
-        info["hashed_password"] = hashed_password
-        del info["password"]
-        collection.insert_one(info)
-        id = str(info["_id"])
-        acc = AccountOutWithPassword(**info, id=id)
-        return acc
+router = APIRouter()
 
 
-# class LogOut(BaseModel):
-#     account_id: str
+# @router.get("/token", response_model=AccountToken)
+# async def get_token(request: Request) -> AccountToken:
+#     # check for cookie
+#     if authenticator.cookie_name not in request.cookies:
+#         raise HTTPException(
+#             status_code=400, detail="Required cookie not found"
+#         )
+
+#     # response body
+#     return {
+#         "access_token": request.cookies[authenticator.cookie_name],
+#         "type": "Bearer",
+#     }
 
 
-# class LogIn(BaseModel):
-#     email: str
-#     password: str
-#     first_name: str
-#     last_name: str
+@router.get("/token", response_model=AccountToken | None)
+async def get_token(
+    request: Request,
+    account: AccountOut = Depends(authenticator.try_get_current_account_data),
+) -> AccountToken | None:
+    if account and authenticator.cookie_name in request.cookies:
+        return {
+            "access_token": request.cookies[authenticator.cookie_name],
+            "type": "Bearer",
+            "account": account,
+        }
 
 
-# class Account(BaseModel):
-#     email: str
-#     password: str
-#     first_name: str
-#     last_name: str
-#     date_of_birth: str
-#     avatar: str
-#     user_name: str
-#     id:str
+# AUTH clause. Use this function when ready
+# @router.get("/token", response_model=AccountToken | None)
+# async def get_token(
+#     request: Request,
+#     account: AccountOut = Depends(authenticator.try_get_current_account_data),
+# ) -> AccountToken | None:
+#     print("request is:", request)
+#     if not account:
+#          raise HTTPException(status_code=404, detail="Account not found")
+#     elif authenticator.cookie_name not in request.cookies:
+#         raise HTTPException(
+#             status_code=400, detail="Required cookie not found"
+#         )
+#     elif authenticator.cookie_name in request.cookies:
+#         return {
+#             "access_token": request.cookies[authenticator.cookie_name],
+#             "type": "Bearer",
+#         }
 
 
-# class AccountUpdate(BaseModel):
-#     email: str
-#     password: str
-#     first_name: str
-#     last_name: str
-#     date_of_birth: str
-#     avatar: str
+@router.post("/api/accounts", response_model=AccountToken | HttpError)
+async def create_account(
+    info: AccountIn,
+    request: Request,
+    response: Response,
+    repo: AccountRepo = Depends(),
+):
+    hashed_password = authenticator.hash_password(info.password)
+    try:
+        account = repo.create(info, hashed_password)
+    except DuplicateAccountError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot create an account with those credentials",
+        )
+    form = AccountForm(username=info.username, password=info.password)
+    token = await authenticator.login(response, request, form, repo)
+    return AccountToken(account=account, **token.dict())
