@@ -55,3 +55,12 @@ services:
       HOST: "0.0.0.0"
       PUBLIC_URL: http://localhost:3000
       REACT_APP_API_HOST: ${REACT_APP_API_HOST}
+
+  sendmail:
+    image: alpine:latest
+    command: ["sendmail", "-bd"]
+    container_name: sendmail-container
+    environment:
+      - SUBNET=192.168
+      - HOSTNAME=my-sendmail-host
+      - WHITELIST_FROM=
