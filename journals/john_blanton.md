@@ -14,3 +14,4 @@ I changed the routing in main.py to this.
 app.include_router(accounts.router)
 It was working but automatically keeps getting 400 bad request error since its always looking for a token at startup. So I commented out the get_token and put the one they provided us and the 400 goes away which handles the error when there is no token yet.
 Today Jean did the standup and drove. I assisted him in getting a docker issue fixed and getting the containers up and running. Next up is the logout feature.
+Finished the logout feature.
