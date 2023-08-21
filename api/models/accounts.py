@@ -59,5 +59,5 @@ class AccountForm(BaseModel):
 
 
 class AccountToken(Token):
-    # account: AccountOut
-    pass
+    account: AccountOut
+    # pass
