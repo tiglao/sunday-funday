@@ -1,7 +1,8 @@
 import os
 from fastapi import Depends
 from jwtdown_fastapi.authentication import Authenticator
-from routers.accounts import AccountRepo, AccountOut, AccountOutWithPassword
+from models.accounts import AccountOut, AccountOutWithPassword
+from repositories.accounts import AccountRepo
 
 
 class MyAuthenticator(Authenticator):

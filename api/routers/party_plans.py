@@ -2,9 +2,9 @@ from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-from authenticator import authenticator
-from queries.party_plan import PartyPlan, PartyPlanUpdate
-from queries.client import db
+from utils.authenticator import authenticator
+from models.party_plans import PartyPlan, PartyPlanUpdate
+from clients.client import db
 
 
 router = APIRouter()
@@ -12,13 +12,13 @@ router = APIRouter()
 
 @router.post(
     "/",
-    response_description="Create a new party",
+    response_description="Create a new party plan",
     status_code=status.HTTP_201_CREATED,
     response_model=PartyPlan,
 )
-def create_partyplan(
+def create_party_plan(
     plan: PartyPlan = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     plan = jsonable_encoder(plan)
     new_plan = db.party_plan.insert_one(plan)
@@ -29,11 +29,11 @@ def create_partyplan(
 
 @router.get(
     "/",
-    response_description="List all parties",
+    response_description="List all party plans",
     response_model=List[PartyPlan],
 )
-def list_partyplan(
-    account: dict = Depends(authenticator.get_current_account_data),
+def list_party_plans(
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     parties = list(db.party_plan.find(limit=100))
     return parties
@@ -41,12 +41,12 @@ def list_partyplan(
 
 @router.get(
     "/{id}",
-    response_description="Get a single party by id",
+    response_description="Get a single party plan by ID",
     response_model=PartyPlan,
 )
-def find_party(
+def find_party_plan(
     id: str,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (party := db.party_plan.find_one({"_id": id})) is not None:
         return party
@@ -58,13 +58,13 @@ def find_party(
 
 @router.put(
     "/{id}",
-    response_description="Update a party",
+    response_description="Update a party plan",
     response_model=PartyPlanUpdate,
 )
-def update_party(
+def update_party_plan(
     id: UUID,
     party: PartyPlanUpdate = Body(...),
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_party = db.party_plan.find_one({"_id": str(id)})
 
@@ -74,7 +74,7 @@ def update_party(
             detail=f"Party with ID {id} not found",
         )
 
-    if party.startTime:
+    if party.start_time:
         party.date = party.date.isoformat()
 
     party_data = {k: v for k, v in party.dict().items() if v is not None}
@@ -86,18 +86,20 @@ def update_party(
 
 
 @router.delete("/{id}", response_description="Delete a party plan")
-def delete_party(
+def delete_party_plan(
     id: str,
     response: Response,
-    account: dict = Depends(authenticator.get_current_account_data),
+    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.party_plan.delete_one({"_id": id})
 
     if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return response
+        return {
+            "status": "success",
+            "message": f"Party plan with id {id}) successfully deleted.",
+        }
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Party with ID {id} not found",
+        detail=f"No party plan with ID {id} found. Deletion incomplete.",
     )

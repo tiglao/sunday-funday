@@ -10,9 +10,9 @@ class Location(BaseModel):
     address: str
     type: str
     category: str
-    favoriteStatus: bool = False
+    favorite_status: bool = False
     notes: Optional[str]
-    hoursOfOperation: Optional[Dict[str, str]]
+    hours_of_operation: Optional[Dict[str, str]]
     website: Optional[HttpUrl]
     image: Optional[HttpUrl]
 
