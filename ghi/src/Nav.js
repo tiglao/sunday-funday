@@ -2,8 +2,9 @@ import { NavLink } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
-function Nav() {
+const Nav = () => {
   const { token } = useToken();
+  const { logout } = useToken();
   return (
     <nav className="navbar navbar-expand-lg bg-dark">
       <div className="container-fluid">
@@ -40,14 +41,23 @@ function Nav() {
             )}
           </ul>
           <ul className="navbar-nav ms-auto">
-            {/* <li className="nav-item"> */}
             <LoginModal />
-            {/* </li> */}
+            {token && (
+              <li className="nav-item">
+                <NavLink
+                  className="nav-link text-white ms-auto"
+                  onClick={logout}
+                  to="/"
+                >
+                  Logout
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
       </div>
     </nav>
   );
-}
+};
 
 export default Nav;
