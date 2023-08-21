@@ -1,7 +1,17 @@
-from json import JSONEncoder
+from fastapi import (
+    APIRouter,
+    Body,
+    HTTPException,
+    status,
+    Response,
+    Depends,
+)
+from fastapi.encoders import jsonable_encoder
 from typing import List
-from urllib import request
-from uuid import UUID, uuid4
+from uuid import UUID
+from utils.authenticator import authenticator
+from models.locations import Location, LocationUpdate
+from clients.client import db
 
 import fastapi
 import requests
@@ -24,7 +34,7 @@ router = APIRouter()
     response_model=Location,
 )
 async def create_location(
-    location: Location = Body(...),
+    plan: Location = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # check place_id error

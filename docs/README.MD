@@ -50,6 +50,7 @@ CHANGE THESE LINKS
 - A personal touch for every invitee. Check out invites and RSVP your way – thumbs up or down.
 
 - Feel free to chime in. Maybe later down the road, you can suggest some killer venues to the shared map.
+
 **Level Up with Extras**:
 
 - How about a smart itinerary? We're thinking Google Maps could guide the way.

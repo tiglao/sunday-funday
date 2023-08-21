@@ -1,5 +1,4 @@
 import os
-from pydantic import BaseModel
 from fastapi import Depends
 from jwtdown_fastapi.authentication import Authenticator
 from models.accounts import AccountOut, AccountOutWithPassword

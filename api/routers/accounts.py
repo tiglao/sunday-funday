@@ -1,10 +1,23 @@
-from fastapi import (APIRouter, Depends, HTTPException, Request, Response,
-                     status)
-from models.accounts import (AccountForm, AccountIn, AccountOut, AccountToken,
-                             DuplicateAccountError)
+from fastapi import (
+    Depends,
+    HTTPException,
+    status,
+    Response,
+    APIRouter,
+    Request,
+)
+
+from utils.authenticator import authenticator
+from models.accounts import (
+    AccountIn,
+    AccountOut,
+    AccountForm,
+    AccountToken,
+    DuplicateAccountError,
+)
 from models.apis import HttpError
 from repositories.accounts import AccountRepo
-from utils.authenticator import authenticator
+
 
 router = APIRouter()
 
