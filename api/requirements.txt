@@ -2,4 +2,5 @@ fastapi[all]==0.91.0
 uvicorn[standard]==0.17.6
 pymongo==4.4.1
 jwtdown-fastapi>=0.5.0
+responses==0.23.3
 pytest
