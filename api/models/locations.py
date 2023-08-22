@@ -70,18 +70,24 @@ class LocationUpdate(BaseModel):
     # account_location_tags: Optional[Dict[UUID, List[str]]]
 
     class Config:
-        allow_population_by_field_name = True
         schema_extra = {
             "example": {
-                "note_ids": [
-                    "note1",
-                    "note2",
-                ],
-                "favorite_status": True,
-                "account_ids": ["account1", "account2"],
-                "account_location_tags": {
-                    "account1": ["tag1", "tag2"],
-                    "account2": ["tag3"],
+                "general_location": "Denver",
+                "party_date": "2022-02-23",
+                "start_time": "2022-02-23T14:30:00",
+                "end_time": "2022-02-23T17:30:00",
+                "description": "Updated Description here ....",
+                "image": "https://picsum.photos/201",
+                "party_status": "share draft",
+                "invitations": {"name3": "id3", "name4": "id4"},
+                "keywords": ["party", "drinks", "dance"],
+                "favorite_locations": {
+                    "new_location1": "new_place_id1",
+                    "new_location2": "new_place_id2",
+                },
+                "chosen_locations": {
+                    "new_locationX": "new_place_idX",
+                    "new_locationY": "new_place_idY",
                 },
             }
         }
