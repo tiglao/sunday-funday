@@ -9,13 +9,13 @@ class PartyPlan(BaseModel):
     username: str
     notes: str
     date: date
-    invitees: Dict[str, str]
-    startTime: datetime
-    endTime: datetime
-    partyStatus: str
+    invitations: Optional[Dict[str, str]]
+    start_time: datetime
+    end_time: datetime
+    party_status: str
     keywords: List[str]
-    generalLocation: str
-    favoriteLocations: Dict[str, str]
+    general_location: str
+    favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
 
@@ -32,12 +32,12 @@ class PartyPlan(BaseModel):
                     "name": "id",
                     "name": "id",
                 },
-                "startTime": "2022-02-22 14:30",
-                "endTime": "2022-02-22 17:30",
-                "partyStatus": "draft",
+                "start_time": "2022-02-22 14:30",
+                "end_time": "2022-02-22 17:30",
+                "party_status": "draft",
                 "keywords": ["fun", "bar", "burgers"],
-                "generalLocation": "Denver",
-                "favoriteLocations": {
+                "general_location": "Denver",
+                "favorite_locations": {
                     "location name": "place_id",
                     "location name": "place_id",
                     "location name": "place_id",
@@ -53,20 +53,21 @@ class PartyPlanUpdate(BaseModel):
     username: Optional[str]
     notes: Optional[str]
     date: Optional[date]
-    invitees: Optional[Dict[str, str]]
-    startTime: datetime
-    endTime: datetime
-    partyStatus: Optional[str]
+    invitations: Optional[Dict[str, str]]
+    start_time: datetime
+    end_time: datetime
+    party_status: Optional[str]
     keywords: Optional[List[str]]
-    generalLocation: Optional[str]
-    favoriteLocations: Optional[Dict[str, str]]
-    chosenLocations: Optional[Dict[str, str]]
+    general_location: Optional[str]
+    favorite_locations: Optional[Dict[str, str]]
+    chosen_locations: Optional[Dict[str, str]]
     description: Optional[str]
     image: Optional[HttpUrl]
 
     class Config:
         schema_extra = {
             "example": {
+                "id": "generated",
                 "username": "Billy1234",
                 "notes": "Notes go here....",
                 "date": "2022-02-22",
@@ -76,12 +77,12 @@ class PartyPlanUpdate(BaseModel):
                     "name": "id",
                     "name": "id",
                 },
-                "startTime": "2022-02-22 14:30",
-                "endTime": "2022-02-22 17:30",
-                "partyStatus": "draft",
+                "start_time": "2022-02-22 14:30",
+                "end_time": "2022-02-22 17:30",
+                "party_status": "draft",
                 "keywords": ["fun", "bar", "burgers"],
-                "generalLocation": "Denver",
-                "favoriteLocations": {
+                "general_location": "Denver",
+                "favorite_locations": {
                     "location name": "place_id",
                     "location name": "place_id",
                     "location name": "place_id",

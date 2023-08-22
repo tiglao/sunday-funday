@@ -5,14 +5,13 @@ from fastapi import (
     status,
     Response,
     Depends,
-    Request,
 )
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from uuid import UUID, uuid4
-from authenticator import authenticator
-from queries.locations import Location, LocationUpdate, LocationCreate
-from queries.client import db
+from uuid import UUID
+from utils.authenticator import authenticator
+from models.locations import Location, LocationUpdate
+from clients.client import db
 
 
 router = APIRouter()
@@ -25,7 +24,7 @@ router = APIRouter()
     response_model=Location,
 )
 async def create_location(
-    location: LocationCreate = Body(...),
+    plan: Location = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # check place_id error
@@ -105,9 +104,6 @@ def update_location(
             detail=f"Location with ID {id} not found",
         )
 
-    if location.startTime:
-        location.date = location.date.isoformat()
-
     location_data = {k: v for k, v in location.dict().items() if v is not None}
 
     if location_data:
@@ -125,10 +121,12 @@ def delete_location(
     delete_result = db.locations.delete_one({"_id": id})
 
     if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return response
+        return {
+            "status": "success",
+            "message": f"Location with id {id}) successfully deleted.",
+        }
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Location with ID {id} not found",
+        detail=f"No location with ID {id} found. Deletion incomplete.",
     )

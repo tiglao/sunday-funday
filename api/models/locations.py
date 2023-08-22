@@ -37,9 +37,15 @@ class Location(BaseModel):
 
 class LocationCreate(BaseModel):
     place_id: str
+    name: str
+    address: str
+    type: str
+    category: str
     favorite_status: bool = False
-    account_id: str
-    account_location_tags: Optional[Dict[str, List[str]]]
+    notes: Optional[str]
+    hours_of_operation: Optional[Dict[str, str]]
+    website: Optional[HttpUrl]
+    image: Optional[HttpUrl]
 
     class Config:
         allow_population_by_field_name = True
