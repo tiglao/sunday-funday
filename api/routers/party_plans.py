@@ -111,6 +111,58 @@ def update_party_plan(
         k: v for k, v in party_plan.dict().items() if v is not None
     }
 
+    # make sure searched_locations in payload are in locations database and update. this will append the searched_locations array with each update.
+    if "searched_locations" in party_plan_data:
+        for location_id in party_plan_data["searched_locations"]:
+            if location_id not in existing_searched_locations:
+                location = db.locations.find_one({"id": str(location_id)})
+                if not location:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail=f"Location with ID {location_id} not found.",
+                    )
+                existing_searched_locations.append(location_id)
+
+    # validate and update favorite_locations in payload. will overwrite existing list.
+    if "favorite_locations" in party_plan_data:
+        existing_searched_locations = existing_party_plan.get(
+            "searched_locations", []
+        )
+        # initialize
+        if party_plan_data["favorite_locations"] is None:
+            party_plan_data["favorite_locations"] = []
+
+        if not all(
+            fav_id in existing_searched_locations
+            for fav_id in party_plan_data["favorite_locations"]
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="All favorite locations must be part of searched locations.",
+            )
+        for fav_id in party_plan_data["favorite_locations"]:
+            db.locations.update_one(
+                {"id": str(fav_id)},
+                {"$set": {"favorite_status": True}},
+            )
+
+    # validate that chosen_locations are part of favorite_locations. will overwrite existing list.
+    if "chosen_locations" in party_plan_data:
+        existing_favorite_locations = existing_party_plan.get(
+            "favorite_locations", []
+        )
+        if not all(
+            chosen_id in existing_favorite_locations
+            for chosen_id in party_plan_data["chosen_locations"]
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="All chosen locations must be part of favorite locations.",
+            )
+        party_plan_data["chosen_locations"] = [
+            chosen_id for chosen_id in party_plan_data["chosen_locations"]
+        ]
+
     # validate invitations in payload
     if "invitations" in party_plan_data:
         invitations_to_validate = party_plan_data["invitations"]

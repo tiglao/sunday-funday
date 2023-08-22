@@ -21,11 +21,12 @@ class PartyPlan(BaseModel):
     end_time: Optional[datetime]
     description: Optional[str]
     image: Optional[HttpUrl]
-    party_status: PartyStatus
+    party_status: Optional[PartyStatus]
     invitations: Optional[List[UUID]]
     keywords: Optional[List[str]]
-    favorite_locations: Optional[Dict[str, str]]
-    chosen_locations: Optional[Dict[str, str]]
+    searched_locations: Optional[List[UUID]]
+    favorite_locations: Optional[List[UUID]]
+    chosen_locations: Optional[List[UUID]]
 
     class Config:
         allow_population_by_field_name = True
@@ -43,14 +44,8 @@ class PartyPlan(BaseModel):
                 "party_status": "draft",
                 "invitations": ["id1", "id2"],
                 "keywords": ["fun", "bar", "burgers"],
-                "favorite_locations": {
-                    "location1": "place_id1",
-                    "location2": "place_id2",
-                },
-                "chosen_locations": {
-                    "locationA": "place_idA",
-                    "locationB": "place_idB",
-                },
+                "favorite_locations": ["place_id1", "place_id2"],
+                "chosen_locations": ["place_id2"],
             }
         }
 
@@ -74,9 +69,6 @@ class PartyPlanCreate(BaseModel):
                 "end_time": "2022-02-23T17:30:00",
                 "description": "Updated Description here ....",
                 "image": "https://picsum.photos/201",
-                "invitations": [
-                    "<CHANGE THIS IT NEEDS TO BE A VALID INVITATION ID>"
-                ],
                 "keywords": ["party", "drinks", "dance"],
             }
         }
@@ -89,10 +81,11 @@ class PartyPlanUpdate(BaseModel):
     description: Optional[str]
     image: Optional[HttpUrl]
     invitations: Optional[List[UUID]]
-    party_status: PartyStatus
+    party_status: Optional[PartyStatus]
     keywords: Optional[List[str]]
-    favorite_locations: Optional[Dict[str, str]]
-    chosen_locations: Optional[Dict[str, str]]
+    searched_locations: Optional[List[UUID]]
+    favorite_locations: Optional[List[UUID]]
+    chosen_locations: Optional[List[UUID]]
 
     class Config:
         schema_extra = {
@@ -105,13 +98,14 @@ class PartyPlanUpdate(BaseModel):
                 "party_status": "share draft",
                 "invitations": ["<INSERT VALID INVITATION"],
                 "keywords": ["party", "drinks", "dance"],
-                "favorite_locations": {
-                    "new_location1": "new_place_id1",
-                    "new_location2": "new_place_id2",
-                },
-                "chosen_locations": {
-                    "new_locationX": "new_place_idX",
-                    "new_locationY": "new_place_idY",
-                },
+                "searched_locations": [
+                    "<placeid1 REPLACE ME>",
+                    "<placeid2 REPLACE ME>",
+                ],
+                "favorite_locations": [
+                    "<placeid1 REPLACE ME>",
+                    "<placeid2 REPLACE ME>",
+                ],
+                "chosen_locations": ["<placeid2 REPLACE ME>"],
             }
         }
