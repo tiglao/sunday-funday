@@ -5,6 +5,7 @@ from uuid import UUID
 from utils.authenticator import authenticator
 from models.invitations import Invitation, InvitationUpdate
 from clients.client import db
+from utils.email_service import send_email, party_invitation_template
 
 
 router = APIRouter()
@@ -104,3 +105,17 @@ def delete_invitation(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No invitation with ID {id} found. Deletion incomplete.",
     )
+
+
+@router.post("/send-invitation/")
+async def send_invitation(guest_name: str, party_name: str, date: str, location: str, rsvp_link: str, to_email: str):
+    try:
+        content = party_invitation_template(guest_name, party_name, date, location, rsvp_link)
+
+        subject = f"You're Invited to {party_name}!"
+
+        send_email(to_email, subject, content)
+
+        return {"status": "success", "message": "Invitation sent successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

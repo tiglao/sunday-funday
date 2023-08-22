@@ -57,10 +57,7 @@ services:
       REACT_APP_API_HOST: ${REACT_APP_API_HOST}
 
   sendmail:
-    image: alpine:latest
-    command: ["sendmail", "-bd"]
-    container_name: sendmail-container
+    image: pigeosolutions/docker-sendmail
     environment:
-      - SUBNET=192.168
-      - HOSTNAME=my-sendmail-host
-      - WHITELIST_FROM=
+      - HOSTNAME=my-sendmail-container
+      - WHITELIST_FROM=fundaysunday08@gmail.com
