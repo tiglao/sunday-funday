@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import LoginModal from "./LoginModal";
+import SignupForm from "./SignupForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
 const Nav = () => {
@@ -42,6 +43,7 @@ const Nav = () => {
           </ul>
           <ul className="navbar-nav ms-auto">
             <LoginModal />
+            <SignupForm />
             {token && (
               <li className="nav-item">
                 <NavLink

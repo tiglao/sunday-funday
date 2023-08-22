@@ -3,23 +3,60 @@ import { useRef } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
-import SignupForm from "./SignupForm";
 
-const LoginModal = () => {
-  const [show, setShow] = useState(false);
-  const [username, setUsername] = useState("");
+const SignupForm = () => {
+  const [full_name, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const { login, token } = useToken();
+  const [isError, setIsError] = useState(false);
+  const [show, setShow] = useState(false);
+  const { register, token } = useToken();
+  //   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const react_url = process.env.REACT_APP_API_HOST;
 
   const showRef = useRef(show);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const userData = {
+      username: email,
+      password: password,
+      email: email,
+      full_name: full_name,
+    };
+    setIsLoading(true);
+    register(userData, `${react_url}/api/accounts`);
+    // e.target.reset();
+
+    setTimeout(() => {
+      setIsLoading(false);
+      if (token === null) {
+        setIsError(true);
+        setErrorMessage(
+          "Oops! The username or password you entered is incorrect. Please double-check and try again."
+        );
+        setPassword("");
+      } else {
+        setEmail("");
+        setFullName("");
+        setPassword("");
+      }
+    }, 500);
+  };
+
+  let errorClass = "alert alert-danger d-none";
+
+  if (isError) {
+    errorClass = "alert alert-danger";
+  }
+
   const handleClose = () => {
-    setUsername("");
+    setEmail("");
+    setFullName("");
     setPassword("");
     setShow(false);
     showRef.current = false;
@@ -38,68 +75,44 @@ const LoginModal = () => {
     }
   }, [token, navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    await login(username, password);
-
-    setTimeout(() => {
-      setIsLoading(false);
-      if (token === null) {
-        setIsError(true);
-        setErrorMessage(
-          "Oops! That email address is already taken.  Please use a different email or login."
-        );
-        setPassword("");
-      } else {
-        setUsername("");
-        setPassword("");
-      }
-    }, 500);
-  };
-
-  let errorClass = "alert alert-danger d-none";
-
-  if (isError) {
-    errorClass = "alert alert-danger";
-  }
-
   const handleInputChange = (e, setter) => {
     setIsError(false);
     setter(e.target.value);
-  };
-
-  const handlePasswordToggle = () => {
-    setShowPassword(!showPassword);
   };
 
   return (
     <>
       {!token && (
         <li className="nav-item">
-          <NavLink
-            className="nav-link active text-white"
-            aria-current="page"
-            onClick={handleShow}
-          >
-            Login
+          <NavLink className="nav-link text-white" onClick={handleShow}>
+            Sign Up
           </NavLink>
         </li>
       )}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-black text-white">
-          <Modal.Title>Login</Modal.Title>
+          <Modal.Title>Sign Up</Modal.Title>
         </Modal.Header>
         <Modal.Body className="bg-dark text-white">
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-3">
-              <label className="form-label">Username</label>
+              <label className="form-label">Full Name</label>
               <input
-                name="username"
-                value={username}
+                name="Full Name"
+                value={full_name}
                 type="text"
                 className="form-control"
-                onChange={(e) => handleInputChange(e, setUsername)}
+                onChange={(e) => handleInputChange(e, setFullName)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input
+                name="email"
+                value={email}
+                type="email"
+                className="form-control"
+                onChange={(e) => handleInputChange(e, setEmail)}
               />
             </div>
             <div className="mb-3">
@@ -108,17 +121,9 @@ const LoginModal = () => {
                 <input
                   name="password"
                   value={password}
-                  type={showPassword ? "text" : "password"}
                   className="form-control"
                   onChange={(e) => handleInputChange(e, setPassword)}
                 />
-                <button
-                  className="btn btn-outline-light"
-                  type="button"
-                  onClick={handlePasswordToggle}
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
               </div>
             </div>
             <Modal.Footer>
@@ -133,23 +138,14 @@ const LoginModal = () => {
                 Cancel
               </Button>
               <Button variant="primary" type="submit" value="Login">
-                Login
+                Sign Up
               </Button>
             </Modal.Footer>
           </form>
-          <div>
-            {" "}
-            {/* Bootstrap class to set text color to black */}
-            <ul className="list-unstyled">
-              {" "}
-              {/* Bootstrap class to remove list item dot */}
-              <SignupForm />
-            </ul>
-          </div>
         </Modal.Body>
       </Modal>
     </>
   );
 };
 
-export default LoginModal;
+export default SignupForm;

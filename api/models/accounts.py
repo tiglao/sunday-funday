@@ -1,16 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from jwtdown_fastapi.authentication import Token
 
 
-class LogOut(BaseModel):
-    account_id: str
+# class LogOut(BaseModel):
+#     account_id: str
 
 
-class LogIn(BaseModel):
-    email: str
-    password: str
-    first_name: str
-    last_name: str
+# class LogIn(BaseModel):
+#     email: str
+#     password: str
+#     first_name: str
+#     last_name: str
 
 
 class Account(BaseModel):
@@ -38,6 +38,7 @@ class DuplicateAccountError(ValueError):
 
 
 class AccountIn(BaseModel):
+    email: EmailStr
     username: str
     password: str
     full_name: str
