@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
-import { useRef } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
-import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = ({ handleSignupClose }) => {
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -27,6 +25,7 @@ const SignupForm = ({ handleSignupClose }) => {
     };
     setIsLoading(true);
     register(userData, `${react_url}/api/accounts`);
+    // e.target.reset();
 
     setTimeout(() => {
       setIsLoading(false);

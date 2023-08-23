@@ -2,15 +2,15 @@ from pydantic import BaseModel, EmailStr
 from jwtdown_fastapi.authentication import Token
 
 
-# class LogOut(BaseModel):
-#     account_id: str
+class LogOut(BaseModel):
+    account_id: str
 
 
-# class LogIn(BaseModel):
-#     email: str
-#     password: str
-#     first_name: str
-#     last_name: str
+class LogIn(BaseModel):
+    email: str
+    password: str
+    first_name: str
+    last_name: str
 
 
 class Account(BaseModel):
