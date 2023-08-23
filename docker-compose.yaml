@@ -9,6 +9,7 @@ services:
       DATABASE_URL: mongodb://root:example@mongo
       DB_NAME: sunday_funday
       SIGNING_KEY: ${SIGNING_KEY}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     build:
       context: api
       dockerfile: Dockerfile.dev
@@ -55,9 +56,3 @@ services:
       HOST: "0.0.0.0"
       PUBLIC_URL: http://localhost:3000
       REACT_APP_API_HOST: ${REACT_APP_API_HOST}
-
-  sendmail:
-    image: pigeosolutions/docker-sendmail
-    environment:
-      - HOSTNAME=my-sendmail-container
-      - WHITELIST_FROM=fundaysunday08@gmail.com

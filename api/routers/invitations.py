@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response
 from fastapi.encoders import jsonable_encoder
 from typing import List
-import uuid
+from uuid import uuid, UUID
 from models.invitations import Invitation, InvitationUpdate
 from clients.client import db
 from utils.email_service import send_email, party_invitation_template
-from bson import ObjectId
 from clients.client import get_database
 
 router = APIRouter()
@@ -115,15 +114,20 @@ async def send_invitation(
     location: str,
     rsvp_link: str,
 ):
-    try:
-        content = party_invitation_template(
-            invitation.guest_name, party_name, date, location, rsvp_link
-        )
-        subject = f"You're Invited to {party_name}!"
-        send_email(invitation.email, subject, content)
+    content = party_invitation_template(
+        invitation.guest_name, party_name, date, location, rsvp_link
+    )
+    subject = f"You're Invited to {party_name}!"
+
+    success = send_email(invitation.email, subject, content)
+
+    if success:
         return {"status": "success", "message": "Invitation sent successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    else:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to send the invitation",
+        )
 
 
 @router.put("/rsvp/{invitation_id}/")
