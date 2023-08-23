@@ -17,3 +17,5 @@ Today Jean did the standup and drove. I assisted him in getting a docker issue f
 Finished the logout feature.
 
 8/22 In the am Leah was the driver and we all assisted in figuring out some aspects of the google api. After lunch I worked on the sign up modal and it works. The only issue I have is getting a link on the login modal. Right now it shows up white since its that way in the modal link. Tomorrow I will continue to troubleshoot this and move on to the dashboard.
+
+8/23 I got up early to try and figure out this login/signup links with no luck so far.
