@@ -12,6 +12,9 @@ from uuid import UUID
 from utils.authenticator import authenticator
 from models.locations import Location, LocationUpdate
 from clients.client import db
+from api_views import nearby_search
+from party_plans import id
+
 
 
 router = APIRouter()
@@ -24,10 +27,18 @@ router = APIRouter()
     response_model=Location,
 )
 async def create_location(
-    plan: Location = Body(...),
+    location: Location = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # check place_id error
+    party_plan_id = party_plan["id"]
+    nearby_search = nearby_search()
+    try:
+        search_result = nearby_search(location.address, nearby_search.key, nearby_search.keyword)
+        if search_result is None:
+            return Error(message="Places API Issue")
+            
+        location = search_result 
     existing_location = db.locations.find_one({"place_id": location.place_id})
     if existing_location:
         raise HTTPException(

@@ -34,7 +34,9 @@ class Places(BaseModel):
         
         params = {
             "key": api_key,
-            "location": location,
+            "location": latitude + longitude,
+            "latitude": latitude,
+            "longitude": longitude,
             "radius": radius,
             "keyword": keyword,
             "type": type
@@ -52,7 +54,9 @@ class Places(BaseModel):
 
     if __name__ == "__main__":
         api_key = "AIzaSyA-5Jr7-9Q53rLg1lTZc-vj1VOgRAHoHw8"
-        location = "-33.86746,151.20709"  # Latitude and longitude in format "latitude,longitude"
+        location = "-33.86746 + 151.20709"  
+        latitude = "-33.86746"
+        longitude = "151.20709"
         keyword = "restaurant"
         radius = 1000  # Radius in meters
         place_type = "restaurant"  
