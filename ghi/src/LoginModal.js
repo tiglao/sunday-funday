@@ -77,20 +77,16 @@ const LoginModal = () => {
     <>
       {!token && (
         <li className="nav-item">
-          <NavLink
-            className="nav-link active text-white"
-            aria-current="page"
-            onClick={handleShow}
-          >
+          <NavLink className="nav-link text-white" onClick={handleShow}>
             Login
           </NavLink>
         </li>
       )}
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton className="bg-black text-white">
+        <Modal.Header closeButton>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="bg-dark text-white">
+        <Modal.Body className="">
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-3">
               <label className="form-label">Username</label>

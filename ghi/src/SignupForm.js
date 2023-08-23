@@ -90,10 +90,10 @@ const SignupForm = () => {
         </li>
       )}
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton className="bg-black text-white">
+        <Modal.Header closeButton>
           <Modal.Title>Sign Up</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="bg-dark text-white">
+        <Modal.Body>
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-3">
               <label className="form-label">Full Name</label>
