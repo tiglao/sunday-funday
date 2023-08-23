@@ -48,7 +48,7 @@ const LoginModal = () => {
       if (token === null) {
         setIsError(true);
         setErrorMessage(
-          "Oops! That email address is already taken.  Please use a different email or login."
+          "Oops! The email or password you entered is incorrect. 🙈"
         );
         setPassword("");
       } else {
@@ -109,7 +109,7 @@ const LoginModal = () => {
                   onChange={(e) => handleInputChange(e, setPassword)}
                 />
                 <button
-                  className="btn btn-outline-light"
+                  className="btn btn-outline-secondary"
                   type="button"
                   onClick={handlePasswordToggle}
                 >
