@@ -133,5 +133,5 @@ def delete_invitation(
         }
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"No invitation with ID {id} found. Deletion incomplete.",
+        detail=f"Invitation with ID {id} not found",
     )

@@ -6,4 +6,11 @@
 
 8/19/23 - Its the weekend but I really wanted to finish the login function on the front-end. I used a bootstrap modal for the popup. Created error handling that shows the user their input was wrong. Once the user logs in it takes them to the main dashboard. I committed and did a merge request. Ellie found an error in the useEffect on out loginModal that is causing the modal not to show. She removed the dependency and it now shows for her on her Mac
 
-8/20/23 - I tested the code again after Ellie made changes and it is giving me a dependency error. I was able to use useRef in react to remove the need for the dependency. I committed and and pushed so Ellie can complete the merge request.
+8/20/23 - I tested the code again after Ellie made changes and it is giving me a dependency error. I was able to use useRef in react to remove the need for the dependency. I committed and and pushed so Ellie can complete the merge request. Ellie has a merge request for the auth refactor. I tested and getting a 405 error.
+
+8/21 I finished trouble shooting and was able to complete the merge request. This was the issue I sent to Ellie:
+Noticed on the backend that the token request was now accounts/token which JWTdown looks for /token.
+I changed the routing in main.py to this.
+app.include_router(accounts.router)
+It was working but automatically keeps getting 400 bad request error since its always looking for a token at startup. So I commented out the get_token and put the one they provided us and the 400 goes away which handles the error when there is no token yet.
+Today Jean did the standup and drove. I assisted him in getting a docker issue fixed and getting the containers up and running. Next up is the logout feature.
