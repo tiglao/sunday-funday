@@ -16,7 +16,6 @@ class PartyPlan(BaseModel):
     account_id: str
     created: datetime
     updated: Optional[datetime]
-    general_location: str
     start_time: Optional[datetime]
     end_time: Optional[datetime]
     description: Optional[str]
@@ -24,6 +23,10 @@ class PartyPlan(BaseModel):
     party_status: Optional[PartyStatus]
     invitations: Optional[List[UUID]]
     keywords: Optional[List[str]]
+    api_maps_location: Optional[dict] = {
+        "geo": {"type": "Point", "coordinates": (float, float)},
+        "input": Optional[str],
+    }
     searched_locations: Optional[List[UUID]]
     favorite_locations: Optional[List[UUID]]
     chosen_locations: Optional[List[UUID]]
