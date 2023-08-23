@@ -6,6 +6,9 @@ import uuid
 class Invitation(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias="_id")
     account_id: str
+    guest_name: str
+    email: str
+    party_id: str
     rsvpStatus: bool = False
 
     class Config:

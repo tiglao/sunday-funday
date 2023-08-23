@@ -18,6 +18,7 @@ class PartyPlan(BaseModel):
     favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
+    location_id: str
 
     class Config:
         allow_population_by_field_name = True

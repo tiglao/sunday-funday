@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
+from fastapi import APIRouter, Body, HTTPException, status, Response
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from uuid import UUID
-from utils.authenticator import authenticator
+import uuid
 from models.invitations import Invitation, InvitationUpdate
 from clients.client import db
 from utils.email_service import send_email, party_invitation_template
-
+from bson import ObjectId
+from clients.client import get_database
 
 router = APIRouter()
 
@@ -108,14 +108,35 @@ def delete_invitation(
 
 
 @router.post("/send-invitation/")
-async def send_invitation(guest_name: str, party_name: str, date: str, location: str, rsvp_link: str, to_email: str):
+async def send_invitation(
+    invitation: Invitation,
+    party_name: str,
+    date: str,
+    location: str,
+    rsvp_link: str,
+):
     try:
-        content = party_invitation_template(guest_name, party_name, date, location, rsvp_link)
-
+        content = party_invitation_template(
+            invitation.guest_name, party_name, date, location, rsvp_link
+        )
         subject = f"You're Invited to {party_name}!"
-
-        send_email(to_email, subject, content)
-
+        send_email(invitation.email, subject, content)
         return {"status": "success", "message": "Invitation sent successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/rsvp/{invitation_id}/")
+async def update_rsvp(invitation_id: str, status: bool):
+    db = get_database()
+    collection = db["invitations"]
+
+    result = collection.update_one(
+        {"_id": uuid.UUID(invitation_id)},
+        {"$set": {"rsvpStatus": status}}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Invitation not found")
+
+    return {"status": "success", "message": "RSVP status updated successfully"}

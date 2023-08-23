@@ -19,6 +19,7 @@ app.include_router(locations.router, tags=["locations"], prefix="/locations")
 app.include_router(
     invitations.router, tags=["invitations"], prefix="/invitations"
 )
+app.include_router(locations.router, tags=["send-invitation"], prefix="/locations")
 app.include_router(authenticator.router)
 app.include_router(accounts.router)
 
