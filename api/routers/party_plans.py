@@ -9,6 +9,7 @@ from maps_api import g_key, geo_code
 from models.party_plans import PartyPlan, PartyPlanUpdate
 from utils.authenticator import authenticator
 
+
 router = APIRouter()
 
 
