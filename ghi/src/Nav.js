@@ -1,13 +1,28 @@
-import { NavLink } from "react-router-dom";
-import LoginModal from "./LoginModal";
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
+import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
+import { NavLink } from "react-router-dom";
 
-const Nav = () => {
+function Nav() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+
+  const handleLoginClose = () => setShowLogin(false);
+  const handleLoginShow = () => setShowLogin(true);
+
+  const handleSignupClose = () => setShowSignup(false);
+  const handleSignupShow = () => setShowSignup(true);
+
+  const handleSignupFromLogin = () => {
+    handleLoginClose();
+    handleSignupShow();
+  };
   const { token } = useToken();
   const { logout } = useToken();
   return (
-    <nav className="navbar navbar-expand-lg bg-dark">
+    <nav className="navbar navbar-expand-lg bg-dark container-xxl">
       <div className="container-fluid">
         <NavLink className="navbar-brand text-white" to="/">
           Sunday Funday
@@ -42,24 +57,26 @@ const Nav = () => {
             )}
           </ul>
           <ul className="navbar-nav ms-auto">
-            <LoginModal />
-            <SignupForm />
-            {token && (
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link text-white ms-auto"
-                  onClick={logout}
-                  to="/"
-                >
-                  Logout
-                </NavLink>
-              </li>
-            )}
+            <>
+              <Button onClick={handleLoginShow}>Login</Button>
+              <Button onClick={handleSignupShow}>Signup</Button>
+
+              <Modal show={showLogin} onHide={handleLoginClose}>
+                <LoginForm
+                  handleSignupFromLogin={handleSignupFromLogin}
+                  handleLoginClose={handleLoginClose}
+                />
+              </Modal>
+
+              <Modal show={showSignup} onHide={handleSignupClose}>
+                <SignupForm />
+              </Modal>
+            </>
           </ul>
         </div>
       </div>
     </nav>
   );
-};
+}
 
 export default Nav;

@@ -37,7 +37,7 @@ const SignupForm = () => {
       if (token === null) {
         setIsError(true);
         setErrorMessage(
-          "Oops! That email address is already taken. Please choose another or login."
+          "Oops! The username or password you entered is incorrect. Please double-check and try again."
         );
         setPassword("");
       } else {
@@ -82,68 +82,68 @@ const SignupForm = () => {
 
   return (
     <>
-      {/* {!token && (
+      {!token && (
         <li className="nav-item">
           <NavLink className="nav-link text-white" onClick={handleShow}>
             Sign Up
           </NavLink>
         </li>
-      )} */}
-      {/* <Modal show={show} onHide={handleClose}> */}
-      <Modal.Header closeButton>
-        <Modal.Title>Sign Up</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={(e) => handleSubmit(e)}>
-          <div className="mb-3">
-            <label className="form-label">Full Name</label>
-            <input
-              name="Full Name"
-              value={full_name}
-              type="text"
-              className="form-control"
-              onChange={(e) => handleInputChange(e, setFullName)}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              name="email"
-              value={email}
-              type="email"
-              className="form-control"
-              onChange={(e) => handleInputChange(e, setEmail)}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <div className="input-group">
+      )}
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <div className="mb-3">
+              <label className="form-label">Full Name</label>
               <input
-                name="password"
-                value={password}
+                name="Full Name"
+                value={full_name}
+                type="text"
                 className="form-control"
-                onChange={(e) => handleInputChange(e, setPassword)}
+                onChange={(e) => handleInputChange(e, setFullName)}
               />
             </div>
-          </div>
-          <Modal.Footer>
-            {isLoading ? (
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
-            ) : (
-              <div className={errorClass}>{errorMessage}</div>
-            )}
-            <Button variant="danger" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button variant="primary" type="submit" value="Login">
-              Sign Up
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal.Body>
-      {/* </Modal> */}
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input
+                name="email"
+                value={email}
+                type="email"
+                className="form-control"
+                onChange={(e) => handleInputChange(e, setEmail)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <div className="input-group">
+                <input
+                  name="password"
+                  value={password}
+                  className="form-control"
+                  onChange={(e) => handleInputChange(e, setPassword)}
+                />
+              </div>
+            </div>
+            <Modal.Footer>
+              {isLoading ? (
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              ) : (
+                <div className={errorClass}>{errorMessage}</div>
+              )}
+              <Button variant="danger" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant="primary" type="submit" value="Login">
+                Sign Up
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
