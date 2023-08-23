@@ -58,8 +58,18 @@ function Nav() {
           </ul>
           <ul className="navbar-nav ms-auto">
             <>
-              <Button onClick={handleLoginShow}>Login</Button>
-              <Button onClick={handleSignupShow}>Signup</Button>
+              <NavLink
+                onClick={handleLoginShow}
+                className="text-white text-decoration-none px-2"
+              >
+                Login
+              </NavLink>
+              <NavLink
+                onClick={handleSignupShow}
+                className="text-white text-decoration-none px-2"
+              >
+                Signup
+              </NavLink>
 
               <Modal show={showLogin} onHide={handleLoginClose}>
                 <LoginForm
@@ -69,7 +79,7 @@ function Nav() {
               </Modal>
 
               <Modal show={showSignup} onHide={handleSignupClose}>
-                <SignupForm />
+                <SignupForm handleSignupClose={handleSignupClose} />
               </Modal>
             </>
           </ul>
