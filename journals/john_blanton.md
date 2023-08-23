@@ -15,3 +15,5 @@ app.include_router(accounts.router)
 It was working but automatically keeps getting 400 bad request error since its always looking for a token at startup. So I commented out the get_token and put the one they provided us and the 400 goes away which handles the error when there is no token yet.
 Today Jean did the standup and drove. I assisted him in getting a docker issue fixed and getting the containers up and running. Next up is the logout feature.
 Finished the logout feature.
+
+8/22 In the am Leah was the driver and we all assisted in figuring out some aspects of the google api. After lunch I worked on the sign up modal and it works. The only issue I have is getting a link on the login modal. Right now it shows up white since its that way in the modal link. Tomorrow I will continue to troubleshoot this and move on to the dashboard.
