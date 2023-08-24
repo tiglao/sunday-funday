@@ -57,31 +57,33 @@ function Nav() {
             )}
           </ul>
           <ul className="navbar-nav ms-auto">
-            <>
-              <NavLink
-                onClick={handleLoginShow}
-                className="text-white text-decoration-none px-2"
-              >
-                Login
-              </NavLink>
-              <NavLink
-                onClick={handleSignupShow}
-                className="text-white text-decoration-none px-2"
-              >
-                Signup
-              </NavLink>
+            {!token && (
+              <>
+                <NavLink
+                  onClick={handleLoginShow}
+                  className="text-white text-decoration-none px-2"
+                >
+                  Login
+                </NavLink>
+                <NavLink
+                  onClick={handleSignupShow}
+                  className="text-white text-decoration-none px-2"
+                >
+                  Signup
+                </NavLink>
 
-              <Modal show={showLogin} onHide={handleLoginClose}>
-                <LoginForm
-                  handleSignupFromLogin={handleSignupFromLogin}
-                  handleLoginClose={handleLoginClose}
-                />
-              </Modal>
+                <Modal show={showLogin} onHide={handleLoginClose}>
+                  <LoginForm
+                    handleSignupFromLogin={handleSignupFromLogin}
+                    handleLoginClose={handleLoginClose}
+                  />
+                </Modal>
 
-              <Modal show={showSignup} onHide={handleSignupClose}>
-                <SignupForm handleSignupClose={handleSignupClose} />
-              </Modal>
-            </>
+                <Modal show={showSignup} onHide={handleSignupClose}>
+                  <SignupForm handleSignupClose={handleSignupClose} />
+                </Modal>
+              </>
+            )}
           </ul>
         </div>
       </div>
