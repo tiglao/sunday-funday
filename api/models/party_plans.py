@@ -61,6 +61,16 @@ class PartyPlanUpdate(BaseModel):
     party_status: Optional[str]
     keywords: Optional[List[str]]
     general_location: Optional[str]
+    api_maps_location: Optional[dict] = {
+    "geo": {
+        "type": "Point",
+        "coordinates": (float, float)
+    },
+    "description": Optional[str] 
+}
+
+latitude = party_plan.maps_location["geo"]["coordinates"][1]
+longitude = party_plan.maps_location["geo"]["coordinates"][0]
     favorite_locations: Optional[Dict[str, str]]
     chosen_locations: Optional[Dict[str, str]]
     description: Optional[str]

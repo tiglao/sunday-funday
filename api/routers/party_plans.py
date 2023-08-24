@@ -5,7 +5,7 @@ from uuid import UUID
 from utils.authenticator import authenticator
 from models.party_plans import PartyPlan, PartyPlanUpdate
 from clients.client import db\
-from maps_api import geo_code
+from maps_api import geo_code, g_key
 
 
 router = APIRouter()
@@ -22,6 +22,13 @@ def create_party_plan(
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     plan = jsonable_encoder(plan)
+    address = plan.get("location", "")
+    if address:
+        geo_data = geo_code(address, g_key)
+        if geo_data:
+            plan["latutude"] = geo_data["lat"]
+            plan["longitude"] = geo_data["lng"]
+            
     new_plan = db.party_plan.insert_one(plan)
     created_plan = db.party_plan.find_one({"_id": new_plan.inserted_id})
     created_plan["_id"] = str(created_plan["_id"])
