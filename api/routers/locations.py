@@ -1,3 +1,4 @@
+from json import JSONEncoder,
 from fastapi import (
     APIRouter,
     Body,
@@ -12,8 +13,9 @@ from uuid import UUID
 from utils.authenticator import authenticator
 from models.locations import Location, LocationUpdate
 from clients.client import db
-from api_views import nearby_search
+from maps_api import nearby_search
 from party_plans import id
+from maps_api import nearby_search, g_key
 
 
 
@@ -33,7 +35,7 @@ async def create_location(
     # check place_id error
 
 
-        location = search_result 
+    location = jsonable_encoder(location)
     existing_location = db.locations.find_one({"place_id": location.place_id})
     if existing_location:
         raise HTTPException(
@@ -61,6 +63,47 @@ async def create_location(
     created_location["_id"] = str(created_location["_id"])
 
     return created_location
+
+
+@router.get("/search_nearby/{location_id}", response_description="Search nearby locations")
+async def search_nearby(
+    location_id: str,
+):
+    location = db.locations.find_one({"_id": location_id})
+
+    if not location:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Location with ID {location_id} not found",
+        )
+
+    # Extract latitude and longitude from the location
+    latitude = location.get("latitude")
+    longitude = location.get("longitude")
+
+    if latitude is None or longitude is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Latitude and/or longitude not available for this location",
+        )
+
+    # Make a request to the nearby search API
+    base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+    params = {
+        "key": g_key,
+        "location": f"{latitude},{longitude}",
+        "radius": 1000,  # Specify the radius in meters
+        "type": "restaurant",  # Adjust the type as needed
+    }
+
+    response = httpx.get(base_url, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        results = data.get("results", [])
+        return results
+    else:
+        return JSONResponse(content={"message": "Error fetching nearby places"}, status_code=response.status_code)
 
 
 @router.get(

@@ -54,9 +54,7 @@ class Places(BaseModel):
         
         params = {
             "key": api_key,
-            "location": latitude + longitude,
-            "latitude": latitude,
-            "longitude": longitude,
+            "location": location.latitude + location.longitude,
             "radius": radius,
             "keyword": keyword,
             "type": type

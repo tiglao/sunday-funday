@@ -22,7 +22,7 @@ def create_party_plan(
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     plan = jsonable_encoder(plan)
-    address = plan.get("location", "")
+    address = plan.get("general_location", "")
     if address:
         geo_data = geo_code(address, g_key)
         if geo_data:
