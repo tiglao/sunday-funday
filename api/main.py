@@ -1,7 +1,8 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from utils.authenticator import authenticator
+from models.invitations import get_invitation_by_id, update_invitation_rsvp
 from routers import (
     party_plans,
     locations,
@@ -31,3 +32,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/rsvp/{invitation_id}")
+async def rsvp_invitation(invitation_id: str, status: str):
+    invitation = get_invitation_by_id(invitation_id)
+    if not invitation:
+        raise HTTPException(status_code=404, detail="Invitation not found")
+
+    if status not in ['accept', 'decline']:
+        raise HTTPException(status_code=400, detail="Invalid status")
+
+    update_invitation_rsvp(invitation_id, status)
+    return {"message": f"RSVP {status} successfully"}

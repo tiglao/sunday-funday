@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head></head>
-<body style="font-family: Arial, sans-serif; background-color: #f3f3f3; color: #333;">
-    <div class="container" style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
-        <div class="header" style="font-size: 24px; text-align: center; color: #a3d2ca;">You're Invited!</div>
+<body style="font-family: Arial, sans-serif; background-color: white; color: #1E1E1E;">
+    <div class="container" style="max-width: 600px; margin: auto; background-color: #FFC7C2; padding: 20px; border-radius: 8px;">
+        <div class="header" style="font-size: 24px; text-align: center; color: #1E1E1E;">You're Invited!</div>
         <div class="content" style="margin: 20px 0;">
             <p>Hello {guest_name},</p>
             <p>You are invited to {party_name} on {date} at {location}.</p>
             <img src="party-icon1.png" class="party-icon" alt="Icon 1" style="width: 30px; height: 30px;">
             <img src="party-icon2.png" class="party-icon" alt="Icon 2" style="width: 30px; height: 30px;">
-            <a href="http://your-app-url.com/rsvp?invitation_id={invitation_id}&status=accepted" class="button">Accept</a>
-            <a href="http://your-app-url.com/rsvp?invitation_id={invitation_id}&status=declined" class="button">Decline</a>
+            <a href="{rsvp_link_accept}" class="button" style="background-color: #0D99FF; text-decoration: none; padding: 10px; border-radius: 5px; color: white; margin-right: 10px;">Accept</a>
+            <a href="{rsvp_link_decline}" class="button" style="background-color: #EC6B4E; text-decoration: none; padding: 10px; border-radius: 5px; color: white;">Decline</a>
         </div>
         <div class="footer" style="text-align: center; font-size: 12px; color: #777;">See you there!</div>
     </div>

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from uuid import uuid, UUID
+from uuid import UUID
 from models.invitations import Invitation, InvitationUpdate
-from clients.client import db
+from clients.client import db, get_invitation_by_id, save_invitation
 from utils.email_service import send_email, party_invitation_template
 from clients.client import get_database
 
@@ -132,15 +132,12 @@ async def send_invitation(
 
 @router.put("/rsvp/{invitation_id}/")
 async def update_rsvp(invitation_id: str, status: bool):
-    db = get_database()
-    collection = db["invitations"]
+    invitation = get_invitation_by_id(invitation_id)
 
-    result = collection.update_one(
-        {"_id": uuid.UUID(invitation_id)},
-        {"$set": {"rsvpStatus": status}}
-    )
-
-    if result.matched_count == 0:
+    if not invitation:
         raise HTTPException(status_code=404, detail="Invitation not found")
+
+    invitation.rsvpStatus = status
+    save_invitation(invitation.dict())
 
     return {"status": "success", "message": "RSVP status updated successfully"}

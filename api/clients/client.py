@@ -1,14 +1,24 @@
+from uuid import UUID
 from pymongo import MongoClient
 import os
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
-DB_NAME = os.environ.get("DATABASE_URL")
+DB_NAME = os.environ.get("DB_NAME")
 
 client = MongoClient(DATABASE_URL)
 db = client[DB_NAME]
+invitations_collection = db["invitations"]
 
 
 def get_database():
     client = MongoClient(DATABASE_URL)
     db = client['DATABASE_URL']
     return db
+
+
+def get_invitation_by_id(invitation_id: UUID):
+    return invitations_collection.find_one({"_id": invitation_id})
+
+
+def save_invitation(invitation: dict):
+    invitations_collection.replace_one({"_id": invitation["_id"]}, invitation, upsert=True)

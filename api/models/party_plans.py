@@ -1,11 +1,12 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, HttpUrl
 from typing import Optional, Dict, List
 from datetime import date, datetime
-import uuid
+from uuid import UUID
+from .locations import Location
 
 
 class PartyPlan(BaseModel):
-    id: str = Field(default_factory=uuid.uuid4, alias="_id")
+    id: Optional[UUID]
     username: str
     notes: str
     date: date
@@ -18,7 +19,7 @@ class PartyPlan(BaseModel):
     favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
-    location_id: str
+    location: Location
 
     class Config:
         allow_population_by_field_name = True

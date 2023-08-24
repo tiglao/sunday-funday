@@ -85,7 +85,7 @@ class LocationUpdate(BaseModel):
 #     address: str
 #     lat: float
 #     lon: float
-#     type: str ????
+#     type: str
 #     category: str
 #     favoriteStatus: Optional[bool] = Field(None, description = "empty until selection process. all not favorited = False")
 #     notes: Optional[str] = Field(None, description = "collection of multiple comments about the location")
