@@ -6,7 +6,27 @@ import uuid
 import requests
 from queries.party_plan import PartyPlan
 
-gmaps = googlemaps.Client(key = 'AIzaSyA-5Jr7-9Q53rLg1lTZc-vj1VOgRAHoHw8')
+g_key = googlemaps.Client(key = 'AIzaSyA_LfJODoDWTAqvQrVilPR4v_ULYW8HvXc')
+
+
+def geo_code(address, g_key):
+    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {
+        "address":address,
+        "key":g_key 
+        } 
+    endpoint = f"{base_url}?address={address}&key={g_key}"
+    response = requests.get(endpoint)
+    response.raise_for_status()
+    results = response.json()
+    if results["status"] == "OK":
+        latitude = results["results"][0]["geometry"]["location"]["lat"]
+        longitude = results["results"][0]["geometry"]["location"]["lng"]
+        return latitude, longitude
+    else:
+            print(f"Geocoding failed with status: {results['status']}")
+
+
 
 class Places(BaseModel):
     def setUp(self):
@@ -54,7 +74,7 @@ class Places(BaseModel):
 
     if __name__ == "__main__":
         api_key = "AIzaSyA-5Jr7-9Q53rLg1lTZc-vj1VOgRAHoHw8"
-        location = "-33.86746 + 151.20709"  
+        location = "-33.86746,151.20709"  
         latitude = "-33.86746"
         longitude = "151.20709"
         keyword = "restaurant"
@@ -69,3 +89,5 @@ class Places(BaseModel):
             print(f"Name: {name}")
             print(f"Address: {address}")
             print("-" * 20)
+
+

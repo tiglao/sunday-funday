@@ -31,13 +31,8 @@ async def create_location(
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # check place_id error
-    party_plan_id = party_plan["id"]
-    nearby_search = nearby_search()
-    try:
-        search_result = nearby_search(location.address, nearby_search.key, nearby_search.keyword)
-        if search_result is None:
-            return Error(message="Places API Issue")
-            
+
+
         location = search_result 
     existing_location = db.locations.find_one({"place_id": location.place_id})
     if existing_location:

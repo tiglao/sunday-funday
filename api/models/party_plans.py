@@ -15,6 +15,8 @@ class PartyPlan(BaseModel):
     party_status: str
     keywords: List[str]
     general_location: str
+    latitude: Optional [float]
+    longitude: Optional [float]
     favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
