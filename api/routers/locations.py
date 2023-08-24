@@ -11,7 +11,8 @@ from typing import List
 from uuid import UUID
 from utils.authenticator import authenticator
 from models.locations import Location, LocationUpdate
-from api.api_views import nearby_search
+
+# from api.api_views import nearby_search
 from clients.client import db
 
 
