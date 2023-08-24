@@ -1,6 +1,6 @@
 function Main() {
   return (
-    <div>
+    <div className="container-xxl">
       <h1>Landing Page</h1>
     </div>
   );

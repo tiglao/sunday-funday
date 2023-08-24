@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import SignupForm from "./SignupForm";
 
-const LoginModal = () => {
+const LoginForm = () => {
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -148,4 +148,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default LoginForm;
