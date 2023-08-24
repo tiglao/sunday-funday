@@ -7,6 +7,8 @@ const SignupForm = ({ handleSignupClose }) => {
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -17,15 +19,22 @@ const SignupForm = ({ handleSignupClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setIsError(true);
+      setErrorMessage("Password does not match confirmation");
+      return;
+    }
+
     const userData = {
       username: email,
       password: password,
       email: email,
       full_name: full_name,
     };
+
     setIsLoading(true);
     register(userData, `${react_url}/api/accounts`);
-    // e.target.reset();
 
     setTimeout(() => {
       setIsLoading(false);
@@ -54,6 +63,10 @@ const SignupForm = ({ handleSignupClose }) => {
     setter(e.target.value);
   };
 
+  const handlePasswordToggle = () => {
+    setShowPassword(!showPassword);
+  };
+
   useEffect(() => {
     if (token !== null) {
       handleSignupClose();
@@ -71,7 +84,7 @@ const SignupForm = ({ handleSignupClose }) => {
           <div className="mb-3">
             <label className="form-label">Full Name</label>
             <input
-              name="Full Name"
+              name="fullName"
               value={full_name}
               type="text"
               className="form-control"
@@ -96,9 +109,28 @@ const SignupForm = ({ handleSignupClose }) => {
               <input
                 name="password"
                 value={password}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 className="form-control"
                 onChange={(e) => handleInputChange(e, setPassword)}
+              />
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={handlePasswordToggle}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Confirm Password</label>
+            <div className="input-group">
+              <input
+                name="confirmPassword"
+                value={confirmPassword}
+                type="password"
+                className="form-control"
+                onChange={(e) => handleInputChange(e, setConfirmPassword)}
                 required
               />
             </div>
