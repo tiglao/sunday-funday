@@ -1,23 +1,17 @@
-from json import JSONEncoder,
-from fastapi import (
-    APIRouter,
-    Body,
-    HTTPException,
-    status,
-    Response,
-    Depends,
-)
-from fastapi.encoders import jsonable_encoder
+from json import JSONEncoder
 from typing import List
-from uuid import UUID
-from utils.authenticator import authenticator
-from models.locations import Location, LocationUpdate
+from urllib import request
+from uuid import UUID, uuid4
+
+import fastapi
+import requests
 from clients.client import db
-from maps_api import nearby_search
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.encoders import jsonable_encoder
+from maps_api import g_key, nearby_search
+from models.locations import Location, LocationUpdate
 from party_plans import id
-from maps_api import nearby_search, g_key
-
-
+from utils.authenticator import authenticator
 
 router = APIRouter()
 
@@ -34,13 +28,13 @@ async def create_location(
 ):
     # check place_id error
 
-
     location = jsonable_encoder(location)
     existing_location = db.locations.find_one({"place_id": location.place_id})
     if existing_location:
         raise HTTPException(
             status_code=400,
-            detail="Location with this place_id already exists")
+            detail="Location with this place_id already exists",
+        )
 
     # conversion
     # will need to add data validators later
@@ -50,7 +44,7 @@ async def create_location(
     # if not location_dict.get("id"):
     location_dict["id"] = str(uuid4())
 
-    #add index 0 account_ids
+    # add index 0 account_ids
     location_dict["account_ids"] = [location.account_id]
 
     print("dictionary after making new id:", location_dict)
@@ -65,7 +59,10 @@ async def create_location(
     return created_location
 
 
-@router.get("/search_nearby/{location_id}", response_description="Search nearby locations")
+@router.get(
+    "/search_nearby/{location_id}",
+    response_description="Search nearby locations",
+)
 async def search_nearby(
     location_id: str,
 ):
@@ -96,14 +93,17 @@ async def search_nearby(
         "type": "restaurant",  # Adjust the type as needed
     }
 
-    response = httpx.get(base_url, params=params)
+    response = requests.get(base_url, params=params)
 
     if response.status_code == 200:
         data = response.json()
         results = data.get("results", [])
         return results
     else:
-        return JSONResponse(content={"message": "Error fetching nearby places"}, status_code=response.status_code)
+        return fastapi.responses.JSONResponse(
+            content={"message": "Error fetching nearby places"},
+            status_code=response.status_code,
+        )
 
 
 @router.get(
