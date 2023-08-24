@@ -50,15 +50,11 @@ async def create_location(
 @router.get(
     "/",
     response_description="List all locations",
-    response_description="List all locations",
     response_model=List[Location],
 )
 def list_locations(
     # account: dict = Depends(authenticator.get_current_account_data),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    locations = list(db.locations.find(limit=100))
-    return locations
     locations = list(db.locations.find(limit=100))
     return locations
 
@@ -70,7 +66,6 @@ def list_locations(
 )
 def find_location(
     id: str,
-    # account: dict = Depends(authenticator.get_current_account_data),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (location := db.locations.find_one({"id": id})) is not None:
@@ -89,7 +84,6 @@ def find_location(
 def update_location(
     id: UUID,
     location: LocationUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_location = db.locations.find_one({"id": str(id)})
@@ -110,7 +104,6 @@ def update_location(
 def delete_location(
     id: str,
     response: Response,
-    # account: dict = Depends(authenticator.get_current_account_data),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     updates_made = []
