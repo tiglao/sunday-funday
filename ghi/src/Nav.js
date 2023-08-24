@@ -21,6 +21,13 @@ function Nav() {
   };
   const { token } = useToken();
   const { logout } = useToken();
+
+  const handleLogout = () => {
+    logout(); // Call the logout function from useToken
+    handleLoginClose(); // Close the login modal
+    handleSignupClose(); // Close the signup modal
+  };
+
   return (
     <nav className="navbar navbar-expand-lg bg-dark container-xxl">
       <div className="container-fluid">
@@ -83,6 +90,15 @@ function Nav() {
                   <SignupForm handleSignupClose={handleSignupClose} />
                 </Modal>
               </>
+            )}
+            {token && (
+              <NavLink
+                className="nav-link text-white ms-auto"
+                onClick={handleLogout} // Call the new handleLogout function here
+                to="/"
+              >
+                Logout
+              </NavLink>
             )}
           </ul>
         </div>
