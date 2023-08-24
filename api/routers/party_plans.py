@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from uuid import UUID
+from uuid import UUID, uuid4
 from utils.authenticator import authenticator
 from models.party_plans import PartyPlan, PartyPlanUpdate
 from clients.client import db\
 from maps_api import geo_code, g_key
-
+from datetime import datetime
 
 router = APIRouter()
 
@@ -18,21 +18,40 @@ router = APIRouter()
     response_model=PartyPlan,
 )
 def create_party_plan(
-    plan: PartyPlan = Body(...),
+    party_plan: PartyPlan = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    plan = jsonable_encoder(plan)
-    address = plan.get("general_location", "")
+    # Generate id, timestamp, default status of draft
+    party_plan_data = jsonable_encoder(party_plan)
+    party_plan_data["id"] = str(uuid4())
+    party_plan_data["created"] = datetime.now()
+    party_plan_data["party_status"] = "draft"
+
+    # Geocode the general_location
+    address = party_plan.get("general_location", "")
     if address:
         geo_data = geo_code(address, g_key)
         if geo_data:
-            plan["latutude"] = geo_data["lat"]
-            plan["longitude"] = geo_data["lng"]
-            
-    new_plan = db.party_plan.insert_one(plan)
-    created_plan = db.party_plan.find_one({"_id": new_plan.inserted_id})
-    created_plan["_id"] = str(created_plan["_id"])
-    return created_plan
+            party_plan_data["latitude"] = geo_data["lat"]
+            party_plan_data["longitude"] = geo_data["lng"]
+
+    # Add to the database
+    new_party_plan = db.party_plans.insert_one(party_plan_data)
+    if not new_party_plan.acknowledged:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to add party plan to the database.",
+        )
+
+    # Fetch the plan you just made
+    created_party_plan = db.party_plans.find_one({"id": party_plan_data["id"]})
+    if not created_party_plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Party plan with ID {party_plan_data['id']} not found after insertion.",
+        )
+
+    return created_party_plan
 
 
 @router.get(

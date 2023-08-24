@@ -98,6 +98,9 @@ async def search_nearby(
     if response.status_code == 200:
         data = response.json()
         results = data.get("results", [])
+        if results: 
+            for i in results: 
+                location["place_id"] = i["place_id"]
         return results
     else:
         return fastapi.responses.JSONResponse(
