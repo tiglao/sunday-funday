@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
+import SignupForm from "./SignupForm";
 
 const LoginModal = () => {
   const [show, setShow] = useState(false);
@@ -47,7 +48,7 @@ const LoginModal = () => {
       if (token === null) {
         setIsError(true);
         setErrorMessage(
-          "Oops! The username or password you entered is incorrect. Please double-check and try again."
+          "Oops! The email or password you entered is incorrect. 🙈"
         );
         setPassword("");
       } else {
@@ -76,11 +77,7 @@ const LoginModal = () => {
     <>
       {!token && (
         <li className="nav-item">
-          <NavLink
-            className="nav-link active text-white"
-            aria-current="page"
-            onClick={handleShow}
-          >
+          <NavLink className="nav-link text-white" onClick={handleShow}>
             Login
           </NavLink>
         </li>
@@ -89,10 +86,10 @@ const LoginModal = () => {
         <Modal.Header closeButton>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="">
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-3">
-              <label className="form-label">Username:</label>
+              <label className="form-label">Username</label>
               <input
                 name="username"
                 value={username}
@@ -102,7 +99,7 @@ const LoginModal = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Password:</label>
+              <label className="form-label">Password</label>
               <div className="input-group">
                 <input
                   name="password"
@@ -136,6 +133,15 @@ const LoginModal = () => {
               </Button>
             </Modal.Footer>
           </form>
+          <div>
+            {" "}
+            {/* Bootstrap class to set text color to black */}
+            <ul className="list-unstyled">
+              {" "}
+              {/* Bootstrap class to remove list item dot */}
+              <SignupForm />
+            </ul>
+          </div>
         </Modal.Body>
       </Modal>
     </>
