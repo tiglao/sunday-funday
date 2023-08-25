@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
 import { Modal } from "react-bootstrap";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import useToken from "@galvanize-inc/jwtdown-for-react";
 
 function Nav() {
   const [showLogin, setShowLogin] = useState(false);
@@ -24,19 +24,19 @@ function Nav() {
       <div className="text-center w-50 bg-dark bg-opacity-50 rounded-3 p-4">
         <h1>The greatest party planning app on earth</h1>
         <div className="d-flex justify-content-around mx-auto">
-          <button
+          <Button
             onClick={handleLoginShow}
             className="btn main-buttons text-white m-3 px-5"
           >
             Login
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={handleSignupShow}
             className="btn main-buttons text-white m-3 px-5"
           >
             Signup
-          </button>
+          </Button>
         </div>
 
         <Modal show={showLogin} onHide={handleLoginClose}>

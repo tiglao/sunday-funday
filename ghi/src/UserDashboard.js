@@ -1,11 +1,42 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import Button from "react-bootstrap/Button";
+import React, { useState, useEffect } from "react";
 import SideNav from "./SideNav";
+
+const partyData = [
+  { content: "Party 1" },
+  { content: "Party 2" },
+  { content: "Party 3" },
+  { content: "Party 4" },
+  { content: "Party 5" },
+  { content: "Party 6" },
+];
+
+const inviteData = [
+  { content: "Invites 1" },
+  { content: "Invites 2" },
+  { content: "Invites 3" },
+  { content: "Invites 4" },
+  { content: "Invites 5" },
+  { content: "Invites 6" },
+];
+
+const waitingData = [
+  { content: "Waiting 1" },
+  { content: "Waiting 2" },
+  { content: "Waiting 3" },
+];
 
 function UserDashboard() {
   const { token } = useAuthContext();
   const navigate = useNavigate();
+  const [currentData, setCurrentData] = useState(partyData);
+  const [selectedLink, setSelectedLink] = useState("parties");
+  // const [partyData, setPartyData] = useState();
+  // const [inviteData, setInviteData] = useState();
+  // const [waitingData, setWaitingData] = useState();
+
   useEffect(() => {
     if (!token) {
       navigate("/");
@@ -18,37 +49,85 @@ function UserDashboard() {
 
   return (
     <div className="bg-dark">
-      <div className=" container-xxl p-0 bg-white min-vh-100">
+      <div className="container-xxl p-0 bg-white min-vh-100">
         <div className="curved-header text-center text-white">
           <h1 className="header-text p-3">sunday funday</h1>
           <form className="d-flex justify-content-center" role="search">
             <input
-              className="form-control me-2 w-25 mb-5"
+              className="form-control me-2 w-25 mb-5 me-3"
               type="search"
               placeholder="Search"
               aria-label="Search"
             />
-            <button className="btn btn-outline-success mb-5" type="submit">
-              Search
-            </button>
+            <button
+              className="btn search-button              mb-5 rounded-circle"
+              style={{ width: "50px", height: "50px" }}
+            ></button>
           </form>
         </div>
         <div className="row mx-5 mt-5">
-          <div className="col-2 border side-nav rounded-3 text-end p-3">
+          <div className="col-2 border main-nav rounded-3 text-end p-3">
             <SideNav />
+            <div className="circle"></div>
           </div>
-          <div className="container col-5">
+          <div className="col-5">
             <div className="row">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <div className="col-md-4" key={index}>
-                  <div className="bg-info p-3" style={{ minHeight: "120px" }}>
-                    Div {index + 1}
+              <div className="d-flex ">
+                <h3>coming up</h3>
+                <Button
+                  variant="link"
+                  className="text-decoration-none no-outline"
+                  style={{
+                    color: selectedLink === "parties" ? "black" : "grey",
+                  }}
+                  onClick={() => {
+                    setCurrentData(partyData);
+                    setSelectedLink("parties");
+                  }}
+                >
+                  my parties
+                </Button>
+                <Button
+                  variant="link"
+                  className="text-decoration-none no-outline"
+                  style={{
+                    color: selectedLink === "invites" ? "black" : "grey",
+                  }}
+                  onClick={() => {
+                    setCurrentData(inviteData);
+                    setSelectedLink("invites");
+                  }}
+                >
+                  my invites
+                </Button>
+              </div>
+              <div className="d-flex flex-wrap">
+                {currentData.map((item, index) => (
+                  <div className="p-2" key={index}>
+                    <div className="image-placeholders p-3 mt-3">
+                      {item.content}
+                    </div>
+                    <p>Some words</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="col-5">
+            <h3 className="ps-2">waiting on you</h3>
+            <div className="row ps-2">
+              {waitingData.map((item, index) => (
+                <div className="" key={index}>
+                  <div
+                    className="dark-orange-attention p-3 mb-3"
+                    style={{ minHeight: "70px" }}
+                  >
+                    {item.content}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="col-4 border">waiting on you</div>
         </div>
       </div>
     </div>
