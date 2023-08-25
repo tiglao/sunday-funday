@@ -19,13 +19,7 @@ function Nav() {
     handleLoginClose();
     handleSignupShow();
   };
-  const { token, logout } = useToken();
-
-  const handleLogout = () => {
-    logout(); // Call the logout function from useToken
-    handleLoginClose(); // Close the login modal
-    handleSignupClose(); // Close the signup modal
-  };
+  const { token } = useToken();
 
   return (
     <nav className="navbar navbar-expand-lg bg-dark container-xxl">
@@ -46,37 +40,25 @@ function Nav() {
           <span className="navbar-toggler-icon navbar-toggler-icon-white"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav d-flex text-white">
-            {token && (
-              <>
-                <li className="nav-item">
-                  <NavLink className="nav-link text-white" to="/dashboard">
-                    Dashboard
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link text-white" to="/invitee">
-                    Invitee Dashboard
-                  </NavLink>
-                </li>
-              </>
-            )}
-          </ul>
-          <ul className="navbar-nav ms-auto">
+          <ul className="nav nav-pills nav-fill">
             {!token && (
               <>
-                <NavLink
-                  onClick={handleLoginShow}
-                  className="text-white text-decoration-none px-2"
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  onClick={handleSignupShow}
-                  className="text-white text-decoration-none px-2"
-                >
-                  Signup
-                </NavLink>
+                <li className="nav-item">
+                  <button
+                    onClick={handleLoginShow}
+                    className="nav-link btn btn-link text-dark px-2"
+                  >
+                    Login
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    onClick={handleSignupShow}
+                    className="nav-link btn btn-link text-dark px-2"
+                  >
+                    Signup
+                  </button>
+                </li>
 
                 <Modal show={showLogin} onHide={handleLoginClose}>
                   <LoginForm
@@ -84,20 +66,10 @@ function Nav() {
                     handleLoginClose={handleLoginClose}
                   />
                 </Modal>
-
                 <Modal show={showSignup} onHide={handleSignupClose}>
                   <SignupForm handleSignupClose={handleSignupClose} />
                 </Modal>
               </>
-            )}
-            {token && (
-              <NavLink
-                className="nav-link text-white ms-auto"
-                onClick={handleLogout} // Call the new handleLogout function here
-                to="/"
-              >
-                Logout
-              </NavLink>
             )}
           </ul>
         </div>
