@@ -18,4 +18,6 @@ Finished the logout feature.
 
 8/22/23 In the am Leah was the driver and we all assisted in figuring out some aspects of the google api. After lunch I worked on the sign up modal and it works. The only issue I have is getting a link on the login modal. Right now it shows up white since its that way in the modal link. Tomorrow I will continue to troubleshoot this and move on to the dashboard.
 
-8/23/23 I got up early to try and figure out this login/signup links with no luck so far.
+8/23/23 I got up early to try and figure out this login/signup links with no luck so far. I had to refactor the code and use props to pass the state of the modals. I got it to mostly work just some small issues with css cleaning up the code. Ellie merged her branch into main and it has some issues. I will help troubleshoot if needed.
+
+8/24/23 Before class I worked on the issue from yesterday with main not working after the merge. I took the repository back to the last know commit/merge. I finished the login/signup it has been merged into the main branch with no issues. I will start working on the user dashboard. Ellie is working on more backend database. Jean is working on the automated email from the invitation. Leah and Tasnia are working on the google maps api and integration it into the backend.
