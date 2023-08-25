@@ -1,7 +1,10 @@
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import SendGridException, Mail
 from models.invitations import Invitation
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 
 def send_email(to_email, subject, content):

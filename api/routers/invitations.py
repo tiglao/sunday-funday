@@ -4,8 +4,7 @@ from typing import List
 from uuid import UUID
 from models.invitations import Invitation, InvitationUpdate
 from clients.client import db, get_invitation_by_id, save_invitation
-from utils.email_service import send_email, party_invitation_template
-from clients.client import get_database
+from utils.email_service import send_email, send_party_invitation_email
 
 router = APIRouter()
 
@@ -114,7 +113,7 @@ async def send_invitation(
     location: str,
     rsvp_link: str,
 ):
-    content = party_invitation_template(
+    content = send_party_invitation_email(
         invitation.guest_name, party_name, date, location, rsvp_link
     )
     subject = f"You're Invited to {party_name}!"

@@ -6,8 +6,8 @@ services:
   fastapi:
     environment:
       CORS_HOST: http://localhost:3000
-      DATABASE_URL: mongodb://root:example@mongo
-      DB_NAME: sunday_funday
+      DATABASE_URL: ${DATABASE_URL}
+      DB_NAME: ${DB_NAME}
       SIGNING_KEY: ${SIGNING_KEY}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     build:

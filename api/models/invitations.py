@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from clients.client import client
 from uuid import UUID, uuid4
-from party_plans import PartyPlan
+from models.party_plans import PartyPlan
 from datetime import datetime
 
 
