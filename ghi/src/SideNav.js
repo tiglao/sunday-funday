@@ -29,7 +29,7 @@ function Nav() {
   };
 
   return (
-    <div className="d-flex justify-content-end">
+    <div className="d-flex justify-content-end ">
       <nav className="">
         <ul className="navbar-nav flex-column">
           {token ? (

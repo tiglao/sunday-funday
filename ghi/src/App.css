@@ -39,7 +39,11 @@
 
 .side-nav {
   background-color: #bde3ff;
-  position: relative; /* Relative positioning */
-  top: -60px; /* Move it 20px upwards */
-  z-index: 1; /* Optional: Control stacking order */
+  position: relative;
+  top: -160px;
+  z-index: 1;
+}
+
+.main-buttons {
+  background-color: #0d99ff;
 }

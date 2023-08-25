@@ -17,27 +17,29 @@ function UserDashboard() {
   }
 
   return (
-    <div className=" container-xxl p-0">
-      <div className="curved-header text-center text-white">
-        <h1 className="header-text p-3">sunday funday</h1>
-        <form className="d-flex justify-content-center" role="search">
-          <input
-            className="form-control me-2 w-25 mb-5"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button className="btn btn-outline-success mb-5" type="submit">
-            Search
-          </button>
-        </form>
-      </div>
-      <div className="row mx-5">
-        <div className="col-2 border side-nav rounded-3 text-end p-3">
-          <SideNav />
+    <div className="bg-dark">
+      <div className=" container-xxl p-0 bg-white min-vh-100">
+        <div className="curved-header text-center text-white">
+          <h1 className="header-text p-3">sunday funday</h1>
+          <form className="d-flex justify-content-center" role="search">
+            <input
+              className="form-control me-2 w-25 mb-5"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button className="btn btn-outline-success mb-5" type="submit">
+              Search
+            </button>
+          </form>
         </div>
-        <div className="col-5 border mx-5">Coming up</div>
-        <div className="col-4  border">waiting on you</div>
+        <div className="row mx-5 mt-5">
+          <div className="col-2 border side-nav rounded-3 text-end p-3">
+            <SideNav />
+          </div>
+          <div className="col-5 border mx-5">Coming up</div>
+          <div className="col-4  border">waiting on you</div>
+        </div>
       </div>
     </div>
   );

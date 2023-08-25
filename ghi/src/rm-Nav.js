@@ -22,9 +22,9 @@ function Nav() {
   const { token, logout } = useToken();
 
   const handleLogout = () => {
-    logout(); // Call the logout function from useToken
-    handleLoginClose(); // Close the login modal
-    handleSignupClose(); // Close the signup modal
+    logout();
+    handleLoginClose();
+    handleSignupClose();
   };
 
   return (

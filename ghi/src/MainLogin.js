@@ -3,7 +3,6 @@ import { Modal } from "react-bootstrap";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
-import { NavLink } from "react-router-dom";
 
 function Nav() {
   const [showLogin, setShowLogin] = useState(false);
@@ -19,62 +18,38 @@ function Nav() {
     handleLoginClose();
     handleSignupShow();
   };
-  const { token } = useToken();
 
   return (
-    <nav className="navbar navbar-expand-lg bg-dark container-xxl">
-      <div className="container-fluid">
-        <NavLink className="navbar-brand text-white" to="/">
-          Sunday Funday
-        </NavLink>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-          style={{ color: "white" }}
-        >
-          <span className="navbar-toggler-icon navbar-toggler-icon-white"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="nav nav-pills nav-fill">
-            {!token && (
-              <>
-                <li className="nav-item">
-                  <button
-                    onClick={handleLoginShow}
-                    className="nav-link btn btn-link text-dark px-2"
-                  >
-                    Login
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <button
-                    onClick={handleSignupShow}
-                    className="nav-link btn btn-link text-dark px-2"
-                  >
-                    Signup
-                  </button>
-                </li>
+    <div className="d-flex align-items-center justify-content-center mt-5 pt-5">
+      <div className="text-center w-50 bg-dark bg-opacity-50 rounded-3 p-4">
+        <h1>The greatest party planning app on earth</h1>
+        <div className="d-flex justify-content-around mx-auto">
+          <button
+            onClick={handleLoginShow}
+            className="btn main-buttons text-white m-3 px-5"
+          >
+            Login
+          </button>
 
-                <Modal show={showLogin} onHide={handleLoginClose}>
-                  <LoginForm
-                    handleSignupFromLogin={handleSignupFromLogin}
-                    handleLoginClose={handleLoginClose}
-                  />
-                </Modal>
-                <Modal show={showSignup} onHide={handleSignupClose}>
-                  <SignupForm handleSignupClose={handleSignupClose} />
-                </Modal>
-              </>
-            )}
-          </ul>
+          <button
+            onClick={handleSignupShow}
+            className="btn main-buttons text-white m-3 px-5"
+          >
+            Signup
+          </button>
         </div>
+
+        <Modal show={showLogin} onHide={handleLoginClose}>
+          <LoginForm
+            handleSignupFromLogin={handleSignupFromLogin}
+            handleLoginClose={handleLoginClose}
+          />
+        </Modal>
+        <Modal show={showSignup} onHide={handleSignupClose}>
+          <SignupForm handleSignupClose={handleSignupClose} />
+        </Modal>
       </div>
-    </nav>
+    </div>
   );
 }
 
