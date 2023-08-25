@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
+
 from fastapi.encoders import jsonable_encoder
 from typing import List
-from uuid import UUID
+from uuid import UUID, uuid4
 from utils.authenticator import authenticator
-from models.invitations import Invitation, InvitationUpdate
+from models.invitations import Invitation, InvitationUpdate, InvitationCreate
 from clients.client import db
 
 
@@ -17,15 +18,47 @@ router = APIRouter()
     response_model=Invitation,
 )
 def create_invitation(
-    plan: Invitation = Body(...),
+    party_plan_id: UUID,
+    invitation: InvitationCreate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    plan = jsonable_encoder(plan)
-    new_invitation = db.invitations.insert_one(plan)
-    created_invitation = db.invitations.find_one(
-        {"_id": new_invitation.inserted_id}
-    )
-    created_invitation["_id"] = str(created_invitation["_id"])
+    # find associated party plan
+    associated_party_plan = db.party_plans.find_one({"id": str(party_plan_id)})
+    if not associated_party_plan:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"No party plan found with ID {party_plan_id}",
+        )
+    # check that there's no id
+    if "id" in invitation.dict():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Request payload should not include 'id'. ID will be auto-generated.",
+        )
+
+    invitation_data = jsonable_encoder(invitation)
+
+    # id generation
+    invitation_id = str(uuid4())
+    invitation_data["id"] = invitation_id
+    invitation_data["party_plan_id"] = str(party_plan_id)
+
+    # add to db
+    new_invitation = db.invitations.insert_one(invitation_data)
+    if not new_invitation.acknowledged:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to add invitation to database.",
+        )
+
+    # fetch the instance you just created
+    created_invitation = db.invitations.find_one({"id": invitation_data["id"]})
+    if not created_invitation:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Invitation with ID {invitation_data['id']} not found after insertion.",
+        )
+
     return created_invitation
 
 
@@ -50,7 +83,7 @@ def find_invitation(
     id: str,
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    if (invitation := db.invitations.find_one({"_id": id})) is not None:
+    if (invitation := db.invitations.find_one({"id": id})) is not None:
         return invitation
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
@@ -68,7 +101,7 @@ def update_invitation(
     invitation: InvitationUpdate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    existing_invitation = db.invitations.find_one({"_id": str(id)})
+    existing_invitation = db.invitations.find_one({"id": str(id)})
 
     if not existing_invitation:
         raise HTTPException(
@@ -81,9 +114,9 @@ def update_invitation(
     }
 
     if invitation_data:
-        db.invitations.update_one({"_id": str(id)}, {"$set": invitation_data})
+        db.invitations.update_one({"id": str(id)}, {"$set": invitation_data})
 
-    return db.invitations.find_one({"_id": str(id)})
+    return db.invitations.find_one({"id": str(id)})
 
 
 @router.delete("/{id}", response_description="Delete an invitation")
@@ -92,14 +125,12 @@ def delete_invitation(
     response: Response,
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    delete_result = db.invitations.delete_one({"_id": id})
-
+    delete_result = db.invitations.delete_one({"id": id})
     if delete_result.deleted_count == 1:
         return {
             "status": "success",
-            "message": f"Invitation with id {id}) successfully deleted.",
+            "message": f"Invitation with ID {id}) successfully deleted.",
         }
-
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No invitation with ID {id} found. Deletion incomplete.",
