@@ -36,3 +36,10 @@
   font-family: "Sunshiney", cursive;
   font-size: 70px;
 }
+
+.side-nav {
+  background-color: #bde3ff;
+  position: relative; /* Relative positioning */
+  top: -60px; /* Move it 20px upwards */
+  z-index: 1; /* Optional: Control stacking order */
+}
