@@ -37,8 +37,18 @@ function UserDashboard() {
           <div className="col-2 border side-nav rounded-3 text-end p-3">
             <SideNav />
           </div>
-          <div className="col-5 border mx-5">Coming up</div>
-          <div className="col-4  border">waiting on you</div>
+          <div className="container col-5">
+            <div className="row">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div className="col-md-4" key={index}>
+                  <div className="bg-info p-3" style={{ minHeight: "120px" }}>
+                    Div {index + 1}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="col-4 border">waiting on you</div>
         </div>
       </div>
     </div>
