@@ -1,6 +1,7 @@
 from uuid import UUID
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from pymongo.common import UuidRepresentation
 import os
 
 load_dotenv()
@@ -10,7 +11,13 @@ DB_NAME = os.environ.get("DB_NAME")
 print("DATABASE_URL:", DATABASE_URL)
 print("DB_NAME:", DB_NAME)
 
-client = MongoClient(DATABASE_URL)
+# client = MongoClient(DATABASE_URL)
+# db = client[DB_NAME]
+
+client = MongoClient(
+    DATABASE_URL,  # uuidRepresentation=UuidRepresentation.STANDARD
+    uuidRepresentation="standard",
+)
 db = client[DB_NAME]
 invitations_collection = db["invitations"]
 
