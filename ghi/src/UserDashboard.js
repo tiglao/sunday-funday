@@ -16,8 +16,15 @@ function UserDashboard() {
   }
 
   return (
-    <div>
-      <h1>User Dashboard</h1>
+    <div className=" container-xxl ">
+      <div className="curved-header text-center text-white">
+        <h1 className="header-text p-4">sunday funday</h1>
+      </div>
+      <div className="">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
 }
