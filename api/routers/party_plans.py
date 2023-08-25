@@ -29,12 +29,12 @@ def create_party_plan(
     party_plan_data["created"] = datetime.now()
     party_plan_data["party_status"] = "draft"
 
-    # expires geojson after 30 days
-    expires = datetime.utcnow() + timedelta(minutes=1)
-    # expires = datetime.utcnow() + timedelta(days=30)
-    for location in party_plan_data.get("api_maps_location", []):
-        if location.get("geo") and location["geo"].get("coordinates"):
-            location["geo"]["expires"] = expires
+    # # expires geojson after 30 days
+    # expires = datetime.utcnow() + timedelta(minutes=1)
+    # # expires = datetime.utcnow() + timedelta(days=30)
+    # for location in party_plan_data.get("api_maps_location", []):
+    #     if location.get("geo") and location["geo"].get("coordinates"):
+    #         location["geo"]["expires"] = expires
 
     # add to db
     new_party_plan = db.party_plans.insert_one(party_plan_data)
