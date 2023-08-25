@@ -20,7 +20,6 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from maps_api import g_key, nearby_search
 from models.locations import Location, LocationUpdate
-
 # from api.api_views import nearby_search
 from clients.client import db
 

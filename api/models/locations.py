@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
 from uuid import UUID
+
+from pydantic import BaseModel, Field, HttpUrl
 
 
 class Location(BaseModel):
@@ -17,20 +18,22 @@ class Location(BaseModel):
     # account_ids: List[UUID]
     # account_location_tags: Optional[Dict[UUID, List[str]]]
 
-
     class Config:
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",  # example UUID
                 "place_id": "76565765",
-                "note_ids": ["123e4567-e89b-12d3-a456-426614174001", "123e4567-e89b-12d3-a456-426614174002"],
+                "note_ids": [
+                    "123e4567-e89b-12d3-a456-426614174001",
+                    "123e4567-e89b-12d3-a456-426614174002",
+                ],
                 "favorite_status": True,
                 "account_ids": ["123e4567-e89b-12d3-a456-426614174001"],
                 "account_location_tags": {
                     "123e4567-e89b-12d3-a456-426614174001": {"tag1", "tag2"},
-                    "123e4567-e89b-12d3-a456-426614174002": {"tag3"}
-                }
+                    "123e4567-e89b-12d3-a456-426614174002": {"tag3"},
+                },
             }
         }
 
@@ -56,7 +59,7 @@ class LocationCreate(BaseModel):
                 "account_id": "123e4567-e89b-12d3-a456-426614174001",  # example UUID
                 "account_location_tags": {
                     "123e4567-e89b-12d3-a456-426614174001": ["tag1", "tag2"],
-                }
+                },
             }
         }
 
