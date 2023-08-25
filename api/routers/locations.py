@@ -10,7 +10,6 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from maps_api import g_key, nearby_search
 from models.locations import Location, LocationUpdate
-
 # from api.api_views import nearby_search
 from party_plans import id
 from utils.authenticator import authenticator
@@ -100,8 +99,8 @@ async def search_nearby(
     if response.status_code == 200:
         data = response.json()
         results = data.get("results", [])
-        if results: 
-            for i in results: 
+        if results:
+            for i in results:
                 location["place_id"] = i["place_id"]
         return results
     else:

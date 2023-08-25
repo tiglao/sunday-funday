@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, Dict, List
-from datetime import date, datetime
 import uuid
+from datetime import date, datetime
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, Field, HttpUrl
 
 
 class PartyPlan(BaseModel):
@@ -15,8 +16,8 @@ class PartyPlan(BaseModel):
     party_status: str
     keywords: List[str]
     general_location: str
-    latitude: Optional [float]
-    longitude: Optional [float]
+    latitude: Optional[float]
+    longitude: Optional[float]
     favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
@@ -62,15 +63,12 @@ class PartyPlanUpdate(BaseModel):
     keywords: Optional[List[str]]
     general_location: Optional[str]
     api_maps_location: Optional[dict] = {
-    "geo": {
-        "type": "Point",
-        "coordinates": (float, float)
-    },
-    "description": Optional[str] 
-}
+        "geo": {"type": "Point", "coordinates": (float, float)},
+        "description": Optional[str],
+    }
 
-latitude = party_plan.maps_location["geo"]["coordinates"][1]
-longitude = party_plan.maps_location["geo"]["coordinates"][0]
+    latitude = party_plan.maps_location["geo"]["coordinates"][1]
+    longitude = party_plan.maps_location["geo"]["coordinates"][0]
     favorite_locations: Optional[Dict[str, str]]
     chosen_locations: Optional[Dict[str, str]]
     description: Optional[str]

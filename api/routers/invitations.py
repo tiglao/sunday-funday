@@ -1,15 +1,15 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
-from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID
-from utils.authenticator import authenticator
-from models.invitations import Invitation, InvitationUpdate
-from clients.client import db
 
+from clients.client import db
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.encoders import jsonable_encoder
+from models.invitations import Invitation, InvitationUpdate
+from utils.authenticator import authenticator
 
 router = APIRouter()
 
-#server 201/ response 201, 422
+# server 201/ response 201, 422
 @router.post(
     "/",
     response_description="Create a new invitation",
@@ -40,6 +40,7 @@ def list_invitations(
     invitations = list(db.invitations.find(limit=100))
     return invitations
 
+
 # server 200/ response 200, 422
 @router.get(
     "/{id}",
@@ -56,6 +57,7 @@ def find_invitation(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Invitation with ID {id} not found",
     )
+
 
 # server 200/ response
 @router.put(

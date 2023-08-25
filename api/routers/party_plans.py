@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
-from fastapi.encoders import jsonable_encoder
+from datetime import datetime
 from typing import List
 from uuid import UUID, uuid4
-from utils.authenticator import authenticator
-from models.party_plans import PartyPlan, PartyPlanUpdate
-from clients.client import db\
-from maps_api import geo_code, g_key
-from datetime import datetime
 
+from clients.client import db
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.encoders import jsonable_encoder
+from maps_api import g_key, geo_code
+from models.party_plans import PartyPlan, PartyPlanUpdate
+from utils.authenticator import authenticator
 
 router = APIRouter()
 
@@ -20,7 +20,6 @@ router = APIRouter()
 )
 def create_party_plan(
     party_plan: PartyPlan = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # Generate id, timestamp, default status of draft
     party_plan_data = jsonable_encoder(party_plan)

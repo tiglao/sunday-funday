@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
+
+from pydantic import BaseModel, Field, validator
 
 
 class Note(BaseModel):
@@ -23,7 +24,7 @@ class Note(BaseModel):
                 "comment": "I like to code LOL",
                 "account_id": "123e4567-e89b-12d3-a456-426614174001",  # example UUID
                 "party_plan_id": "123e4567-e89b-12d3-a456-426614174002",  # example UUID
-                "location_id": "123e4567-e89b-12d3-a456-426614174003", #example UUID
+                "location_id": "123e4567-e89b-12d3-a456-426614174003",  # example UUID
             }
         }
 
@@ -38,7 +39,9 @@ class NoteCreate(BaseModel):
     def check_exclusivity(cls, location_id, values):
         party_plan_id = values.get("party_plan_id")
         if location_id is not None and party_plan_id is not None:
-            raise ValueError("A note cannot be associated with both a location and a party plan.")
+            raise ValueError(
+                "A note cannot be associated with both a location and a party plan."
+            )
         return location_id
 
     class Config:
@@ -49,6 +52,7 @@ class NoteCreate(BaseModel):
                 "party_plan_id": "123e4567-e89b-12d3-a456-426614174002",
             }
         }
+
 
 # class NoteOut(BaseModel):
 #     comment: str
@@ -71,6 +75,7 @@ class NoteCreate(BaseModel):
 #                 "party_plan_id": "123e4567-e89b-12d3-a456-426614174002",
 #             }
 #         }
+
 
 class NoteUpdate(BaseModel):
     updated_time: datetime
