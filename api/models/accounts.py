@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+from pydantic import BaseModel
+>>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
 from jwtdown_fastapi.authentication import Token
 from pydantic import BaseModel, EmailStr
 
@@ -38,7 +42,6 @@ class DuplicateAccountError(ValueError):
 
 
 class AccountIn(BaseModel):
-    email: EmailStr
     username: str
     password: str
     full_name: str

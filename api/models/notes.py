@@ -1,7 +1,12 @@
+<<<<<<< HEAD
+=======
+from pydantic import BaseModel, Field, validator
+>>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
+<<<<<<< HEAD
 from pydantic import BaseModel, Field, validator
 
 
@@ -16,6 +21,18 @@ class Note(BaseModel):
     # account_id: UUID
     # party_plan_id: Optional[UUID]
     # location_id: Optional[UUID]
+=======
+
+class Note(BaseModel):
+    id: UUID
+    created: datetime = Field(default_factory=datetime.utcnow)
+    updated: Optional[datetime] = None
+    comment: str
+    account_id: str
+    party_plan_id: Optional[UUID] = None
+    location_id: Optional[UUID] = None
+    # account_id: UUID
+>>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
 
     class Config:
         allow_population_by_field_name = True
@@ -54,6 +71,7 @@ class NoteCreate(BaseModel):
         }
 
 
+<<<<<<< HEAD
 # class NoteOut(BaseModel):
 #     comment: str
 #     account_id: UUID
@@ -77,6 +95,8 @@ class NoteCreate(BaseModel):
 #         }
 
 
+=======
+>>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
 class NoteUpdate(BaseModel):
     updated_time: datetime
     note: str
