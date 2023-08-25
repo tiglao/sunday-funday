@@ -8,6 +8,7 @@ from clients.client import db\
 from maps_api import geo_code, g_key
 from datetime import datetime
 
+
 router = APIRouter()
 
 

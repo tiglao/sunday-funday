@@ -8,9 +8,14 @@
 
 8/20/23 - I tested the code again after Ellie made changes and it is giving me a dependency error. I was able to use useRef in react to remove the need for the dependency. I committed and and pushed so Ellie can complete the merge request. Ellie has a merge request for the auth refactor. I tested and getting a 405 error.
 
-8/21 I finished trouble shooting and was able to complete the merge request. This was the issue I sent to Ellie:
+8/21/23 I finished trouble shooting and was able to complete the merge request. This was the issue I sent to Ellie:
 Noticed on the backend that the token request was now accounts/token which JWTdown looks for /token.
 I changed the routing in main.py to this.
 app.include_router(accounts.router)
 It was working but automatically keeps getting 400 bad request error since its always looking for a token at startup. So I commented out the get_token and put the one they provided us and the 400 goes away which handles the error when there is no token yet.
 Today Jean did the standup and drove. I assisted him in getting a docker issue fixed and getting the containers up and running. Next up is the logout feature.
+Finished the logout feature.
+
+8/22/23 In the am Leah was the driver and we all assisted in figuring out some aspects of the google api. After lunch I worked on the sign up modal and it works. The only issue I have is getting a link on the login modal. Right now it shows up white since its that way in the modal link. Tomorrow I will continue to troubleshoot this and move on to the dashboard.
+
+8/23/23 I got up early to try and figure out this login/signup links with no luck so far.
