@@ -11,12 +11,23 @@ class PartyStatus(str, Enum):
     FINALIZED = "finalized"
 
 
+class GeoJSON(BaseModel):
+    type: str = "Point"
+    coordinates: List[float] = Field(..., min_items=2, max_items=2)
+    expires: Optional[datetime]
+
+
+class ApiMapsLocation(BaseModel):
+    geo: Optional[GeoJSON]
+    input: Optional[str]
+
+
 class PartyPlan(BaseModel):
     id: UUID
     account_id: str
     created: datetime
     updated: Optional[datetime]
-    general_location: str
+    api_maps_location: List[ApiMapsLocation]
     start_time: Optional[datetime]
     end_time: Optional[datetime]
     description: Optional[str]
@@ -36,7 +47,16 @@ class PartyPlan(BaseModel):
                 "account_id": "123456789",
                 "created": "2022-02-22T14:30:00",
                 "updated": "2022-02-22T16:30:00",
-                "general_location": "Denver",
+                "api_maps_location": [
+                    {
+                        "geo": {
+                            "type": "Point",
+                            "coordinates": [40.7128, -74.0060],
+                            "expires": "2023-09-24T22:42:00.402000",
+                        },
+                        "input": "New York, NY",
+                    }
+                ],
                 "start_time": "2022-02-22T14:30:00",
                 "end_time": "2022-02-22T17:30:00",
                 "description": "Description here ....",
@@ -44,8 +64,13 @@ class PartyPlan(BaseModel):
                 "party_status": "draft",
                 "invitations": ["id1", "id2"],
                 "keywords": ["fun", "bar", "burgers"],
-                "favorite_locations": ["place_id1", "place_id2"],
-                "chosen_locations": ["place_id2"],
+                "searched_locations": [
+                    "location_id1",
+                    "location_id2",
+                    "location_id3",
+                ],
+                "favorite_locations": ["location_id1", "location_id2"],
+                "chosen_locations": ["location_id2"],
             }
         }
 
@@ -53,7 +78,7 @@ class PartyPlan(BaseModel):
 class PartyPlanCreate(BaseModel):
     # id, account_id, created, party_status auto-generated
     account_id: str
-    general_location: str
+    api_maps_location: List[ApiMapsLocation]
     start_time: datetime
     end_time: Optional[datetime]
     description: Optional[str]
@@ -63,8 +88,12 @@ class PartyPlanCreate(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "general_location": "Denver, CO",
                 "account_id": "123456789",
+                "api_maps_location": [
+                    {
+                        "input": "New York, NY",
+                    }
+                ],
                 "start_time": "2022-02-23T14:30:00",
                 "end_time": "2022-02-23T17:30:00",
                 "description": "Updated Description here ....",
@@ -75,7 +104,7 @@ class PartyPlanCreate(BaseModel):
 
 
 class PartyPlanUpdate(BaseModel):
-    general_location: Optional[str]
+    api_maps_location: Optional[List[ApiMapsLocation]]
     start_time: Optional[datetime]
     end_time: Optional[datetime]
     description: Optional[str]
@@ -90,7 +119,15 @@ class PartyPlanUpdate(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "general_location": "Denver",
+                "api_maps_location": [
+                    {
+                        "geo": {
+                            "type": "Point",
+                            "coordinates": [40.7128, -74.0060],
+                        },
+                        "input": "New York, NY",
+                    }
+                ],
                 "start_time": "2022-02-23T14:30:00",
                 "end_time": "2022-02-23T17:30:00",
                 "description": "Updated Description here ....",
