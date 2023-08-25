@@ -70,7 +70,7 @@ function UserDashboard() {
             <SideNav />
             <div className="circle"></div>
           </div>
-          <div className="col-5">
+          <div className="col-md-5 col-12">
             <div className="row">
               <div className="d-flex ">
                 <h3>coming up</h3>
@@ -101,7 +101,7 @@ function UserDashboard() {
                   my invites
                 </Button>
               </div>
-              <div className="d-flex flex-wrap">
+              <div className="d-flex flex-wrap justify-content-around">
                 {currentData.map((item, index) => (
                   <div className="p-2" key={index}>
                     <div className="image-placeholders p-3 mt-3">
@@ -113,7 +113,7 @@ function UserDashboard() {
               </div>
             </div>
           </div>
-          <div className="col-5">
+          <div className="col-md-5 col-12">
             <h3 className="ps-2">waiting on you</h3>
             <div className="row ps-2">
               {waitingData.map((item, index) => (
