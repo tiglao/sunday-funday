@@ -5,7 +5,6 @@ from unittest.mock import patch, MagicMock
 
 client = TestClient(app)
 
-# Example test data - adjust as needed
 test_email_data = {
     "to": "jc.marti.2809@gmail.com",
     "subject": "Party Invitation",
@@ -40,18 +39,18 @@ def test_send_email(mock_sg_client):
     mock_sg.send.assert_called_once()
 
 
-def test_actual_email():
-    to_email = 'jc.marti.2809@gmail.com'
-    subject = 'Test Email'
-    content = '<h1>This is a test email</h1>'
+# def test_actual_email():
+#     to_email = 'jc.marti.2809@gmail.com'
+#     subject = 'Test Email'
+#     content = '<h1>This is a test email</h1>'
 
-    success = send_email(to_email, subject, content)
+#     success = send_email(to_email, subject, content)
 
-    if success:
-        print("Email sent successfully!")
-    else:
-        print("Failed to send email.")
+#     if success:
+#         print("Email sent successfully!")
+#     else:
+#         print("Failed to send email.")
 
 
-if __name__ == "__main__":
-    test_actual_email()
+# if __name__ == "__main__":
+#     test_actual_email()

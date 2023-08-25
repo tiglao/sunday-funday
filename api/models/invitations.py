@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 from clients.client import client
 from uuid import UUID, uuid4
-from models.party_plans import PartyPlan
 from datetime import datetime
 
 
@@ -11,7 +10,6 @@ class Invitation(BaseModel):
     account_id: str
     guest_name: str
     email: str
-    party_plan: PartyPlan
     rsvp_status: Optional[bool] = None
     created_at: Optional[datetime] = datetime.now()
 

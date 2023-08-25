@@ -2,7 +2,6 @@ from pydantic import BaseModel, HttpUrl
 from typing import Optional, Dict, List
 from datetime import date, datetime
 from uuid import UUID
-from .locations import Location
 
 
 class PartyPlan(BaseModel):
@@ -19,7 +18,6 @@ class PartyPlan(BaseModel):
     favorite_locations: Optional[Dict[str, str]]
     description: str
     image: Optional[HttpUrl]
-    location: Location
 
     class Config:
         allow_population_by_field_name = True
