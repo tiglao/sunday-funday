@@ -1,5 +1,5 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import SideNav from "./SideNav";
@@ -66,7 +66,7 @@ function UserDashboard() {
           </form>
           <div className="circle d-flex align-items-center justify-content-center">
             <a
-              className="btn circle-button white-color"
+              className="btn circle-button white-color d-lg-none"
               data-bs-toggle="offcanvas"
               href="#offcanvasExample"
               role="button"
@@ -104,7 +104,7 @@ function UserDashboard() {
           </div>
         </div>
         <div className="row mx-5 mt-5">
-          <div className="col-2 border main-nav rounded-3 text-end p-3">
+          <div className="col-2 border main-nav rounded-3 text-end p-3 d-none d-lg-block">
             <SideNav />
           </div>
           <div className="col-md-5 col-12">
