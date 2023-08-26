@@ -20,20 +20,20 @@ function Nav() {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center mt-5 pt-5">
-      <div className="text-center w-50 bg-dark bg-opacity-50 rounded-3 p-4">
+    <div className="d-flex align-items-center justify-content-center position-absolute top-50 start-50 translate-middle">
+      <div className="text-center bg-black text-white p-4 mt-5 pt-5 border border-white curved-border">
         <h1>The greatest party planning app on earth</h1>
         <div className="d-flex justify-content-around mx-auto">
           <Button
             onClick={handleLoginShow}
-            className="btn main-buttons text-white m-3 px-5"
+            className="btn main-buttons text-white m-3 px-4"
           >
             Login
           </Button>
 
           <Button
             onClick={handleSignupShow}
-            className="btn main-buttons text-white m-3 px-5"
+            className="btn main-buttons text-white m-3 px-4"
           >
             Signup
           </Button>
