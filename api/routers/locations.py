@@ -8,10 +8,10 @@ import requests
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
-from maps_api import g_key, nearby_search
+from maps_api import g_key, Places
 from models.locations import Location, LocationUpdate
 # from api.api_views import nearby_search
-from party_plans import id
+# from party_plans import id
 from utils.authenticator import authenticator
 
 router = APIRouter()

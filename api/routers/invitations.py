@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-from typing import List
-from uuid import UUID
-=======
 from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
 
 from fastapi.encoders import jsonable_encoder
@@ -10,7 +6,6 @@ from uuid import UUID, uuid4
 from utils.authenticator import authenticator
 from models.invitations import Invitation, InvitationUpdate, InvitationCreate
 from clients.client import db
->>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
 
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status

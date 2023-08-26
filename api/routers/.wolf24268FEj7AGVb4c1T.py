@@ -35,7 +35,7 @@ def create_party_plan(
     # Geocode the general_location
     address =  party_plan_data["api_maps_location"]["input"]
     if address:
-        geo_data = geo_code(address)
+        geo_data = geo_code(address, g_key)
         if geo_data:
             party_plan_data["api_maps_location"]["geo"]["coordinates"] = geo_data
 

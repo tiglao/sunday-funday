@@ -5,8 +5,8 @@ from uuid import UUID, uuid4
 from fastapi import (APIRouter, Body, Depends, HTTPException, Request,
                      Response, status)
 from fastapi.encoders import jsonable_encoder
-from queries.client import db
-from queries.notes import Note, NoteCreate, NoteUpdate
+from clients.client import db
+from models.notes import Note, NoteCreate, NoteUpdate
 from utils.authenticator import authenticator
 
 router = APIRouter()

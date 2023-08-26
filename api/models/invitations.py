@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-import uuid
-from typing import Optional
-
-from pydantic import BaseModel, Field
-=======
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 from uuid import UUID
->>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
 
 
 class Invitation(BaseModel):

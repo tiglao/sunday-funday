@@ -24,6 +24,7 @@ router = APIRouter()
 )
 def create_party_plan(
     party_plan: PartyPlanCreate = Body(...),
+    map_location: ApiMapsLocation = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # generate id, timestamp, default status of draft
@@ -33,9 +34,9 @@ def create_party_plan(
     party_plan_data["party_status"] = "draft"
 
     # Geocode the general_location
-    address =  party_plan_data["api_maps_location"]["input"]
+    address = map_location.get("input", "")
     if address:
-        geo_data = geo_code(address)
+        geo_data = geo_code(address, g_key)
         if geo_data:
             party_plan_data["api_maps_location"]["geo"]["coordinates"] = geo_data
 

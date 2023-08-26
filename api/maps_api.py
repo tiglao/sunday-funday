@@ -7,13 +7,12 @@ import googlemaps
 import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from queries.party_plan import PartyPlan
+from api_keys import API_KEY
+
 
 load_dotenv()
-
-API_KEY = os.environ.get("API_KEY")
-
 g_key = googlemaps.Client(key=API_KEY)
+
 
 
 def geo_code(address, g_key):

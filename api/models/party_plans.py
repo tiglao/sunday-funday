@@ -104,30 +104,9 @@ class PartyPlanCreate(BaseModel):
 
 
 class PartyPlanUpdate(BaseModel):
-<<<<<<< HEAD
-    username: Optional[str]
-    notes: Optional[str]
-    date: Optional[date]
-    invitations: Optional[Dict[str, str]]
-    start_time: datetime
-    end_time: datetime
-    party_status: Optional[str]
-    keywords: Optional[List[str]]
-    general_location: Optional[str]
-    api_maps_location: Optional[dict] = {
-        "geo": {"type": "Point", "coordinates": (float, float)},
-        "description": Optional[str],
-    }
-
-    latitude = party_plan.maps_location["geo"]["coordinates"][1]
-    longitude = party_plan.maps_location["geo"]["coordinates"][0]
-    favorite_locations: Optional[Dict[str, str]]
-    chosen_locations: Optional[Dict[str, str]]
-=======
     api_maps_location: Optional[List[ApiMapsLocation]]
     start_time: Optional[datetime]
     end_time: Optional[datetime]
->>>>>>> 110c37f6d8ae545e573e65dd72255b4c19341f22
     description: Optional[str]
     image: Optional[HttpUrl]
     invitations: Optional[List[UUID]]
