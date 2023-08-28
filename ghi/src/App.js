@@ -3,6 +3,7 @@ import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
 import InviteeDashboard from "./InviteeDashboard";
+import { DateProvider } from "./DateContext";
 import Nav from "./Nav";
 import Main from "./Main";
 
@@ -15,11 +16,13 @@ function App() {
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
         <Nav />
-        <Routes>
-          <Route path="/" element={<Main />}></Route>
-          <Route path="/dashboard" element={<UserDashboard />}></Route>
-          <Route path="/invitee" element={<InviteeDashboard />}></Route>
-        </Routes>
+        <DateProvider>
+          <Routes>
+            <Route path="/" element={<Main />}></Route>
+            <Route path="/dashboard" element={<UserDashboard />}></Route>
+            <Route path="/invitee" element={<InviteeDashboard />}></Route>
+          </Routes>
+        </DateProvider>
       </AuthProvider>
     </BrowserRouter>
   );
