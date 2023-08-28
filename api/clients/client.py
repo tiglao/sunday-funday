@@ -3,6 +3,10 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from pymongo.common import UuidRepresentation
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 load_dotenv()
 

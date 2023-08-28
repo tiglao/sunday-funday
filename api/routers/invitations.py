@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response
-from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID, uuid4
 from models.invitations import Invitation, InvitationUpdate, InvitationCreate
@@ -10,6 +9,7 @@ from utils.services import (
     calculate_latest_rsvp_count,
     update_rsvp_count_in_party_plan,
 )
+from datetime import datetime
 
 
 router = APIRouter()
@@ -23,9 +23,27 @@ router = APIRouter()
 )
 def create_invitation(
     party_plan_id: UUID,
-    invitation: InvitationCreate = Body(...),
+    # invitation: InvitationCreate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
+    # dummy account
+    account = {
+        "id": "123e4567-e89b-12d3-a456-426614174001",
+        "fullname": "Dummy Name",
+        "email": "dummy.email@example.com",
+    }
+
+    required_keys = ["id", "fullname", "email"]
+
+    account_info = {key: account.get(key) for key in required_keys}
+    print("Debug: account_info:", account_info)
+
+    if not all(account_info.get(key) for key in required_keys):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Required account information is missing",
+        )
+
     # find associated party plan
     associated_party_plan = db.party_plans.find_one({"id": str(party_plan_id)})
     if not associated_party_plan:
@@ -33,19 +51,15 @@ def create_invitation(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"No party plan found with ID {party_plan_id}",
         )
-    # check that there's no id
-    if "id" in invitation.dict():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Request payload should not include 'id'. ID will be auto-generated.",
-        )
 
-    invitation_data = jsonable_encoder(invitation)
-
-    # id generation
+    # id, timestamp, account info
     invitation_id = str(uuid4())
-    invitation_data["id"] = invitation_id
-    invitation_data["party_plan_id"] = str(party_plan_id)
+    invitation_data = {
+        "id": invitation_id,
+        "created": datetime.now(),
+        "account": account_info,
+        "party_plan_id": str(party_plan_id),
+    }
 
     # add to db
     new_invitation = db.invitations.insert_one(invitation_data)
@@ -56,7 +70,7 @@ def create_invitation(
         )
 
     # fetch the instance you just created
-    created_invitation = db.invitations.find_one({"id": invitation_data["id"]})
+    created_invitation = db.invitations.find_one({"id": invitation_id})
     if not created_invitation:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -98,7 +112,7 @@ def find_invitation(
 @router.put(
     "/{id}",
     response_description="Update an invitation",
-    response_model=InvitationUpdate,
+    response_model=Invitation,
 )
 def update_invitation(
     id: UUID,
