@@ -12,10 +12,15 @@ from models.invitations import (
 )  # , InvitationCreate
 from clients.client import db
 
+from clients.client import db
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.encoders import jsonable_encoder
+from models.invitations import Invitation, InvitationUpdate
+from utils.authenticator import authenticator
 
 router = APIRouter()
 
-
+# server 201/ response 201, 422
 @router.post(
     "/",
     response_description="Create a new invitation",
@@ -93,6 +98,7 @@ def list_invitations(
     return invitations
 
 
+# server 200/ response 200, 422
 @router.get(
     "/{id}",
     response_description="Get a single invitation by ID",
@@ -110,6 +116,7 @@ def find_invitation(
     )
 
 
+# server 200/ response
 @router.put(
     "/{id}",
     response_description="Update an invitation",

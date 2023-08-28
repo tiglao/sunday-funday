@@ -1,5 +1,8 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers import accounts, invitations, locations, party_plans, notes
 from utils.authenticator import authenticator
 import os
 from routers import party_plans, locations, invitations, accounts, emails
@@ -14,6 +17,7 @@ app.include_router(locations.router, tags=["locations"], prefix="/locations")
 app.include_router(
     invitations.router, tags=["invitations"], prefix="/invitations"
 )
+app.include_router(notes.router, tags=["notes"], prefix="/notes")
 app.include_router(emails.router, tags=["emails"], prefix="/emails")
 
 app.include_router(authenticator.router)
