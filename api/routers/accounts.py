@@ -1,20 +1,24 @@
 from fastapi import (
-    Depends,
-    HTTPException,
+    Body,
     status,
+    Depends,
+    Request,
     Response,
     APIRouter,
-    Request,
+    HTTPException,
 )
 
 from utils.authenticator import authenticator
 from models.accounts import (
-    AccountIn,
+    Account,
     AccountOut,
     AccountForm,
     AccountToken,
+    AccountUpdate,
     DuplicateAccountError,
 )
+from uuid import UUID
+from clients.client import db
 from models.apis import HttpError
 from repositories.accounts import AccountRepo
 
@@ -72,7 +76,7 @@ async def get_token(
 
 @router.post("/api/accounts", response_model=AccountToken | HttpError)
 async def create_account(
-    info: AccountIn,
+    info: Account,
     request: Request,
     response: Response,
     repo: AccountRepo = Depends(),
@@ -88,3 +92,29 @@ async def create_account(
     form = AccountForm(username=info.username, password=info.password)
     token = await authenticator.login(response, request, form, repo)
     return AccountToken(account=account, **token.dict())
+
+
+@router.put(
+    "/{id}",
+    response_description="Update an account",
+    response_model=AccountUpdate,
+)
+def update_account(
+    id: str,
+    account: AccountUpdate = Body(...),
+    # account: dict = Depends(authenticator.get_current_account_data),
+):
+    existing_account = db.accounts.find_one({"id": str(id)})
+
+    if not existing_account:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Account with ID {id} not found",
+        )
+
+    account_data = {k: v for k, v in account.dict().items() if v is not None}
+
+    if account_data:
+        db.accounts.update_one({"_id": str(id)}, {"$set": account_data})
+
+    return db.accounts.find_one({"_id": str(id)})
