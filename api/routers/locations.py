@@ -8,7 +8,7 @@ import requests
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
-from maps_api import g_key, Places
+from maps_api import Places
 from models.locations import Location, LocationUpdate
 # from api.api_views import nearby_search
 # from party_plans import id

@@ -9,11 +9,12 @@ from api_keys import API_KEY
 
 
 
-
 def geo_code(address):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
     params = {"address": address, "key": API_KEY}
-    response = requests.get(base_url, params=params)
+    endpoint = f"{base_url}?address={address}&key={API_KEY}"
+    response = requests.get(endpoint)
+    response.raise_for_status()
     results = response.json()
     if results["status"] == "OK":
         latitude = results["results"][0]["geometry"]["location"]["lat"]
