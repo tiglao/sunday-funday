@@ -2,6 +2,9 @@ fastapi[all]==0.91.0
 uvicorn[standard]==0.17.6
 pymongo==4.4.1
 jwtdown-fastapi>=0.5.0
+responses==0.23.3
+requests==2.31.0
+googlemaps==4.10.0
 pytest-mongo==3.0.0
 pytest==7.4.0
 sendgrid

@@ -21,7 +21,7 @@ from uuid import UUID
 from clients.client import db
 from models.apis import HttpError
 from repositories.accounts import AccountRepo
-
+from utils.authenticator import authenticator
 
 router = APIRouter()
 

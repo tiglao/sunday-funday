@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from jwtdown_fastapi.authentication import Token
 from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 
 class LogOut(BaseModel):
