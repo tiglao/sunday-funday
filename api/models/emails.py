@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, Dict
 from uuid import UUID
 
-from .invitations import Invitation, RsvpStatus
+from models.invitations import Invitation, RsvpStatus
 
 
 # needs to pull in account full name (no first name, use method to split string) account email
