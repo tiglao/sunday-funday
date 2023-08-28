@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, Dict, List
-from datetime import date, datetime
+from typing import Optional, List
+from datetime import datetime
 from uuid import UUID
 from enum import Enum
 

@@ -1,17 +1,16 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
-
 from fastapi import APIRouter, Body, HTTPException, status, Response
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID, uuid4
-from utils.authenticator import authenticator
 from models.invitations import Invitation, InvitationUpdate, InvitationCreate
-from clients.client import db
-
-from uuid import UUID
-from models.invitations import Invitation, InvitationUpdate
 from clients.client import db, get_invitation_by_id, save_invitation
 from utils.email_service import send_email, send_party_invitation_email
+from utils.services import (
+    get_latest_party_plan_by_id,
+    calculate_latest_rsvp_count,
+    update_rsvp_count_in_party_plan,
+)
+
 
 router = APIRouter()
 
@@ -147,11 +146,13 @@ async def send_invitation(
     invitation: Invitation,
     party_name: str,
     date: str,
-    location: str,
-    rsvp_link: str,
+    location: str
 ):
+    rsvp_link_accept = f'http://localhost:8000/rsvp/{invitation.id}?status=accept'
+    rsvp_link_decline = f'http://localhost:8000/rsvp/{invitation.id}?status=decline'
+
     content = send_party_invitation_email(
-        invitation.guest_name, party_name, date, location, rsvp_link
+        invitation.guest_name, party_name, date, location, rsvp_link_accept, rsvp_link_decline
     )
     subject = f"You're Invited to {party_name}!"
 
@@ -175,5 +176,11 @@ async def update_rsvp(invitation_id: str, status: bool):
 
     invitation.rsvpStatus = status
     save_invitation(invitation.dict())
+
+    party_plan = get_latest_party_plan_by_id(invitation.party_plan_id)
+
+    new_rsvp_count = calculate_latest_rsvp_count(party_plan)
+
+    update_rsvp_count_in_party_plan(party_plan['_id'], new_rsvp_count)
 
     return {"status": "success", "message": "RSVP status updated successfully"}

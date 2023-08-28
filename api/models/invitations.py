@@ -1,8 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional, List, Dict
-from uuid import UUID
-from pydantic import BaseModel
-from typing import Optional
 from clients.client import client
 from uuid import UUID, uuid4
 from datetime import datetime
