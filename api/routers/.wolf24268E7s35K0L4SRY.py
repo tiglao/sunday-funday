@@ -8,8 +8,15 @@ from datetime import datetime, timedelta
 from utils.authenticator import authenticator
 from models.party_plans import ApiMapsLocation, GeoJSON, PartyPlan, PartyPlanUpdate, PartyPlanCreate
 from clients.client import db
-from maps_api import geo_code
+from maps_api import geo_code, g_key
 from fastapi.encoders import jsonable_encoder
+import googlemaps
+from api_keys import API_KEY
+
+
+
+g_key = googlemaps.Client(key=API_KEY)
+
 
 
 

@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from utils.authenticator import authenticator
 from models.party_plans import ApiMapsLocation, GeoJSON, PartyPlan, PartyPlanUpdate, PartyPlanCreate
 from clients.client import db
-from maps_api import geo_code
+from maps_api import geo_code, g_key
 from fastapi.encoders import jsonable_encoder
 
 
@@ -34,8 +34,9 @@ def create_party_plan(
 
     # Geocode the general_location
     address =  party_plan_data["api_maps_location"][0]["input"]
+    print(input)
     if address:
-        geo_data = geo_code(address,g_key)
+        geo_data = geo_code(address)
         if geo_data:
             party_plan_data["api_maps_location"]["geo"]["coordinates"] = geo_data
 

@@ -10,6 +10,12 @@ from models.party_plans import ApiMapsLocation, GeoJSON, PartyPlan, PartyPlanUpd
 from clients.client import db
 from maps_api import geo_code
 from fastapi.encoders import jsonable_encoder
+import googlemaps
+from api_keys import API_KEY
+
+
+
+g_key = googlemaps.Client(key=API_KEY)
 
 
 
@@ -33,7 +39,7 @@ def create_party_plan(
     party_plan_data["party_status"] = "draft"
 
     # Geocode the general_location
-    address =  party_plan_data["api_maps_location"][0]["input"]
+    address =  party_plan_data["api_maps_location"]["input"]
     if address:
         geo_data = geo_code(address,g_key)
         if geo_data:

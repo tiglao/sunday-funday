@@ -24,11 +24,12 @@ class ApiMapsLocation(BaseModel):
 
 class PartyPlan(BaseModel):
     id: UUID
-    account_id: str
+    # account_id: Optional[str]
     created: datetime
     updated: Optional[datetime]
     api_maps_location: List[ApiMapsLocation]
     start_time: Optional[datetime]
+    endpoint: Optional[str]
     end_time: Optional[datetime]
     description: Optional[str]
     image: Optional[HttpUrl]
@@ -77,9 +78,10 @@ class PartyPlan(BaseModel):
 
 class PartyPlanCreate(BaseModel):
     # id, account_id, created, party_status auto-generated
-    account_id: str
+    # account_id: str
     api_maps_location: List[ApiMapsLocation]
     start_time: datetime
+    endpoint: Optional[str]
     end_time: Optional[datetime]
     description: Optional[str]
     image: Optional[HttpUrl]
