@@ -1,10 +1,13 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useDateContext } from "./DateContext";
 
 function InviteeDashboard() {
   const { token } = useAuthContext();
   const navigate = useNavigate();
+  const localDate = useDateContext();
+
   useEffect(() => {
     if (!token) {
       navigate("/");
@@ -16,8 +19,9 @@ function InviteeDashboard() {
   }
 
   return (
-    <div>
-      <h1>Invitee Dashboard</h1>
+    <div className="text-center">
+      <h1>Example</h1>
+      <div>{localDate ? localDate.toString() : "Loading date..."}</div>
     </div>
   );
 }
