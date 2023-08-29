@@ -2,18 +2,12 @@ from typing import Dict, List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, List, Dict
-from uuid import UUID
 
 
 class Location(BaseModel):
-    id: UUID
     place_id: str
-    favorite_status: bool = False
-    account_ids: List[str] = []
     account_location_tags: Optional[Dict[str, List[str]]]
     notes: Optional[str]
-    
 
     class Config:
         allow_population_by_field_name = True
@@ -59,6 +53,7 @@ class LocationUpdate(BaseModel):
     account_ids: List[str] = []
     account_location_tags: Optional[Dict[str, List[str]]]
     notes: Optional[str]
+
     class Config:
         schema_extra = {
             "example": {

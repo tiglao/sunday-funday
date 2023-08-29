@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, Dict, List
 from datetime import date, datetime
-from uuid import UUID
 from enum import Enum
+from typing import Dict, List, Optional
+from uuid import UUID
+
 from locations import Location
+from pydantic import BaseModel, Field, HttpUrl
 
 
 class PartyStatus(str, Enum):
@@ -110,7 +111,6 @@ class PartyPlanUpdate(BaseModel):
     searched_locations: Optional[List[Location]]
     favorite_locations: Optional[List[Location]]
     chosen_locations: Optional[List[Location]]
-
 
     class Config:
         schema_extra = {

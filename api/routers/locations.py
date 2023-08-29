@@ -1,18 +1,18 @@
 from json import JSONEncoder
-from typing import List
+from typing import List, Optional
 from urllib import request
 from uuid import UUID, uuid4
 
 import fastapi
+import pydantic
 import requests
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
-from maps_api import Places
+from maps_api import NearbySearchError, nearby_search
 from models.locations import Location, LocationUpdate
-# from api.api_views import nearby_search
-# from party_plans import id
 from utils.authenticator import authenticator
+from models.party_plans import PartyPlan
 
 router = APIRouter()
 
@@ -41,43 +41,29 @@ async def create_location(
     # will need to add data validators later
     location_dict = jsonable_encoder(location)
 
-    # make id
-    # if not location_dict.get("id"):
+ 
     location_dict["id"] = str(uuid4())
 
-    # add index 0 account_ids
     location_dict["account_ids"] = [location.account_id]
 
     print("dictionary after making new id:", location_dict)
 
-    # add new location to database
     new_location = db.locations.insert_one(location_dict)
 
-    # get the new location you just made from the database
     created_location = db.locations.find_one({"_id": new_location.inserted_id})
     created_location["_id"] = str(created_location["_id"])
     return created_location
 
 
 @router.get(
-    "/search_nearby/{location_id}",
+    "{party_plan_id}/search_nearby",
     response_description="Search nearby locations",
-    response_class=List[Location]
+    response_class=List[Location],
 )
 async def search_nearby(
-    location_id: str,
+    latitude: float, longitude: float, keywords: Optional[List[str]] = [],
+    party_plan_id= str 
 ):
-    location = db.locations.find_one({"_id": location_id})
-
-    if not location:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Location with ID {location_id} not found",
-        )
-
-    # Extract latitude and longitude from the location
-    latitude = location.get("latitude")
-    longitude = location.get("longitude")
 
     if latitude is None or longitude is None:
         raise HTTPException(
@@ -85,35 +71,25 @@ async def search_nearby(
             detail="Latitude and/or longitude not available for this location",
         )
 
-    # Make a request to the nearby search API
-    base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-    params = {
-        "key": g_key,
-        "location": f"{latitude},{longitude}",
-        "radius": 1000,  # Specify the radius in meters
-        "type": "restaurant",  # Adjust the type as needed
-    }
-
-    response = requests.get(base_url, params=params)
-
-    if response.status_code == 200:
-        data = response.json()
-        results = data.get("results", [])
-        locations = []
-        try:
-            for res in results:
-                location = Location.parse_obj(**res)
-                locations.append(location)
-        except pydantic.ValidationError as e:
-            return fastapi.responses.JSONResponse(
-            content={"message": e.errors()},
-            status_code=response.status_code,
-        )
-        return locations
-    else:
+    try:
+        results = nearby_search(latitude, longitude, keywords)
+    except NearbySearchError:
         return fastapi.responses.JSONResponse(
-            content={"message": "Error fetching nearby places"},
-            status_code=response.status_code,
+            content={"message": "nearby search failed"},
+            status_code=400,
+        )
+    locations = []
+    try:
+        for res in results:
+            location = Location.parse_obj(**res)
+            locations.append(location)
+        return fastapi.responses.Response(
+            content={"locations": locations}, status_code=200
+        )
+    except pydantic.ValidationError as e:
+        return fastapi.responses.JSONResponse(
+            content={"message": e.errors()},
+            status_code=400,
         )
 
 

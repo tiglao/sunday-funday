@@ -2,10 +2,17 @@ from datetime import datetime
 from typing import List
 from uuid import UUID, uuid4
 
-from fastapi import (APIRouter, Body, Depends, HTTPException, Request,
-                     Response, status)
-from fastapi.encoders import jsonable_encoder
 from clients.client import db
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    HTTPException,
+    Request,
+    Response,
+    status,
+)
+from fastapi.encoders import jsonable_encoder
 from models.notes import Note, NoteCreate, NoteUpdate
 from utils.authenticator import authenticator
 

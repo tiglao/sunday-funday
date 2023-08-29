@@ -1,6 +1,7 @@
-from fastapi import HTTPException, status
 from uuid import UUID
+
 from clients.client import db
+from fastapi import HTTPException, status
 
 
 def get_invitation(invitation_id: UUID):
