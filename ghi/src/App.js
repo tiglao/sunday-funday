@@ -4,7 +4,6 @@ import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
 import InviteeDashboard from "./InviteeDashboard";
 import { DateProvider } from "./DateContext";
-import Nav from "./Nav";
 import Main from "./Main";
 
 function App() {
@@ -15,7 +14,6 @@ function App() {
   return (
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
-        <Nav />
         <DateProvider>
           <Routes>
             <Route path="/" element={<Main />}></Route>
