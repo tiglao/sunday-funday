@@ -11,6 +11,7 @@ from fastapi import (
 from utils.authenticator import authenticator
 from models.accounts import (
     Account,
+    AccountAll,
     AccountOut,
     AccountForm,
     AccountToken,
@@ -18,27 +19,14 @@ from models.accounts import (
     DuplicateAccountError,
 )
 from uuid import UUID
+from typing import List
+from bson import ObjectId
 from clients.client import db
 from models.apis import HttpError
 from repositories.accounts import AccountRepo
 from utils.authenticator import authenticator
 
 router = APIRouter()
-
-
-# @router.get("/token", response_model=AccountToken)
-# async def get_token(request: Request) -> AccountToken:
-#     # check for cookie
-#     if authenticator.cookie_name not in request.cookies:
-#         raise HTTPException(
-#             status_code=400, detail="Required cookie not found"
-#         )
-
-#     # response body
-#     return {
-#         "access_token": request.cookies[authenticator.cookie_name],
-#         "type": "Bearer",
-#     }
 
 
 @router.get("/token", response_model=AccountToken | None)
@@ -95,26 +83,61 @@ async def create_account(
 
 
 @router.put(
-    "/{id}",
+    "/updateByEmail",
     response_description="Update an account",
     response_model=AccountUpdate,
 )
-def update_account(
-    id: str,
+def update_account_by_email(
+    email: str,  # Take the email as a string parameter
     account: AccountUpdate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    existing_account = db.accounts.find_one({"id": str(id)})
-
+    existing_account = db.accounts.find_one(
+        {"email": email}
+    )  # Look up account by email
     if not existing_account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Account with ID {id} not found",
+            detail=f"Account with email {email} not found",
         )
 
     account_data = {k: v for k, v in account.dict().items() if v is not None}
 
     if account_data:
-        db.accounts.update_one({"_id": str(id)}, {"$set": account_data})
+        db.accounts.update_one(
+            {"email": email}, {"$set": account_data}
+        )  # Update account by email
 
-    return db.accounts.find_one({"_id": str(id)})
+    return db.accounts.find_one({"email": email})
+
+
+@router.get(
+    "/accounts",
+    response_description="Get a list of all accounts",
+    response_model=List[
+        AccountAll
+    ],  # Assuming AccountOut is your output model
+)
+def get_all_accounts():
+    accounts = db.accounts.find()  # This fetches all accounts
+    accounts_list = list(
+        accounts
+    )  # Convert to list since find() returns a cursor
+    return accounts_list
+
+
+@router.get(
+    "/accountByEmail",
+    response_description="Get an account by email",
+    response_model=AccountAll,  # Assuming AccountAll is your output model
+)
+def get_account_by_email(email: str):  # Changed id to email here
+    account = db.accounts.find_one(
+        {"email": email}  # Changed to look up by email
+    )
+    if not account:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Account with email {email} not found",
+        )
+    return account

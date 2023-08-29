@@ -1,6 +1,5 @@
 from clients.client import db
 from models.accounts import (
-    AccountIn,
     AccountOutWithPassword,
     DuplicateAccountError,
 )

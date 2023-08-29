@@ -25,8 +25,6 @@ class Account(BaseModel):
 
 
 class AccountUpdate(BaseModel):
-    email: Optional[str]
-    password: Optional[str]
     full_name: Optional[str]
     date_of_birth: Optional[str]
     avatar: Optional[str]
@@ -36,10 +34,12 @@ class DuplicateAccountError(ValueError):
     pass
 
 
-# class AccountIn(BaseModel):
-#     username: str
-#     password: str
-#     full_name: str
+class AccountAll(BaseModel):
+    email: Optional[str]
+    full_name: Optional[str]
+    date_of_birth: Optional[str]
+    avatar: Optional[str]
+    username: Optional[str]
 
 
 class AccountOut(BaseModel):
