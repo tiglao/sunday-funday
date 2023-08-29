@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import { baseUrl } from "./common/config.js";
+import { baseUrl } from "./common/config.js";
 import SideNav from "./SideNav";
 import PartyPlanDetail from "./PartyPlanDetail";
 
@@ -185,6 +186,7 @@ function UserDashboard() {
         <div
           className="offcanvas offcanvas-start slide-nav"
           tabIndex="-1"
+          tabIndex="-1"
           id="offcanvasExample"
           aria-labelledby="offcanvasExampleLabel"
         >
@@ -216,6 +218,7 @@ function UserDashboard() {
                   }}
                   onClick={() => {
                     setCurrentData(partyPlans);
+                    setCurrentData(partyPlans);
                     setSelectedLink("parties");
                   }}
                 >
@@ -229,6 +232,7 @@ function UserDashboard() {
                   }}
                   onClick={() => {
                     setCurrentData(invitations);
+                    setCurrentData(invitations);
                     setSelectedLink("invites");
                   }}
                 >
@@ -236,6 +240,7 @@ function UserDashboard() {
                 </Button>
               </div>
               <div className="d-flex flex-wrap justify-content-around">
+                {renderCurrentData()}
                 {renderCurrentData()}
               </div>
             </div>
