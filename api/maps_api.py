@@ -3,6 +3,7 @@ import uuid
 from turtle import distance
 from typing import List, Optional
 import requests
+import fastapi
 from pydantic import BaseModel
 from api_keys import API_KEY
 
@@ -11,7 +12,6 @@ from api_keys import API_KEY
 
 def geo_code(address):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": address, "key": API_KEY}
     endpoint = f"{base_url}?address={address}&key={API_KEY}"
     response = requests.get(endpoint)
     response.raise_for_status()
@@ -22,6 +22,29 @@ def geo_code(address):
         return latitude, longitude
     else:
         print(f"Geocoding failed with status: {results['status']}")
+
+
+def nearby_search(long, lat, keywords):
+    base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+    params = {
+        "key": API_KEY,
+        "location": f"{lat},{long}",
+        "radius": 1000,  # Specify the radius in meters
+        "keyword" : keywords,
+    }
+    response = requests.get(base_url, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        results = data.get("results", [])
+        return results
+    else:
+        return fastapi.responses.JSONResponse(
+            content={"message": "Error fetching nearby places"},
+            status_code=response.status_code,
+        )
+
+
 
 
 class Places(BaseModel):

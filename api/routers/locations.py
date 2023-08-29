@@ -56,13 +56,13 @@ async def create_location(
     # get the new location you just made from the database
     created_location = db.locations.find_one({"_id": new_location.inserted_id})
     created_location["_id"] = str(created_location["_id"])
-
     return created_location
 
 
 @router.get(
     "/search_nearby/{location_id}",
     response_description="Search nearby locations",
+    response_class=List[Location]
 )
 async def search_nearby(
     location_id: str,
@@ -99,10 +99,17 @@ async def search_nearby(
     if response.status_code == 200:
         data = response.json()
         results = data.get("results", [])
-        if results:
-            for i in results:
-                location["place_id"] = i["place_id"]
-        return results
+        locations = []
+        try:
+            for res in results:
+                location = Location.parse_obj(**res)
+                locations.append(location)
+        except pydantic.ValidationError as e:
+            return fastapi.responses.JSONResponse(
+            content={"message": e.errors()},
+            status_code=response.status_code,
+        )
+        return locations
     else:
         return fastapi.responses.JSONResponse(
             content={"message": "Error fetching nearby places"},
