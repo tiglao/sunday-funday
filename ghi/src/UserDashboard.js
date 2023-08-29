@@ -1,51 +1,148 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
+import { baseUrl } from "./common/config.js";
 import SideNav from "./SideNav";
-
-const partyData = [
-  { content: "Party 1" },
-  { content: "Party 2" },
-  { content: "Party 3" },
-  { content: "Party 4" },
-  { content: "Party 5" },
-  { content: "Party 6" },
-];
-
-const inviteData = [
-  { content: "Invites 1" },
-  { content: "Invites 2" },
-  { content: "Invites 3" },
-  { content: "Invites 4" },
-  { content: "Invites 5" },
-  { content: "Invites 6" },
-];
-
-const waitingData = [
-  { content: "Waiting 1" },
-  { content: "Waiting 2" },
-  { content: "Waiting 3" },
-];
+import PartyPlanDetail from "./PartyPlanDetail";
 
 function UserDashboard() {
   const { token } = useAuthContext();
   const navigate = useNavigate();
-  const [currentData, setCurrentData] = useState(partyData);
   const [selectedLink, setSelectedLink] = useState("parties");
-  // const [partyData, setPartyData] = useState();
-  // const [inviteData, setInviteData] = useState();
-  // const [waitingData, setWaitingData] = useState();
+  const [partyPlans, setPartyPlans] = useState([]);
+  const [invitations, setInvitations] = useState([]);
+  const [currentData, setCurrentData] = useState([]);
+  const [waitingData, setWaitingData] = useState([]);
+
+  const fetchInvitations = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/invitations/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledInvitations = data.map((invite) => ({
+          ...invite,
+          type: "invitation",
+        }));
+        setInvitations(compiledInvitations);
+      }
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/party_plans/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledPlans = data.map((partyPlan) => ({
+          ...partyPlan,
+          type: "partyPlan",
+        }));
+        setPartyPlans(compiledPlans);
+      }
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
+  const handleShowParties = () => {
+    setCurrentData(partyPlans);
+  };
+
+  const handleShowInvitations = () => {
+    setCurrentData(invitations);
+  };
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    }
-  }, [token, navigate]);
+    const fetchData = async () => {
+      await fetchPlans();
+      await fetchInvitations();
+    };
 
-  if (!token) {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setCurrentData([...partyPlans, ...invitations]);
+  }, [partyPlans, invitations]);
+
+  const renderCurrentData = () => {
+    if (currentData) {
+      return currentData.map((item, index) => {
+        let displayContent;
+        let linkPath;
+        if (item.type === "partyPlan") {
+          displayContent = item.description;
+          linkPath = `/dashboard/party_plan/${item.id}`;
+        } else if (item.type === "invitation") {
+          displayContent = item.party_plan_id;
+          linkPath = `/dashboard/party_plan/${item.party_plan_id}`;
+
+          const correspondingPartyPlan = partyPlans.find(
+            (plan) => plan.id === item.party_plan_id
+          );
+
+          if (correspondingPartyPlan) {
+            console.log("Corresponding Party Plan:", correspondingPartyPlan);
+          } else {
+            console.log("Party Plan not found for ID:", item.party_plan_id);
+          }
+        }
+
+        return (
+          <Link to={linkPath} key={index}>
+            <div className="p-2" key={index}>
+              <div className="image-placeholders p-3 mt-3">
+                {displayContent}
+              </div>
+              <p className="text-center">{displayContent}</p>
+            </div>
+          </Link>
+        );
+      });
+    }
     return null;
-  }
+  };
+
+  const renderDrafts = () => {
+    const allDrafts = partyPlans.filter(
+      (plan) =>
+        plan.party_status === "draft" || plan.party_status === "share draft"
+    );
+    return allDrafts.map((item, index) => (
+      <div className="" key={index}>
+        <div
+          className="dark-orange-attention p-3 mb-3"
+          style={{ minHeight: "70px" }}
+        >
+          {item.description}
+        </div>
+      </div>
+    ));
+  };
+  // useEffect(() => {
+  //   fetchPlans();
+  //   fetchInvitations();
+
+  //   const fetchData = async () => {
+  //     await fetchPlans();
+  //     await fetchInvitations();
+  //     setCurrentData([...partyPlans, ...invitations]);
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     navigate("/");
+  //   }
+  // }, [token, navigate]);
+
+  // if (!token) {
+  //   return null;
+  // }
 
   return (
     <div className="bg-dark shadow">
@@ -87,7 +184,7 @@ function UserDashboard() {
         </div>
         <div
           className="offcanvas offcanvas-start slide-nav"
-          tabindex="-1"
+          tabIndex="-1"
           id="offcanvasExample"
           aria-labelledby="offcanvasExampleLabel"
         >
@@ -118,7 +215,7 @@ function UserDashboard() {
                     color: selectedLink === "parties" ? "black" : "grey",
                   }}
                   onClick={() => {
-                    setCurrentData(partyData);
+                    setCurrentData(partyPlans);
                     setSelectedLink("parties");
                   }}
                 >
@@ -131,7 +228,7 @@ function UserDashboard() {
                     color: selectedLink === "invites" ? "black" : "grey",
                   }}
                   onClick={() => {
-                    setCurrentData(inviteData);
+                    setCurrentData(invitations);
                     setSelectedLink("invites");
                   }}
                 >
@@ -139,31 +236,13 @@ function UserDashboard() {
                 </Button>
               </div>
               <div className="d-flex flex-wrap justify-content-around">
-                {currentData.map((item, index) => (
-                  <div className="p-2" key={index}>
-                    <div className="image-placeholders p-3 mt-3">
-                      {item.content}
-                    </div>
-                    <p className="text-center">Some words</p>
-                  </div>
-                ))}
+                {renderCurrentData()}
               </div>
             </div>
           </div>
           <div className="col-md-5 col-12">
             <h3 className="ps-2">waiting on you</h3>
-            <div className="row ps-2">
-              {waitingData.map((item, index) => (
-                <div className="" key={index}>
-                  <div
-                    className="dark-orange-attention p-3 mb-3"
-                    style={{ minHeight: "70px" }}
-                  >
-                    {item.content}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className="row ps-2">{renderDrafts()}</div>
           </div>
         </div>
       </div>
