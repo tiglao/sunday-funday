@@ -11,14 +11,14 @@ class PartyStatus(str, Enum):
     FINALIZED = "finalized"
 
 
-class GeoJSON(BaseModel):
-    type: str = "Point"
-    coordinates: List[float] = Field(..., min_items=2, max_items=2)
-    expires: Optional[datetime]
+# class GeoJSON(BaseModel):
+#     type: str = "Point"
+#     coordinates: Optional[float] = Field(..., min_items=2, max_items=2)
+#     expires: Optional[datetime]
 
 
 class ApiMapsLocation(BaseModel):
-    geo: Optional[GeoJSON]
+    geo: Optional[List[float]]
     input: Optional[str]
 
 
