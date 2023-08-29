@@ -1,9 +1,10 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import { baseUrl } from "./common/config.js";
 import SideNav from "./SideNav";
+import PartyPlanDetail from "./PartyPlanDetail";
 
 function UserDashboard() {
   const { token } = useAuthContext();
@@ -24,7 +25,6 @@ function UserDashboard() {
           type: "invitation",
         }));
         setInvitations(compiledInvitations);
-        console.log(compiledInvitations);
       }
     } catch (error) {
       console.error("Error fetching invitations:", error);
@@ -40,7 +40,6 @@ function UserDashboard() {
           ...partyPlan,
           type: "partyPlan",
         }));
-        console.log(compiledPlans);
         setPartyPlans(compiledPlans);
       }
     } catch (error) {
@@ -72,11 +71,13 @@ function UserDashboard() {
     if (currentData) {
       return currentData.map((item, index) => {
         let displayContent;
+        let linkPath;
         if (item.type === "partyPlan") {
-          console.log(item.description);
           displayContent = item.description;
+          linkPath = `/dashboard/party_plan/${item.id}`;
         } else if (item.type === "invitation") {
           displayContent = item.party_plan_id;
+          linkPath = `/dashboard/party_plan/${item.party_plan_id}`;
 
           const correspondingPartyPlan = partyPlans.find(
             (plan) => plan.id === item.party_plan_id
@@ -90,14 +91,35 @@ function UserDashboard() {
         }
 
         return (
-          <div className="p-2" key={index}>
-            <div className="image-placeholders p-3 mt-3">{displayContent}</div>
-            <p className="text-center">{displayContent}</p>
-          </div>
+          <Link to={linkPath} key={index}>
+            <div className="p-2" key={index}>
+              <div className="image-placeholders p-3 mt-3">
+                {displayContent}
+              </div>
+              <p className="text-center">{displayContent}</p>
+            </div>
+          </Link>
         );
       });
     }
     return null;
+  };
+
+  const renderDrafts = () => {
+    const allDrafts = partyPlans.filter(
+      (plan) =>
+        plan.party_status === "draft" || plan.party_status === "share draft"
+    );
+    return allDrafts.map((item, index) => (
+      <div className="" key={index}>
+        <div
+          className="dark-orange-attention p-3 mb-3"
+          style={{ minHeight: "70px" }}
+        >
+          {item.description}
+        </div>
+      </div>
+    ));
   };
   // useEffect(() => {
   //   fetchPlans();
@@ -220,18 +242,7 @@ function UserDashboard() {
           </div>
           <div className="col-md-5 col-12">
             <h3 className="ps-2">waiting on you</h3>
-            <div className="row ps-2">
-              {waitingData.map((item, index) => (
-                <div className="" key={index}>
-                  <div
-                    className="dark-orange-attention p-3 mb-3"
-                    style={{ minHeight: "70px" }}
-                  >
-                    {item.content}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className="row ps-2">{renderDrafts()}</div>
           </div>
         </div>
       </div>

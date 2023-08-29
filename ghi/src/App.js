@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
+import PartyPlanDetail from "./PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
 import { DateProvider } from "./DateContext";
 import Main from "./Main";
@@ -18,6 +19,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Main />}></Route>
             <Route path="/dashboard" element={<UserDashboard />}></Route>
+
+            <Route
+              path="/dashboard/party_plan/:id"
+              element={<PartyPlanDetail />}
+            ></Route>
             <Route path="/invitee" element={<InviteeDashboard />}></Route>
           </Routes>
         </DateProvider>
