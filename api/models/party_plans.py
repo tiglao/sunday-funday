@@ -2,8 +2,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Dict, List, Optional
 from uuid import UUID
-
-from locations import Location
+from models.locations import Location
 from pydantic import BaseModel, Field, HttpUrl
 
 

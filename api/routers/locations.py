@@ -61,18 +61,20 @@ async def create_location(
     response_class=List[Location],
 )
 async def search_nearby(
-    latitude: float, longitude: float, keywords: Optional[List[str]] = [],
+    # location: tuple, keywords: Optional[List[str]] = [],
     party_plan_id= str 
 ):
-
-    if latitude is None or longitude is None:
+    if (party := db.party_plan.find_one({"_id": party_plan_id})) is not None:
+        location = party["api_maps_location"][0]["geo"]
+        keywords = party["keywords"]
+    if location is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Latitude and/or longitude not available for this location",
         )
 
     try:
-        results = nearby_search(latitude, longitude, keywords)
+        results = nearby_search(location, keywords)
     except NearbySearchError:
         return fastapi.responses.JSONResponse(
             content={"message": "nearby search failed"},

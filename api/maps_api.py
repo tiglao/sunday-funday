@@ -27,11 +27,11 @@ class NearbySearchError(Exception):
     pass
 
 
-def nearby_search(long, lat, keywords):
+def nearby_search(location, keywords):
     base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
         "key": API_KEY,
-        "location": f"{lat},{long}",
+        "location": f"{location}",
         "radius": 1000,
         "keyword": keywords,
     }
