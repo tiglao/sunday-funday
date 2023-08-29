@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Sunshiney&display=swap");
+
 .App {
   text-align: center;
 }
@@ -19,4 +21,124 @@
 
 .custom-close-button .btn-close::before {
   background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path stroke="rgba(255, 255, 255)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M2 2l12 12M2 14L14 2"/></svg>');
+}
+
+.bg-background {
+  color: #dcf3e6;
+}
+
+.curved-header {
+  margin: 0 auto 0 auto;
+  width: 100%;
+  background: black;
+  border-bottom-right-radius: 100% 60%;
+  border-bottom-left-radius: 100% 60%;
+  box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.header-text {
+  font-family: "Sunshiney", cursive;
+  font-size: 70px;
+}
+
+.main-nav {
+  background-color: #bde3ff;
+  position: relative;
+  top: -160px;
+  z-index: 1;
+}
+
+.search-button {
+  background-color: #bde3ff;
+}
+
+.main-buttons {
+  background-color: #0d99ff;
+}
+
+.image-placeholders {
+  background-color: #ffc7c2;
+  height: 120px;
+  width: 120px;
+}
+
+.dark-orange-attention {
+  background-color: #ec6b4e;
+}
+
+.no-outline {
+  outline: none;
+}
+
+.circle {
+  position: absolute;
+  top: 150px; /* Adjust this based on where you want the circle to be */
+  left: 26px; /* Adjust this based on where you want the circle to be */
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 50;
+}
+
+.custom-toggler:focus {
+  outline: none !important;
+}
+
+button:focus {
+  outline: none !important;
+}
+
+.bg-disco {
+  position: relative;
+  background-image: url("https://images.unsplash.com/photo-1630395822970-acd6a691d97e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDF8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60");
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.bg-disco::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with 50% opacity */
+  z-index: -1;
+}
+
+.curved-border {
+  border-radius: 25px;
+}
+
+.slide-nav {
+  background-color: #bde3ff;
+}
+
+.offcanvas {
+  width: 40%;
+}
+
+.circle-button {
+  width: 40px;
+  height: 40px;
+  background-color: black;
+  color: white; /* Text color */
+  border-radius: 50%; /* Makes it a circle */
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none; /* Removes the default border */
+}
+
+.white-color {
+  color: white;
+}
+
+.white-fill {
+  fill: white;
 }
