@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "./App.css";
-import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
+import { AuthProvider, useToken } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
 import PartyPlanDetail from "./PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
@@ -8,10 +9,11 @@ import { DateProvider } from "./DateContext";
 import Main from "./Main";
 
 function App() {
+  // const { token } = useToken(); // Assuming useToken is a custom hook you've defined elsewhere
+
   const domain = /https:\/\/[^/]+/;
   const basename = process.env.PUBLIC_URL.replace(domain, "");
   const baseUrl = process.env.REACT_APP_API_HOST;
-
   return (
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
@@ -19,11 +21,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Main />}></Route>
             <Route path="/dashboard" element={<UserDashboard />}></Route>
-
-            <Route
-              path="/dashboard/party_plan/:id"
-              element={<PartyPlanDetail />}
-            ></Route>
             <Route path="/invitee" element={<InviteeDashboard />}></Route>
           </Routes>
         </DateProvider>
