@@ -1,7 +1,15 @@
 from clients.client import db
-from models.accounts import (AccountIn, AccountOutWithPassword,
-                             DuplicateAccountError)
+from models.accounts import (
+    AccountOutWithPassword,
+    DuplicateAccountError,
+)
 from pydantic import BaseModel
+from clients.client import db
+from models.accounts import (
+    AccountOutWithPassword,
+    Account,
+    DuplicateAccountError,
+)
 
 collection = db["accounts"]
 
@@ -16,7 +24,7 @@ class AccountRepo(BaseModel):
         return AccountOutWithPassword(**acc)
 
     def create(
-        self, info: AccountIn, hashed_password: str
+        self, info: Account, hashed_password: str
     ) -> AccountOutWithPassword:
         info = info.dict()
         if self.get(info["username"]) is not None:
