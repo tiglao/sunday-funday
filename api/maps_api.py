@@ -46,9 +46,7 @@ def nearby_search(location, keywords):
     place_id = []
     data = response.json()
     if data["status"] == "OK":
-        for entry in data["results"]:
-            place_id.append(entry["place_id"])
-    return place_id
+        return data["results"]
 
 
 
