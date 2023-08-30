@@ -4,7 +4,6 @@ from urllib import request
 from uuid import UUID, uuid4
 import fastapi
 import pydantic
-from fastapi.encoders import jsonable_encoder
 import requests
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
@@ -60,12 +59,12 @@ async def create_location(
     response_class=List[Location],
 )
 async def search_nearby(
-    # location: tuple, keywords: Optional[List[str]] = [],
+     #location: tuple, keywords: Optional[List[str]] = [],
     party_plan_id=str,
 ):
     party_plan = db.party_plans.find_one({"id": party_plan_id})
     if party_plan is not None:
-        location = party_plan["api_maps_location"][0]["geo"]
+        location = f'{party_plan["api_maps_location"][0]["geo"][0]},{party_plan["api_maps_location"][0]["geo"][1]}'
         keywords = party_plan["keywords"]
         print(location)
         print(keywords)
