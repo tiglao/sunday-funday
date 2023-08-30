@@ -2,9 +2,9 @@ from json import JSONEncoder
 from typing import List, Optional
 from urllib import request
 from uuid import UUID, uuid4
-
 import fastapi
 import pydantic
+from fastapi.encoders import jsonable_encoder
 import requests
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
@@ -41,7 +41,6 @@ async def create_location(
     # will need to add data validators later
     location_dict = jsonable_encoder(location)
 
- 
     location_dict["id"] = str(uuid4())
 
     location_dict["account_ids"] = [location.account_id]
@@ -62,12 +61,13 @@ async def create_location(
 )
 async def search_nearby(
     # location: tuple, keywords: Optional[List[str]] = [],
-    party_plan_id= str 
+    party_plan_id=str,
 ):
-    if (party := db.party_plan.find_one({"_id": party_plan_id})) is not None:
-        location = party["api_maps_location"][0]["geo"]
-        keywords = party["keywords"]
-        print(party)
+    party_plan = db.party_plans.find_one({"id": party_plan_id})
+    if party_plan is not None:
+        location = party_plan["api_maps_location"][0]["geo"]
+        keywords = party_plan["keywords"]
+        print(party_plan)
         print(party_plan_id)
     if location is None:
         raise HTTPException(
@@ -79,7 +79,7 @@ async def search_nearby(
         results = nearby_search(location, keywords)
     except NearbySearchError:
         return fastapi.responses.JSONResponse(
-            content={"message": "nearby search failed"},
+            content=jsonable_encoder({"message": "nearby search failed"}),
             status_code=400,
         )
     locations = []
@@ -88,11 +88,11 @@ async def search_nearby(
             location = Location.parse_obj(**res)
             locations.append(location)
         return fastapi.responses.Response(
-            content={"locations": locations}, status_code=200
+            content=jsonable_encoder({"locations": locations}), status_code=200
         )
     except pydantic.ValidationError as e:
         return fastapi.responses.JSONResponse(
-            content={"message": e.errors()},
+            content=jsonable_encoder({"message": e.errors()}),
             status_code=400,
         )
 

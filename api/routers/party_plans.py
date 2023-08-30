@@ -6,7 +6,12 @@ from uuid import UUID, uuid4
 from bson.binary import Binary
 from datetime import datetime, timedelta
 from utils.authenticator import authenticator
-from models.party_plans import ApiMapsLocation,  PartyPlan, PartyPlanUpdate, PartyPlanCreate
+from models.party_plans import (
+    ApiMapsLocation,
+    PartyPlan,
+    PartyPlanUpdate,
+    PartyPlanCreate,
+)
 from clients.client import db
 from maps_api import geo_code
 from fastapi.encoders import jsonable_encoder
@@ -33,17 +38,21 @@ def create_party_plan(
     party_plan_data["party_status"] = "draft"
 
     # Geocode the general_location
-    address =  party_plan_data["api_maps_location"][0]["input"]
+    address = party_plan_data["api_maps_location"][0]["input"]
     if address:
         geo_data = geo_code(address)
         if geo_data:
             print(party_plan_data)  # Check the value of party_plan_data
-            print(party_plan_data["api_maps_location"])  # Check the value of api_maps_location
-            print(party_plan_data["api_maps_location"][0])  # Check the value of the first element
-            print(party_plan_data["api_maps_location"][0]["geo"])  # Check the value of geo
+            print(
+                party_plan_data["api_maps_location"]
+            )  # Check the value of api_maps_location
+            print(
+                party_plan_data["api_maps_location"][0]
+            )  # Check the value of the first element
+            print(
+                party_plan_data["api_maps_location"][0]["geo"]
+            )  # Check the value of geo
             party_plan_data["api_maps_location"][0]["geo"] = geo_data
-
-
 
     # Add to the database
     new_party_plan = db.party_plans.insert_one(party_plan_data)
