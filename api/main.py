@@ -2,7 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import accounts, invitations, locations, party_plans, notes
+from routers import accounts, invitations, locations, party_plans, notes, emails
 from utils.authenticator import authenticator
 
 # from routers import accounts

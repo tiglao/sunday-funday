@@ -4,7 +4,7 @@ from turtle import distance
 from typing import List, Optional
 import requests
 from pydantic import BaseModel
-from api_keys import API_KEY
+from api_keys import GEOCODE_API_KEY, SEARCH_API_KEY
 import fastapi
 
 
@@ -13,8 +13,8 @@ import fastapi
 
 def geo_code(address):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": address, "key": API_KEY}
-    endpoint = f"{base_url}?address={address}&key={API_KEY}"
+
+    endpoint = f"{base_url}?address={address}&key={GEOCODE_API_KEY}"
     response = requests.get(endpoint)
     response.raise_for_status()
     results = response.json()
@@ -33,19 +33,23 @@ class NearbySearchError(Exception):
 def nearby_search(location, keywords):
     base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
-        "key": API_KEY,
+        "key": SEARCH_API_KEY,
         "location": f"{location}",
         "radius": 1000,
         "keyword": keywords,
     }
-    response = requests.get(base_url, params=params)
-
+    endpoint = f"{base_url}?keyword={keywords}&location={location}&radius=1500&key={SEARCH_API_KEY}"
+    response = requests.get(endpoint)
+    response.raise_for_status()
     if response.status_code != 200:
         raise NearbySearchError()
-
+    place_id = []
     data = response.json()
-    results = data.get("results", [])
-    return results
+    if data["status"] == "OK":
+        for entry in data["results"]:
+            place_id.append(entry["place_id"])
+    return place_id
+
 
 
 class Places(BaseModel):

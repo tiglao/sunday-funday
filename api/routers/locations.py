@@ -63,12 +63,15 @@ async def create_location(
 )
 async def search_nearby(
     # location: tuple, keywords: Optional[List[str]] = [],
-    party_plan_id= str
+    party_plan_id=str,
 ):
-    if (party := db.party_plan.find_one({"_id": party_plan_id})) is not None:
-        location = party["api_maps_location"][0]["geo"]
-        keywords = party["keywords"]
-        print(party)
+    party_plan = db.party_plans.find_one({"id": party_plan_id})
+    if party_plan is not None:
+        location = f'{party_plan["api_maps_location"][0]["geo"][0]},{party_plan["api_maps_location"][0]["geo"][1]}'
+        keywords = party_plan["keywords"]
+        print(location)
+        print(keywords)
+        print(party_plan)
         print(party_plan_id)
     if location is None:
         raise HTTPException(
@@ -78,9 +81,12 @@ async def search_nearby(
 
     try:
         results = nearby_search(location, keywords)
+        print(results)
+        if results == None:
+            print("none")
     except NearbySearchError:
         return fastapi.responses.JSONResponse(
-            content={"message": "nearby search failed"},
+            content=jsonable_encoder({"message": "nearby search failed"}),
             status_code=400,
         )
     locations = []
@@ -88,14 +94,16 @@ async def search_nearby(
         for res in results:
             location = Location.parse_obj(**res)
             locations.append(location)
-        return fastapi.responses.Response(
-            content={"locations": locations}, status_code=200
+        return fastapi.responses.JSONResponse(
+            content=jsonable_encoder({"locations": locations}), status_code=200
         )
     except pydantic.ValidationError as e:
         return fastapi.responses.JSONResponse(
-            content={"message": e.errors()},
+            content=jsonable_encoder({"message": e.errors()}),
             status_code=400,
         )
+
+
 
 
 @router.get(
