@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import { baseUrl } from "./common/config.js";
-import { baseUrl } from "./common/config.js";
 import SideNav from "./SideNav";
 import PartyPlanDetail from "./PartyPlanDetail";
 
@@ -14,7 +13,6 @@ function UserDashboard() {
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-  const [waitingData, setWaitingData] = useState([]);
 
   const fetchInvitations = async () => {
     try {
