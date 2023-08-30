@@ -56,7 +56,7 @@ async def create_location(
 
 
 @router.get(
-    "{party_plan_id}/search_nearby",
+    "/{party_plan_id}/search_nearby",
     response_description="Search nearby locations",
     response_class=List[Location],
 )
@@ -67,6 +67,8 @@ async def search_nearby(
     if (party := db.party_plan.find_one({"_id": party_plan_id})) is not None:
         location = party["api_maps_location"][0]["geo"]
         keywords = party["keywords"]
+        print(party)
+        print(party_plan_id)
     if location is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
