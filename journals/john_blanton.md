@@ -23,3 +23,9 @@ Finished the logout feature.
 8/24/23 Before class I worked on the issue from yesterday with main not working after the merge. I took the repository back to the last know commit/merge. I finished the login/signup it has been merged into the main branch with no issues. I will start working on the user dashboard. Ellie is working on more backend database. Jean is working on the automated email from the invitation. Leah and Tasnia are working on the google maps api and integration it into the backend.
 
 8/25/23 I worked on the user dashboard most of the day making everything responsive. Leah and Tasnia are getting frurther in their google maps issue. Ellie pushed/merged some of her database revamping making db relationships and cascade delete like. Jean is working on the email for the invitees. He had a test runing the other day and it worked. Hes working to implement it into our code.
+
+8/28/23
+
+8/29/23
+
+8/30/23
