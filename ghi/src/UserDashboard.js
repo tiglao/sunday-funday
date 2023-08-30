@@ -3,6 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import { baseUrl } from "./common/config.js";
+<<<<<<< HEAD
+=======
+import { baseUrl } from "./common/config.js";
+>>>>>>> de238e2c545c043adde39ff22cb0435a968825da
 import SideNav from "./SideNav";
 import PartyPlanDetail from "./PartyPlanDetail";
 
@@ -177,6 +181,10 @@ function UserDashboard() {
               >
                 <rect width="100" height="20"></rect>
                 <rect y="30" width="100" height="20"></rect>
+<<<<<<< HEAD
+=======
+                <rect y="60" width="100" height="20"></rect>
+>>>>>>> de238e2c545c043adde39ff22cb0435a968825da
               </svg>
             </a>
           </div>
@@ -184,6 +192,10 @@ function UserDashboard() {
         <div
           className="offcanvas offcanvas-start slide-nav"
           tabIndex="-1"
+<<<<<<< HEAD
+=======
+          tabIndex="-1"
+>>>>>>> de238e2c545c043adde39ff22cb0435a968825da
           id="offcanvasExample"
           aria-labelledby="offcanvasExampleLabel"
         >
@@ -215,6 +227,10 @@ function UserDashboard() {
                   }}
                   onClick={() => {
                     setCurrentData(partyPlans);
+<<<<<<< HEAD
+=======
+                    setCurrentData(partyPlans);
+>>>>>>> de238e2c545c043adde39ff22cb0435a968825da
                     setSelectedLink("parties");
                   }}
                 >
@@ -228,6 +244,10 @@ function UserDashboard() {
                   }}
                   onClick={() => {
                     setCurrentData(invitations);
+<<<<<<< HEAD
+=======
+                    setCurrentData(invitations);
+>>>>>>> de238e2c545c043adde39ff22cb0435a968825da
                     setSelectedLink("invites");
                   }}
                 >
@@ -236,6 +256,10 @@ function UserDashboard() {
               </div>
               <div className="d-flex flex-wrap justify-content-around">
                 {renderCurrentData()}
+<<<<<<< HEAD
+=======
+                {renderCurrentData()}
+>>>>>>> de238e2c545c043adde39ff22cb0435a968825da
               </div>
             </div>
           </div>
