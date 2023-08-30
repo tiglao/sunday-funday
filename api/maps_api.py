@@ -5,6 +5,8 @@ from typing import List, Optional
 import requests
 from pydantic import BaseModel
 from api_keys import API_KEY
+import fastapi
+
 
 
 
@@ -22,6 +24,28 @@ def geo_code(address):
         return latitude, longitude
     else:
         print(f"Geocoding failed with status: {results['status']}")
+
+
+class NearbySearchError(Exception):
+    pass
+
+
+def nearby_search(location, keywords):
+    base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+    params = {
+        "key": API_KEY,
+        "location": f"{location}",
+        "radius": 1000,
+        "keyword": keywords,
+    }
+    response = requests.get(base_url, params=params)
+
+    if response.status_code != 200:
+        raise NearbySearchError()
+
+    data = response.json()
+    results = data.get("results", [])
+    return results
 
 
 class Places(BaseModel):
