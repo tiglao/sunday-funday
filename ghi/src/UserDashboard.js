@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import { baseUrl } from "./common/config.js";
-import { baseUrl } from "./common/config.js";
 import SideNav from "./SideNav";
 import PartyPlanDetail from "./PartyPlanDetail";
 
@@ -14,7 +13,6 @@ function UserDashboard() {
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-  const [waitingData, setWaitingData] = useState([]);
 
   const fetchInvitations = async () => {
     try {
@@ -178,14 +176,12 @@ function UserDashboard() {
               >
                 <rect width="100" height="20"></rect>
                 <rect y="30" width="100" height="20"></rect>
-                <rect y="60" width="100" height="20"></rect>
               </svg>
             </a>
           </div>
         </div>
         <div
           className="offcanvas offcanvas-start slide-nav"
-          tabIndex="-1"
           tabIndex="-1"
           id="offcanvasExample"
           aria-labelledby="offcanvasExampleLabel"
@@ -218,7 +214,6 @@ function UserDashboard() {
                   }}
                   onClick={() => {
                     setCurrentData(partyPlans);
-                    setCurrentData(partyPlans);
                     setSelectedLink("parties");
                   }}
                 >
@@ -232,7 +227,6 @@ function UserDashboard() {
                   }}
                   onClick={() => {
                     setCurrentData(invitations);
-                    setCurrentData(invitations);
                     setSelectedLink("invites");
                   }}
                 >
@@ -240,7 +234,6 @@ function UserDashboard() {
                 </Button>
               </div>
               <div className="d-flex flex-wrap justify-content-around">
-                {renderCurrentData()}
                 {renderCurrentData()}
               </div>
             </div>
