@@ -67,6 +67,8 @@ async def search_nearby(
     if party_plan is not None:
         location = party_plan["api_maps_location"][0]["geo"]
         keywords = party_plan["keywords"]
+        print(location)
+        print(keywords)
         print(party_plan)
         print(party_plan_id)
     if location is None:
@@ -77,6 +79,7 @@ async def search_nearby(
 
     try:
         results = nearby_search(location, keywords)
+        print(results)
     except NearbySearchError:
         return fastapi.responses.JSONResponse(
             content=jsonable_encoder({"message": "nearby search failed"}),
@@ -87,7 +90,7 @@ async def search_nearby(
         for res in results:
             location = Location.parse_obj(**res)
             locations.append(location)
-        return fastapi.responses.Response(
+        return fastapi.responses.JSONResponse(
             content=jsonable_encoder({"locations": locations}), status_code=200
         )
     except pydantic.ValidationError as e:
