@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { AuthProvider, useToken } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
+import PartyPlanDetail from "./PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
 import { DateProvider } from "./DateContext";
-import Nav from "./Nav";
 import Main from "./Main";
 import Account from "./Account";
 
@@ -39,7 +39,6 @@ function App() {
   return (
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
-        <Nav />
         <DateProvider>
           <Routes>
             <Route path="/" element={<Main />}></Route>
