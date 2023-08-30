@@ -13,7 +13,6 @@ function UserDashboard() {
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-  const [waitingData, setWaitingData] = useState([]);
 
   const fetchInvitations = async () => {
     try {
