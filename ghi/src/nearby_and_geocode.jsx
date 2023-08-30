@@ -13,14 +13,14 @@ class GoogleMapsComponent extends Component {
   componentDidMount() {
     // Load Google Maps script
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=places`;
     script.async = true;
     script.onload = this.initMap;
     document.head.appendChild(script);
   }
 
   initMap = () => {
-    const center = { lat: YOUR_DEFAULT_LATITUDE, lng: YOUR_DEFAULT_LONGITUDE };
+    const center = { lat: 48.8566 N, lng: 2.3522 E }; 
     const map = new window.google.maps.Map(this.mapRef.current, {
       center,
       zoom: 15,
@@ -35,8 +35,8 @@ class GoogleMapsComponent extends Component {
 
     const request = {
       location: map.getCenter(),
-      radius: 1000, // Search radius in meters
-      type: ['restaurant', 'cafe', 'bar'], // Types of places you want to search for
+      radius: 1000,
+      type: ['restaurant', 'cafe', 'bar'],
     };
 
     service.nearbySearch(request, (results, status) => {

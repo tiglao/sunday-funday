@@ -1,11 +1,10 @@
-from pydantic import BaseModel
-from enum import Enum
 from datetime import datetime
-from typing import Optional, Dict
+from enum import Enum
+from typing import Dict, Optional
 from uuid import UUID
 
 from models.invitations import Invitation, RsvpStatus
-
+from pydantic import BaseModel
 
 # needs to pull in account full name (no first name, use method to split string) account email
 

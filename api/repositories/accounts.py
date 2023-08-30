@@ -1,6 +1,9 @@
 from clients.client import db
-from models.accounts import (AccountIn, AccountOutWithPassword,
-                             DuplicateAccountError)
+from models.accounts import (
+    AccountIn,
+    AccountOutWithPassword,
+    DuplicateAccountError,
+)
 from pydantic import BaseModel
 
 collection = db["accounts"]
