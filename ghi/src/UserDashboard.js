@@ -13,7 +13,6 @@ function UserDashboard() {
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-  const [waitingData, setWaitingData] = useState([]);
 
   const fetchInvitations = async () => {
     try {
@@ -184,7 +183,6 @@ function UserDashboard() {
         </div>
         <div
           className="offcanvas offcanvas-start slide-nav"
-          tabIndex="-1"
           tabIndex="-1"
           id="offcanvasExample"
           aria-labelledby="offcanvasExampleLabel"
