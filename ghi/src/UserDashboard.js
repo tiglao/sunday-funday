@@ -184,7 +184,6 @@ function UserDashboard() {
         <div
           className="offcanvas offcanvas-start slide-nav"
           tabIndex="-1"
-          tabIndex="-1"
           id="offcanvasExample"
           aria-labelledby="offcanvasExampleLabel"
         >
