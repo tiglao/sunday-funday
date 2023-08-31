@@ -3,199 +3,110 @@ import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
 import { baseUrl } from "./common/config.js";
+import FeedbackModal from "./FeedbackModal";
 import SideNav from "./SideNav";
-import PartyPlanDetail from "./PartyPlanDetail";
 
 function Dashboard() {
   const { token } = useAuthContext();
   const navigate = useNavigate();
-  const [selectedLink, setSelectedLink] = useState("parties");
-  const [partyPlans, setPartyPlans] = useState([]);
-  const [invitations, setInvitations] = useState([]);
-  const [currentData, setCurrentData] = useState([]);
-  const [waitingData, setWaitingData] = useState([]);
-
-  const fetchInvitations = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/invitations/`);
-      if (response.ok) {
-        const data = await response.json();
-        const compiledInvitations = data.map((invite) => ({
-          ...invite,
-          type: "invitation",
-        }));
-        setInvitations(compiledInvitations);
-      }
-    } catch (error) {
-      console.error("Error fetching invitations:", error);
-    }
-  };
-
-  const fetchPlans = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/party_plans/`);
-      if (response.ok) {
-        const data = await response.json();
-        const compiledPlans = data.map((partyPlan) => ({
-          ...partyPlan,
-          type: "partyPlan",
-        }));
-        setPartyPlans(compiledPlans);
-      }
-    } catch (error) {
-      console.error("Error fetching invitations:", error);
-    }
-  };
-  const handleShowParties = () => {
-    setCurrentData(partyPlans);
-  };
-
-  const handleShowInvitations = () => {
-    setCurrentData(invitations);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchPlans();
-      await fetchInvitations();
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setCurrentData([...partyPlans, ...invitations]);
-  }, [partyPlans, invitations]);
-
-  const renderCurrentData = () => {
-    if (currentData) {
-      return currentData.map((item, index) => {
-        let displayContent;
-        let linkPath;
-        if (item.type === "partyPlan") {
-          displayContent = item.description;
-          linkPath = `/dashboard/party_plan/${item.id}`;
-        } else if (item.type === "invitation") {
-          displayContent = item.party_plan_id;
-          linkPath = `/dashboard/party_plan/${item.party_plan_id}`;
-
-          const correspondingPartyPlan = partyPlans.find(
-            (plan) => plan.id === item.party_plan_id
-          );
-
-          if (correspondingPartyPlan) {
-            console.log("Corresponding Party Plan:", correspondingPartyPlan);
-          } else {
-            console.log("Party Plan not found for ID:", item.party_plan_id);
-          }
-        }
-
-        return (
-          <Link to={linkPath} key={index}>
-            <div className="p-2" key={index}>
-              <div className="image-placeholders p-3 mt-3">
-                {displayContent}
-              </div>
-              <p className="text-center">{displayContent}</p>
-            </div>
-          </Link>
-        );
-      });
-    }
-    return null;
-  };
-
-  const renderDrafts = () => {
-    const allDrafts = partyPlans.filter(
-      (plan) =>
-        plan.party_status === "draft" || plan.party_status === "share draft"
-    );
-    return allDrafts.map((item, index) => (
-      <div className="" key={index}>
-        <div
-          className="dark-orange-attention p-3 mb-3"
-          style={{ minHeight: "70px" }}
-        >
-          {item.description}
-        </div>
-      </div>
-    ));
-  };
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
 
   return (
-    <div className="bg-dark shadow">
-      <div className="container-xxl p-0 bg-white min-vh-100">
-        {/* Header */}
-        <div className="curved-header text-center text-white">
-          <h1 className="header-text p-3">sundayaaaa funday</h1>
-          <form className="d-flex justify-content-center" role="search">
-            <input
-              className="form-control me-2 w-25 mb-5 me-3"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button
-              className="btn search-button mb-5 rounded-circle"
-              style={{ width: "50px", height: "50px" }}
-            ></button>
-          </form>
-          <div className="circle d-flex align-items-center justify-content-center">
-            <a
-              className="btn circle-button white-color d-lg-none"
-              data-bs-toggle="offcanvas"
-              href="#offcanvasExample"
-              role="button"
-              aria-controls="offcanvasExample"
-            >
-              <svg
-                viewBox="0 0 100 80"
-                width="40"
-                height="40"
-                className="white-fill"
+    <>
+      <div className="bg-dark shadow">
+        {/* ... (other elements) ... */}
+        <FeedbackModal
+          show={feedbackModalVisible}
+          handleClose={() => setFeedbackModalVisible(false)}
+        />
+      </div>
+      <Button
+        onClick={() => setFeedbackModalVisible(true)}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 1000,
+        }}
+      >
+        Feedback
+      </Button>
+      <div className="bg-dark shadow">
+        <div className="container-xxl p-0 bg-white min-vh-100">
+          {/* Header */}
+          <div className="curved-header text-center text-white">
+            <h1 className="header-text p-3">Sunday Funday</h1>
+            <form className="d-flex justify-content-center" role="search">
+              <input
+                className="form-control me-2 w-25 mb-5 me-3"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button
+                className="btn search-button mb-5 rounded-circle"
+                style={{ width: "50px", height: "50px" }}
+              ></button>
+            </form>
+
+            {/* What is this */}
+            <div className="circle d-flex align-items-center justify-content-center">
+              <a
+                className="btn circle-button white-color d-lg-none"
+                data-bs-toggle="offcanvas"
+                href="#offcanvasExample"
+                role="button"
+                aria-controls="offcanvasExample"
               >
-                <rect width="100" height="20"></rect>
-                <rect y="30" width="100" height="20"></rect>
-              </svg>
-            </a>
+                <svg
+                  viewBox="0 0 100 80"
+                  width="40"
+                  height="40"
+                  className="white-fill"
+                >
+                  <rect width="100" height="20"></rect>
+                  <rect y="30" width="100" height="20"></rect>
+                </svg>
+              </a>
+            </div>
           </div>
-        </div>
-        {/* Main */}
-        <div
-          className="offcanvas offcanvas-start slide-nav"
-          tabIndex="-1"
-          id="offcanvasExample"
-          aria-labelledby="offcanvasExampleLabel"
-        >
-          <div className="offcanvas-header">
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="offcanvas-body">
-            <SideNav />
-          </div>
-        </div>
-        <div className="row mx-5 mt-5">
-          <div className="col-2 border main-nav rounded-3 text-end p-3 d-none d-lg-block">
-            <SideNav />
-          </div>
-          <div>EMPTY</div>
-        </div>
-        {/* Footer */}
-        <div className="footer">
-          <button
-            className="btn feedback-button"
-            style={{ position: "fixed", bottom: "20px", right: "20px" }}
+
+          {/* What is this */}
+          <div
+            className="offcanvas offcanvas-start slide-nav"
+            tabIndex="-1"
+            id="offcanvasExample"
+            aria-labelledby="offcanvasExampleLabel"
           >
-            Feedback
-          </button>
+            <div className="offcanvas-header">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="offcanvas-body">
+              <SideNav />
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="row mx-5 mt-5">
+            {/* Side Nav */}
+            <div className="col-2 border main-nav rounded-3 text-end p-3 d-none d-lg-block">
+              <SideNav />
+            </div>
+            {/* Main Content Area */}
+            <div className="col-md-10 col-12 p-0 border">
+              Hello world, I am main content.!!
+            </div>
+          </div>
+          {/* Footer */}
+          <div className="footer border">Footer</div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
