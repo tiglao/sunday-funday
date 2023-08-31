@@ -16,10 +16,49 @@ from models.party_plans import PartyPlan
 
 router = APIRouter()
 
+@router.post(
+    "/",
+    response_description="Create a new location",
+    status_code=status.HTTP_201_CREATED,
+    response_model=Location,
+)
+async def create_location(
+    location: Location = Body(...),
+    # account: dict = Depends(authenticator.get_current_account_data),
+):
+    # check place_id error
+
+    location = jsonable_encoder(location)
+    existing_location = db.locations.find_one({"place_id": location.place_id})
+    if existing_location:
+        raise HTTPException(
+            status_code=400,
+            detail="Location with this place_id already exists",
+        )
+
+    # conversion
+    # will need to add data validators later
+    location_dict = jsonable_encoder(location)
+
+
+    location_dict["id"] = str(uuid4())
+
+    location_dict["account_ids"] = [location.account_id]
+
+    print("dictionary after making new id:", location_dict)
+
+    new_location = db.locations.insert_one(location_dict)
+
+    created_location = db.locations.find_one({"_id": new_location.inserted_id})
+    created_location["_id"] = str(created_location["_id"])
+
+    return created_location
+
+
 @router.get(
     "/{party_plan_id}/search_nearby",
     response_description="Search nearby locations",
-    response_class=List[Location],
+    # response_class=List[Location],
 )
 async def search_nearby(
     # location: tuple, keywords: Optional[List[str]] = [],
@@ -65,51 +104,6 @@ async def search_nearby(
             status_code=400,
         )
 
-
-
-@router.post(
-    "/",
-    response_description="Create a new location",
-    status_code=status.HTTP_201_CREATED,
-    response_model=Location,
-)
-async def create_location(
-    location: Location = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
-    # check place_id error
-
-    location = jsonable_encoder(location)
-    existing_location = db.locations.find_one({"place_id": location.place_id})
-    if existing_location:
-        raise HTTPException(
-            status_code=400,
-            detail="Location with this place_id already exists",
-        )
-
-    # conversion
-    # will need to add data validators later
-    location_dict = jsonable_encoder(location)
-
-
-    location_dict["id"] = str(uuid4())
-
-    location_dict["account_ids"] = [location.account_id]
-
-    print("dictionary after making new id:", location_dict)
-
-    new_location = db.locations.insert_one(location_dict)
-
-    created_location = db.locations.find_one({"_id": new_location.inserted_id})
-    created_location["_id"] = str(created_location["_id"])
-
-    return created_location
-
-
-
-
-
-
 @router.get(
     "/",
     response_description="List all locations",
@@ -123,19 +117,19 @@ def list_locations(
 
 
 @router.get(
-    "/{id}",
+    "/{place_id}",
     response_description="Get a single location by id",
     response_model=Location,
 )
 def find_location(
-    id: str,
+    place_id: str,
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    if (location := db.locations.find_one({"_id": id})) is not None:
+    if (location := db.locations.find_one({"place_id": place_id})) is not None:
         return location
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Location with ID {id} not found",
+        detail=f"Location with ID {place_id} not found",
     )
 
 

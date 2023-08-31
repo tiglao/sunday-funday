@@ -17,18 +17,13 @@ class Location(BaseModel):
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
-                "id": "123e4567-e89b-12d3-a456-426614174000",  # example UUID
+
                 "place_id": "76565765",
-                "note_ids": [
-                    "123e4567-e89b-12d3-a456-426614174001",
-                    "123e4567-e89b-12d3-a456-426614174002",
-                ],
-                "favorite_status": True,
-                "account_ids": ["123e4567-e89b-12d3-a456-426614174001"],
                 "account_location_tags": {
                     "123e4567-e89b-12d3-a456-426614174001": {"tag1", "tag2"},
                     "123e4567-e89b-12d3-a456-426614174002": {"tag3"},
                 },
+                "notes" : "notes 1"
             }
         }
 
