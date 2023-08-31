@@ -37,7 +37,7 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_SERVER: mongo
     ports:
-      - "8081:8081"
+      - 8081:8081
     depends_on:
       - mongo
     restart: always
@@ -49,10 +49,10 @@ services:
     volumes:
       - ./ghi:/app
     ports:
-      - "3000:3000"
+      - 3000:3000
     environment:
       HOST_OS: ${OS}
       NODE_ENV: development
-      HOST: "0.0.0.0"
+      HOST: 0.0.0.0
       PUBLIC_URL: http://localhost:3000
       REACT_APP_API_HOST: ${REACT_APP_API_HOST}
