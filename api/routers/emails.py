@@ -1,18 +1,13 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
-
-from fastapi.encoders import jsonable_encoder
-from typing import List, Dict
-from uuid import UUID, uuid4
 from datetime import datetime
+from typing import Dict, List
+from uuid import UUID, uuid4
 
+from clients.client import db
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.encoders import jsonable_encoder
+from models.emails import ApiEmail, EmailContext
 from utils.authenticator import authenticator
 from utils.invitation_vo import get_invitation
-from models.emails import (
-    ApiEmail,
-    EmailContext,
-)
-from clients.client import db
-
 
 router = APIRouter()
 

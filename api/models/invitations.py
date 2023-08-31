@@ -1,8 +1,9 @@
-from pydantic import BaseModel
-from typing import Optional, Dict
-from uuid import UUID
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Dict, Optional
+from uuid import UUID
+
+from pydantic import BaseModel
 
 # needs to pull in account full name (no first name, use method to split string) account email
 
