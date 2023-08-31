@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response, Depends
-from datetime import datetime
 from typing import List
-from datetime import datetime
 from uuid import UUID, uuid4
 from bson.binary import Binary
 from datetime import datetime, timedelta
@@ -42,8 +40,6 @@ def create_party_plan(
             print(party_plan_data["api_maps_location"][0])  # Check the value of the first element
             print(party_plan_data["api_maps_location"][0]["geo"])  # Check the value of geo
             party_plan_data["api_maps_location"][0]["geo"] = geo_data
-
-
 
     # Add to the database
     new_party_plan = db.party_plans.insert_one(party_plan_data)

@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-from models.party_plans import PartyPlan
 from dotenv import load_dotenv
 from clients.client import db
 import os
