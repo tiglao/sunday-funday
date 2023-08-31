@@ -4,7 +4,7 @@ from turtle import distance
 from typing import List, Optional
 import requests
 from pydantic import BaseModel
-from api_keys import API_KEY
+from key import API_KEY
 import fastapi
 
 
@@ -43,7 +43,6 @@ def nearby_search(location, keywords):
     response.raise_for_status()
     if response.status_code != 200:
         raise NearbySearchError()
-    place_id = []
     data = response.json()
     if data["status"] == "OK":
         return data["results"]
