@@ -1,10 +1,10 @@
 from uuid import UUID
+import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from pymongo.common import UuidRepresentation
-import os
 
 load_dotenv()
+
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 DB_NAME = os.environ.get("DB_NAME")

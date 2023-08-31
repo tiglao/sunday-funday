@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, List
-from datetime import datetime
+from pydantic import BaseModel, HttpUrl
 from uuid import UUID
+from datetime import datetime
 from enum import Enum
+from typing import List, Optional
+from models.locations import Location
 
 
 class PartyStatus(str, Enum):
@@ -11,14 +12,8 @@ class PartyStatus(str, Enum):
     FINALIZED = "finalized"
 
 
-class GeoJSON(BaseModel):
-    type: str = "Point"
-    coordinates: List[float] = Field(..., min_items=2, max_items=2)
-    expires: Optional[datetime]
-
-
 class ApiMapsLocation(BaseModel):
-    geo: Optional[GeoJSON]
+    geo: Optional[List[float]]
     input: Optional[str]
 
 
@@ -35,9 +30,9 @@ class PartyPlan(BaseModel):
     party_status: Optional[PartyStatus]
     invitations: Optional[List[UUID]]
     keywords: Optional[List[str]]
-    searched_locations: Optional[List[UUID]]
-    favorite_locations: Optional[List[UUID]]
-    chosen_locations: Optional[List[UUID]]
+    searched_locations: Optional[List[Location]]
+    favorite_locations: Optional[List[Location]]
+    chosen_locations: Optional[List[Location]]
 
     class Config:
         allow_population_by_field_name = True
@@ -112,9 +107,9 @@ class PartyPlanUpdate(BaseModel):
     invitations: Optional[List[UUID]]
     party_status: Optional[PartyStatus]
     keywords: Optional[List[str]]
-    searched_locations: Optional[List[UUID]]
-    favorite_locations: Optional[List[UUID]]
-    chosen_locations: Optional[List[UUID]]
+    searched_locations: Optional[List[Location]]
+    favorite_locations: Optional[List[Location]]
+    chosen_locations: Optional[List[Location]]
 
     class Config:
         schema_extra = {

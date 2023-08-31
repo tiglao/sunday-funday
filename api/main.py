@@ -8,6 +8,8 @@ from routers import (
     locations,
     invitations,
     accounts,
+    notes,
+    emails,
 )
 
 app = FastAPI()
@@ -21,9 +23,11 @@ app.include_router(
     invitations.router, tags=["invitations"], prefix="/invitations"
 )
 app.include_router(locations.router, tags=["send-invitation"], prefix="/locations")
+app.include_router(notes.router, tags=["notes"], prefix="/notes")
+app.include_router(emails.router, tags=["emails"], prefix="/emails")
+
 app.include_router(authenticator.router)
 app.include_router(accounts.router)
-
 
 app.add_middleware(
     CORSMiddleware,
