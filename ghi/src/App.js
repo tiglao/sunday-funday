@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { AuthProvider, useToken } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
+import Dashboard from "./Dashboard";
 import PartyPlanDetail from "./PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
 import { DateProvider } from "./DateContext";
@@ -20,7 +21,8 @@ function App() {
         <DateProvider>
           <Routes>
             <Route path="/" element={<Main />}></Route>
-            <Route path="/dashboard" element={<UserDashboard />}></Route>
+            <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/user_dashboard" element={<UserDashboard />}></Route>
             <Route path="/invitee" element={<InviteeDashboard />}></Route>
           </Routes>
         </DateProvider>
