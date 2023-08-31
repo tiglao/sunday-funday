@@ -1,3 +1,4 @@
+import os
 from json import JSONEncoder
 from typing import List, Optional
 from urllib import request
@@ -12,6 +13,10 @@ from maps_api import NearbySearchError, nearby_search
 from models.locations import Location, LocationUpdate
 from utils.authenticator import authenticator
 from models.party_plans import PartyPlan
+from dotenv import load_dotenv
+
+load_dotenv()
+SEARCH_API_KEY = os.getenv("SEARCH_API_KEY")
 
 router = APIRouter()
 
@@ -56,7 +61,7 @@ async def create_location(
 @router.get(
     "/{party_plan_id}/search_nearby",
     response_description="Search nearby locations",
-    response_class=List[Location],
+    response_class=fastapi.responses.JSONResponse,
 )
 async def search_nearby(
      #location: tuple, keywords: Optional[List[str]] = [],
@@ -66,10 +71,7 @@ async def search_nearby(
     if party_plan is not None:
         location = f'{party_plan["api_maps_location"][0]["geo"][0]},{party_plan["api_maps_location"][0]["geo"][1]}'
         keywords = party_plan["keywords"]
-        print(location)
-        print(keywords)
-        print(party_plan)
-        print(party_plan_id)
+     
     if location is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -78,7 +80,6 @@ async def search_nearby(
 
     try:
         results = nearby_search(location, keywords)
-        print(results)
     except NearbySearchError:
         return fastapi.responses.JSONResponse(
             content=jsonable_encoder({"message": "nearby search failed"}),
