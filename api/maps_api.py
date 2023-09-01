@@ -4,17 +4,14 @@ from turtle import distance
 from typing import List, Optional
 import requests
 from pydantic import BaseModel
-from key import API_KEY
+from key import SEARCH_API_KEY
 import fastapi
-
-
-
 
 
 def geo_code(address):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
 
-    endpoint = f"{base_url}?address={address}&key={API_KEY}"
+    endpoint = f"{base_url}?address={address}&key={SEARCH_API_KEY}"
     response = requests.get(endpoint)
     response.raise_for_status()
     results = response.json()
@@ -38,7 +35,7 @@ def nearby_search(location, keywords):
         "radius": 1000,
         "keyword": keywords,
     }
-    endpoint = f"{base_url}?keyword={keywords}&location={location}&radius=1500&key={API_KEY}"
+    endpoint = f"{base_url}?keyword={keywords}&location={location}&radius=1500&key={SEARCH_API_KEY}"
     response = requests.get(endpoint)
     response.raise_for_status()
     if response.status_code != 200:
