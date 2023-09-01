@@ -15,8 +15,11 @@ from models.party_plans import (
 from clients.client import db
 from maps_api import geo_code
 from fastapi.encoders import jsonable_encoder
-from api_keys import API_KEY
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+SEARCH_API_KEY = os.getenv("SEARCH_API_KEY")
 
 router = APIRouter()
 
