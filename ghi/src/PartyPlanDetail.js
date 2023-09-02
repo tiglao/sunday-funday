@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { baseUrl } from "./common/config.js";
+import { baseUrl } from "./utils/config.js";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { id } = useParams();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
-  //   const [partyPlan, setPartyPlan] = useState(null);
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
@@ -26,6 +25,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
 
     fetchPartyPlan();
   }, [id]);
+
   if (!partyPlan) {
     return <div>Loading...</div>;
   }
@@ -75,7 +75,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
         <h3>API Maps Location</h3>
         {partyPlan.api_maps_location.map((location, index) => (
           <div key={index}>
-            <div>Geo: {location.geo.join(", ")}</div>
+            <div>Geo: {location.geo ? location.geo.join(", ") : "N/A"}</div>
             <div>Input: {location.input}</div>
           </div>
         ))}

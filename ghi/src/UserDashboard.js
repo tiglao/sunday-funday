@@ -1,10 +1,12 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "./common/config.js";
-import SideNav from "./SideNav";
-import PartyPlanDetail from "./PartyPlanDetail";
+import { baseUrl } from "./utils/config.js";
+import { FaArrowUp } from "react-icons/fa";
+import { formatDateTime } from "./utils/dashboardDateTime.js";
+import PartyPlanForm from "./PartyPlanForm.js";
 
 function UserDashboard() {
   const { token } = useAuthContext();
@@ -13,6 +15,24 @@ function UserDashboard() {
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
+  const [selectedPartyPlanId, setSelectedPartyPlanId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (selectedPartyPlanId) {
+      setShowModal(true);
+    }
+  }, [selectedPartyPlanId]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedPartyPlanId(null);
+  };
+
+  const handleOpenModal = (partyPlanId) => {
+    setSelectedPartyPlanId(partyPlanId);
+    setShowModal(true);
+  };
 
   const fetchInvitations = async () => {
     try {
@@ -45,13 +65,6 @@ function UserDashboard() {
       console.error("Error fetching invitations:", error);
     }
   };
-  const handleShowParties = () => {
-    setCurrentData(partyPlans);
-  };
-
-  const handleShowInvitations = () => {
-    setCurrentData(invitations);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,189 +79,162 @@ function UserDashboard() {
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
 
-  const renderCurrentData = () => {
+  const renderComingUp = () => {
     if (currentData) {
       return currentData.map((item, index) => {
-        let displayContent;
-        let linkPath;
+        let displayContent, partyPath, startTime, endTime, imageUrl;
         if (item.type === "partyPlan") {
           displayContent = item.description;
-          linkPath = `/dashboard/party_plan/${item.id}`;
+          partyPath = `/party_plans/${item.id}`;
+          startTime = item.start_time;
+          endTime = item.end_time;
+          imageUrl = item.image;
         } else if (item.type === "invitation") {
-          displayContent = item.party_plan_id;
-          linkPath = `/dashboard/party_plan/${item.party_plan_id}`;
-
-          const correspondingPartyPlan = partyPlans.find(
+          const asscPartyPlan = partyPlans.find(
             (plan) => plan.id === item.party_plan_id
           );
-
-          if (correspondingPartyPlan) {
-            console.log("Corresponding Party Plan:", correspondingPartyPlan);
-          } else {
-            console.log("Party Plan not found for ID:", item.party_plan_id);
+          if (asscPartyPlan) {
+            displayContent = asscPartyPlan.description;
+            partyPath = `/party_plans/${item.party_plan_id}`;
+            startTime = asscPartyPlan.start_time;
+            endTime = asscPartyPlan.end_time;
+            imageUrl = asscPartyPlan.image;
           }
         }
+        const { formattedDate, displayTime } = formatDateTime(
+          startTime,
+          endTime
+        );
 
         return (
-          <Link to={linkPath} key={index}>
-            <div className="p-2" key={index}>
-              <div className="image-placeholders p-3 mt-3">
-                {displayContent}
+          <div
+            className="col-lg-4 col-md-6 col-sm-12 coming-up-col"
+            key={index}
+          >
+            <div className="card coming-up-card rounded">
+              <div
+                className="coming-up-image rounded"
+                style={{ backgroundImage: `url(${imageUrl})` }}
+              ></div>
+              <div className="card-body">
+                <Link
+                  to="#"
+                  onClick={() => handleOpenModal(item.id)}
+                  className="coming-up-arrow"
+                >
+                  <FaArrowUp style={{ transform: "rotate(45deg)" }} />
+                </Link>
+                <p className="card-text coming-up-text">
+                  <span className="one-line">
+                    {formattedDate.toLowerCase()}
+                  </span>
+                </p>
               </div>
-              <p className="text-center">{displayContent}</p>
             </div>
-          </Link>
+            <div className="description-under-card">
+              <span className="coming-up-time">
+                {displayTime}
+                <br />
+              </span>
+            </div>
+          </div>
         );
       });
     }
     return null;
   };
 
-  const renderDrafts = () => {
-    const allDrafts = partyPlans.filter(
+  const renderWaiting = () => {
+    const allWaiting = partyPlans.filter(
       (plan) =>
         plan.party_status === "draft" || plan.party_status === "share draft"
     );
-    return allDrafts.map((item, index) => (
-      <div className="" key={index}>
-        <div
-          className="dark-orange-attention p-3 mb-3"
-          style={{ minHeight: "70px" }}
-        >
-          {item.description}
+    return allWaiting.map((item, index) => {
+      const { formattedDate, displayTime } = formatDateTime(
+        item.start_time,
+        item.end_time
+      );
+
+      return (
+        <div className="card waiting-cards p-3 mb-3 ml-4" key={index}>
+          <div
+            className="card-body"
+            style={{ padding: "0", paddingTop: "2px" }}
+          >
+            <Link
+              to="#"
+              onClick={() => handleOpenModal(item.id)}
+              className="waiting-arrow"
+            >
+              <FaArrowUp style={{ transform: "rotate(45deg)" }} />
+            </Link>
+            <p className="card-text one-line">
+              {item.description}
+              <br />
+              <span className="waiting-date-time">
+                {formattedDate.toLowerCase()} | {displayTime}
+              </span>
+            </p>
+          </div>
         </div>
-      </div>
-    ));
+      );
+    });
   };
-  // useEffect(() => {
-  //   fetchPlans();
-  //   fetchInvitations();
-
-  //   const fetchData = async () => {
-  //     await fetchPlans();
-  //     await fetchInvitations();
-  //     setCurrentData([...partyPlans, ...invitations]);
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate("/");
-  //   }
-  // }, [token, navigate]);
-
-  // if (!token) {
-  //   return null;
-  // }
 
   return (
-    <div className="bg-dark shadow">
-      <div className="container-xxl p-0 bg-white min-vh-100">
-        <div className="curved-header text-center text-white">
-          <h1 className="header-text p-3">sunday funday</h1>
-          <form className="d-flex justify-content-center" role="search">
-            <input
-              className="form-control me-2 w-25 mb-5 me-3"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button
-              className="btn search-button mb-5 rounded-circle"
-              style={{ width: "50px", height: "50px" }}
-            ></button>
-          </form>
-          <div className="circle d-flex align-items-center justify-content-center">
-            <a
-              className="btn circle-button white-color d-lg-none"
-              data-bs-toggle="offcanvas"
-              href="#offcanvasExample"
-              role="button"
-              aria-controls="offcanvasExample"
-            >
-              <svg
-                viewBox="0 0 100 80"
-                width="40"
-                height="40"
-                className="white-fill"
+    <>
+      <div className="row">
+        <div className="col-md-6">
+          <div className="row mb-4">
+            <div className="col-4">
+              <h3>coming up</h3>
+            </div>
+            <div className="col-8 d-flex justify-content-start">
+              <Button
+                variant="link"
+                className="text-decoration-none no-outline"
+                onClick={() => {
+                  setCurrentData(partyPlans);
+                  setSelectedLink("parties");
+                }}
               >
-                <rect width="100" height="20"></rect>
-                <rect y="30" width="100" height="20"></rect>
-                <rect y="60" width="100" height="20"></rect>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <div
-          className="offcanvas offcanvas-start slide-nav"
-          tabIndex="-1"
-          id="offcanvasExample"
-          aria-labelledby="offcanvasExampleLabel"
-        >
-          <div className="offcanvas-header">
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="offcanvas-body">
-            <SideNav />
-          </div>
-        </div>
-        <div className="row mx-5 mt-5">
-          <div className="col-2 border main-nav rounded-3 text-end p-3 d-none d-lg-block">
-            <SideNav />
-          </div>
-          <div className="col-md-5 col-12">
-            <div className="row">
-              <div className="d-flex ">
-                <h3>coming up</h3>
-                <Button
-                  variant="link"
-                  className="text-decoration-none no-outline"
-                  style={{
-                    color: selectedLink === "parties" ? "black" : "grey",
-                  }}
-                  onClick={() => {
-                    setCurrentData(partyPlans);
-                    setCurrentData(partyPlans);
-                    setSelectedLink("parties");
-                  }}
-                >
-                  my parties
-                </Button>
-                <Button
-                  variant="link"
-                  className="text-decoration-none no-outline"
-                  style={{
-                    color: selectedLink === "invites" ? "black" : "grey",
-                  }}
-                  onClick={() => {
-                    setCurrentData(invitations);
-                    setCurrentData(invitations);
-                    setSelectedLink("invites");
-                  }}
-                >
-                  my invites
-                </Button>
-              </div>
-              <div className="d-flex flex-wrap justify-content-around">
-                {renderCurrentData()}
-                {renderCurrentData()}
-              </div>
+                my parties
+              </Button>
+              <Button
+                variant="link"
+                className="text-decoration-none no-outline ml-2"
+                onClick={() => {
+                  setCurrentData(invitations);
+                  setSelectedLink("invites");
+                }}
+              >
+                my invites
+              </Button>
             </div>
           </div>
-          <div className="col-md-5 col-12">
-            <h3 className="ps-2">waiting on you</h3>
-            <div className="row ps-2">{renderDrafts()}</div>
+          <div className="d-flex flex-wrap justify-content-start">
+            {renderComingUp()}
           </div>
         </div>
+        <div className="col-md-6 pl-4 waiting-section">
+          <h3 className="ps-2 section-title">waiting on you</h3>
+          <div className="row ps-2 waiting-card">{renderWaiting()}</div>
+        </div>
       </div>
-    </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Party Plan</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PartyPlanForm partyPlanId={selectedPartyPlanId} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 

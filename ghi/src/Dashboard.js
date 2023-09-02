@@ -2,12 +2,12 @@ import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "./common/config.js";
+import { baseUrl } from "./utils/config.js";
 import FeedbackModal from "./FeedbackModal";
 import SideNav from "./SideNav";
 import { FaCommentDots, FaArrowRight } from "react-icons/fa";
 import PartyPlanDetail from "./PartyPlanDetail.js";
-import TestSpa from "./TestSpa.js";
+import UserDashboard from "./UserDashboard.js";
 
 function Dashboard() {
   const { token } = useAuthContext();
@@ -55,8 +55,8 @@ function Dashboard() {
               <SideNav />
             </div>
             {/* Main Content Area */}
-            <div className="dashboard-main col-md-10 col-12 p-0">
-              <TestSpa />
+            <div className="dashboard-main col-md-10 col-12 p-0 border">
+              <UserDashboard />
             </div>
           </div>
         </div>

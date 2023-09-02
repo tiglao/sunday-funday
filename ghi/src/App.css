@@ -76,10 +76,6 @@ body {
   background-color: #ec6b4e;
 }
 
-.no-outline {
-  outline: none;
-}
-
 .custom-toggler:focus {
   outline: none !important;
 }
@@ -211,6 +207,7 @@ svg {
 
 div.dashboard-main {
   padding-left: 50px !important;
+  font-family: var(--sans-serif);
 }
 
 /* sidenav */
@@ -288,4 +285,146 @@ div.dashboard-main {
 
 .modal.fade .modal-dialog {
   transition-duration: 0.5s !important;
+}
+
+/* party plan detail */
+
+.party-plan-detail {
+  padding-left: 50px !important;
+  font-family: var(--sans-serif);
+  color: #ffffff;
+}
+
+/* user dashboard */
+
+.section-title {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 30px;
+}
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* user dashboard - coming up section */
+
+.coming-up-card {
+  background-color: #fc2cbc;
+  color: #f0f0f0;
+  font-family: var(--sans-serif);
+  width: 140px;
+  height: 140px;
+  padding-bottom: 10px;
+  position: relative;
+  border: none;
+}
+
+.coming-up-col {
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.coming-up-card .card-body {
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(transparent, rgba(252, 44, 188, 0.9));
+  z-index: 2;
+}
+
+.coming-up-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ffffff;
+  z-index: 3;
+  position: relative;
+}
+
+.description-under-card {
+  padding-left: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.coming-up-arrow {
+  position: absolute;
+  top: -93px;
+  right: 10px;
+  z-index: 2;
+  color: #0bc4fc;
+  font-size: 1.5em;
+  transition: all 0.3s ease-in-out;
+}
+
+.coming-up-arrow:active {
+  transform: rotate(45deg) translateY(4px);
+}
+
+.coming-up-image {
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border: none;
+}
+
+.no-outline {
+  margin-left: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: grey;
+  outline: none;
+  text-decoration: none;
+}
+
+.no-outline:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/* user dashboard - waiting section */
+
+.waiting-section {
+  padding-left: 6em;
+}
+
+.waiting-date-time {
+  font-size: 0.7em;
+}
+
+.waiting-cards {
+  background-color: #0bc4fc;
+  color: #ffffff;
+  font-family: var(--monospace);
+  width: 350px;
+  height: 70px;
+}
+
+.waiting-card {
+  padding: 0;
+  padding-top: 10px !important;
+}
+
+.waiting-arrow {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 4;
+  color: #ffc7c2;
+  font-size: 1.5em;
+  transition: all 0.3s ease-in-out;
+}
+
+.waiting-arrow:active {
+  transform: rotate(45deg) translateY(4px);
 }
