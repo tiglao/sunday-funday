@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { baseUrl } from "./utils/config.js";
+import { FaEdit, FaCheck } from "react-icons/fa";
+import { useDashboard } from "./utils/DashboardContext";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
-  const { id } = useParams();
+  const { selectedPartyPlanId } = useDashboard();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
+  const [isEditing, setIsEditing] = useState(null);
+  const [updatedValue, setUpdatedValue] = useState("");
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
       try {
-        const response = await fetch(`${baseUrl}/party_plans/${id}`);
+        const response = await fetch(
+          `${baseUrl}/party_plans/${selectedPartyPlanId}`
+        );
         if (response.ok) {
           const data = await response.json();
           setPartyPlan({
@@ -23,8 +28,42 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
       }
     };
 
-    fetchPartyPlan();
-  }, [id]);
+    if (selectedPartyPlanId) {
+      fetchPartyPlan();
+    }
+  }, [selectedPartyPlanId]);
+
+  const handleEditClick = (field) => {
+    setIsEditing(field);
+    setUpdatedValue(partyPlan[field]);
+  };
+
+  const handleCheckClick = async (field) => {
+    // TODO: Update the backend with the new value
+    setIsEditing(null);
+    setUpdatedValue("");
+  };
+
+  const renderEditableField = (field, value) => {
+    if (isEditing === field) {
+      return (
+        <div>
+          <input
+            type="text"
+            value={updatedValue}
+            onChange={(e) => setUpdatedValue(e.target.value)}
+          />
+          <FaCheck className="icon" onClick={() => handleCheckClick(field)} />
+        </div>
+      );
+    }
+    return (
+      <div className="editable-field">
+        {value}
+        <FaEdit className="icon" onClick={() => handleEditClick(field)} />
+      </div>
+    );
+  };
 
   if (!partyPlan) {
     return <div>Loading...</div>;
@@ -34,24 +73,26 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     <div className="party-plan-detail">
       <h2>Party Plan Details</h2>
 
-      <div>ID: {partyPlan.id}</div>
-      <div>Account ID: {partyPlan.account_id}</div>
       <div>Created: {partyPlan.created}</div>
-      <div>Updated: {partyPlan.updated || "N/A"}</div>
-      <div>Start Time: {partyPlan.start_time}</div>
-      <div>End Time: {partyPlan.end_time}</div>
-      <div>Description: {partyPlan.description}</div>
+      <div>Last Updated: {partyPlan.updated || "N/A"}</div>
+
+      {/* EDITABLE */}
+      <div>{renderEditableField("Start Time", partyPlan.start_time)}</div>
+      <div>{renderEditableField("End Time", partyPlan.end_time)}</div>
+      <div>{renderEditableField("Description", partyPlan.description)}</div>
+      <div>{renderEditableField("Party Status", partyPlan.party_status)}</div>
       <div>
         Image: <img src={partyPlan.image} alt="party" />
       </div>
-      <div>Party Status: {partyPlan.party_status}</div>
       <div>
         Invitations:{" "}
         {partyPlan.invitations ? partyPlan.invitations.join(", ") : "N/A"}
       </div>
+
       <div>
         Keywords: {partyPlan.keywords ? partyPlan.keywords.join(", ") : "N/A"}
       </div>
+
       <div>
         Searched Locations:{" "}
         {partyPlan.searched_locations
@@ -72,6 +113,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
       </div>
 
       <div>
+        {/* EDITABLE BUT ONLY INPUT */}
         <h3>API Maps Location</h3>
         {partyPlan.api_maps_location.map((location, index) => (
           <div key={index}>

@@ -428,3 +428,25 @@ div.dashboard-main {
 .waiting-arrow:active {
   transform: rotate(45deg) translateY(4px);
 }
+
+/* party plan edit */
+
+.party-plan-detail {
+  color: #ffffff;
+}
+
+.editable-field {
+  position: relative;
+}
+
+.icon {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.editable-field:hover .icon {
+  display: inline;
+}

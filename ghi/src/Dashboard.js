@@ -1,18 +1,19 @@
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useNavigate, Link } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import React, { useState, useEffect } from "react";
-import { baseUrl } from "./utils/config.js";
-import FeedbackModal from "./FeedbackModal";
-import SideNav from "./SideNav";
+// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+// import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { FaCommentDots, FaArrowRight } from "react-icons/fa";
+import SideNav from "./SideNav";
+import FeedbackModal from "./FeedbackModal";
 import PartyPlanDetail from "./PartyPlanDetail.js";
 import UserDashboard from "./UserDashboard.js";
+import { useDashboard } from "./utils/DashboardContext";
 
 function Dashboard() {
-  const { token } = useAuthContext();
-  const navigate = useNavigate();
+  // const { token } = useAuthContext();
+  // const navigate = useNavigate();
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const { currentView, setCurrentView, setSelectedPartyPlanId } =
+    useDashboard();
 
   return (
     <>
@@ -45,18 +46,22 @@ function Dashboard() {
       </div>
 
       {/* Central Container */}
-
       <div>
         <div className="center container-xxl p-0 min-vh-100">
-          {/* Main Content */}
           <div className="row mx-5 mt-5">
             {/* Side Nav */}
             <div className="col-2 border main-nav rounded-3 text-end p-3 d-none d-lg-block">
               <SideNav />
             </div>
             {/* Main Content Area */}
-            <div className="dashboard-main col-md-10 col-12 p-0 border">
-              <UserDashboard />
+            <div className="dashboard-main col-md-10 col-12 p-0">
+              {currentView === "userDashboard" && (
+                <UserDashboard
+                  setCurrentView={setCurrentView}
+                  setSelectedPartyPlanId={setSelectedPartyPlanId}
+                />
+              )}
+              {currentView === "partyPlanDetail" && <PartyPlanDetail />}
             </div>
           </div>
         </div>

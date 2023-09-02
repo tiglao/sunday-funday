@@ -1,37 +1,42 @@
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useNavigate, Link } from "react-router-dom";
+// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+// import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "./utils/config.js";
 import { FaArrowUp } from "react-icons/fa";
+import { baseUrl } from "./utils/config.js";
 import { formatDateTime } from "./utils/dashboardDateTime.js";
 import PartyPlanForm from "./PartyPlanForm.js";
+import { useDashboard } from "./utils/DashboardContext.js";
 
 function UserDashboard() {
-  const { token } = useAuthContext();
-  const navigate = useNavigate();
+  // const { token } = useAuthContext();
+  // const navigate = useNavigate();
+  const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
   const [selectedLink, setSelectedLink] = useState("parties");
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-  const [selectedPartyPlanId, setSelectedPartyPlanId] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [waitingModal, setWaitingModal] = useState(false);
+  const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
 
-  useEffect(() => {
-    if (selectedPartyPlanId) {
-      setShowModal(true);
+  const handleComingUpArrow = (id) => {
+    setCurrentView("partyPlanDetail");
+    console.log("handleComingUpArrow triggered with ID:", id);
+    if (id === undefined) {
+      console.log("ID is undefined. Something is wrong.");
+      return;
     }
-  }, [selectedPartyPlanId]);
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedPartyPlanId(null);
+    showPartyPlanDetail(id);
   };
 
-  const handleOpenModal = (partyPlanId) => {
-    setSelectedPartyPlanId(partyPlanId);
-    setShowModal(true);
+  const handleWaitingArrow = (id) => {
+    setwaitingPartyPlanId(id);
+    setWaitingModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setWaitingModal(false);
   };
 
   const fetchInvitations = async () => {
@@ -65,6 +70,12 @@ function UserDashboard() {
       console.error("Error fetching invitations:", error);
     }
   };
+
+  const dashboardContextValue = useDashboard();
+
+  useEffect(() => {
+    console.log("Current Context Value:", dashboardContextValue);
+  }, [dashboardContextValue]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,6 +121,10 @@ function UserDashboard() {
           <div
             className="col-lg-4 col-md-6 col-sm-12 coming-up-col"
             key={index}
+            onClick={() => {
+              console.log("Item ID before passing to handler:", item.id);
+              handleComingUpArrow(item.id);
+            }}
           >
             <div className="card coming-up-card rounded">
               <div
@@ -117,13 +132,12 @@ function UserDashboard() {
                 style={{ backgroundImage: `url(${imageUrl})` }}
               ></div>
               <div className="card-body">
-                <Link
-                  to="#"
-                  onClick={() => handleOpenModal(item.id)}
+                <div
+                  onClick={() => handleComingUpArrow(item.id)}
                   className="coming-up-arrow"
                 >
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
-                </Link>
+                </div>
                 <p className="card-text coming-up-text">
                   <span className="one-line">
                     {formattedDate.toLowerCase()}
@@ -161,13 +175,12 @@ function UserDashboard() {
             className="card-body"
             style={{ padding: "0", paddingTop: "2px" }}
           >
-            <Link
-              to="#"
-              onClick={() => handleOpenModal(item.id)}
+            <div
               className="waiting-arrow"
+              onClick={() => handleWaitingArrow(item.id)}
             >
               <FaArrowUp style={{ transform: "rotate(45deg)" }} />
-            </Link>
+            </div>
             <p className="card-text one-line">
               {item.description}
               <br />
@@ -221,12 +234,12 @@ function UserDashboard() {
           <div className="row ps-2 waiting-card">{renderWaiting()}</div>
         </div>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={waitingModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Update Party Plan</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <PartyPlanForm partyPlanId={selectedPartyPlanId} />
+          <PartyPlanForm partyPlanId={waitingPartyPlanId} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
