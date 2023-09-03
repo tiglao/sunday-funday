@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "./common/config.js";
+import SearchComponent from "./Search.jsx";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { id } = useParams();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
+  const[searchResults, setSearchResults] = useState([]);
   //   const [partyPlan, setPartyPlan] = useState(null);
+  const handleSearch = (searchQuery) => {
+      fetchDataFromGoogleMapsAPI(searchQuery).then((data) => {
+      setSearchResults(data)
+
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
@@ -58,6 +64,12 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
           ? partyPlan.searched_locations.join(", ")
           : "N/A"}
       </div>
+      <div className="container">
+      <h1 className="text-center mt-4">Search Results</h1>
+      <SearchComponent onSearch={handleSearch} />
+      <div id="search-results">
+      </div>
+    </div>
       <div>
         Favorite Locations:{" "}
         {partyPlan.favorite_locations

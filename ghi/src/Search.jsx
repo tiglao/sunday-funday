@@ -10,7 +10,6 @@ function SearchComponent({ onSearch }) {
   const [time, setTime] = useState('');
 
   const handleSearch = () => {
-    // Construct the search query with the provided parameters
     const searchQuery = {
       keyword,
       location,
@@ -18,7 +17,6 @@ function SearchComponent({ onSearch }) {
       time,
     };
 
-    // Pass the search query to the parent component
     onSearch(searchQuery);
   };
 
