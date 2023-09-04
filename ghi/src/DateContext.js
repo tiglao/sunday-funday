@@ -11,7 +11,7 @@ export function DateProvider({ children }) {
 
   useEffect(() => {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const utcDate = new Date("2023-08-25T02:56:43.950Z");
+    const utcDate = new Date();
     const localDate = new Date(
       utcDate.toLocaleString("en-US", { timeZone: timeZone })
     );
