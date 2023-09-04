@@ -4,8 +4,11 @@ from turtle import distance
 from typing import List, Optional
 import requests
 from pydantic import BaseModel
-from key import SEARCH_API_KEY
-import fastapi
+from dotenv import load_dotenv
+
+load_dotenv()
+SEARCH_API_KEY = os.getenv("SEARCH_API_KEY")
+GEOCODE_API_KEY = os.getenv("GEOCODE_API_KEY")
 
 
 def geo_code(address):
@@ -30,7 +33,7 @@ class NearbySearchError(Exception):
 def nearby_search(location, keywords):
     base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
-        "key": API_KEY,
+        "key": SEARCH_API_KEY,
         "location": f"{location}",
         "radius": 1000,
         "keyword": keywords,

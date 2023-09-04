@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response
+from fastapi import APIRouter, Body, HTTPException, status, Response, Query
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from uuid import UUID, uuid4
-from models.invitations import Invitation, InvitationUpdate, InvitationCreate
+from pydantic import UUID4
+from models.invitations import Invitation, InvitationUpdate, InvitationCreate, RsvpStatus
 from clients.client import db, get_invitation_by_id, save_invitation
 from utils.email_service import send_email, send_party_invitation_email
 from utils.services import (
@@ -48,6 +49,7 @@ def create_invitation(
 
     # find associated party plan
     associated_party_plan = db.party_plans.find_one({"id": str(party_plan_id)})
+    print("Debug: associated_party_plan:", associated_party_plan)
     if not associated_party_plan:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -65,14 +67,29 @@ def create_invitation(
 
     # add to db
     new_invitation = db.invitations.insert_one(invitation_data)
+    print("Debug: new_invitation.acknowledged:", new_invitation.acknowledged)
     if not new_invitation.acknowledged:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to add invitation to database.",
         )
 
+    # Auto-Send the email
+    email_sent = send_email(
+        to_email=account_info['email'],
+        subject="You're Invited!",
+        content="You have been invited to a party! Click here to Accept/Decline."
+    )
+
+    if not email_sent:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send invitation email."
+        )
+
     # fetch the instance you just created
     created_invitation = db.invitations.find_one({"id": invitation_id})
+    print("Debug: created_invitation:", created_invitation)
     if not created_invitation:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -185,20 +202,36 @@ async def send_invitation(
         )
 
 
-@router.put("/rsvp/{invitation_id}/")
-async def update_rsvp(invitation_id: str, status: bool):
-    invitation = get_invitation_by_id(invitation_id)
-
+@router.put("/rsvp/{invitation_id}/", response_model=Invitation)
+async def update_rsvp_status(
+    invitation_id: UUID,
+    rsvp_status: RsvpStatus = Query(..., alias="status")
+):
+    print(f"Debug: Received invitation_id: {invitation_id}, rsvp_status: {rsvp_status}")
+    invitation = db.invitations_collections.find_one({"id": invitation_id})
+    print("Debug: Existing invitation:", invitation)
     if not invitation:
-        raise HTTPException(status_code=404, detail="Invitation not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invitation not found")
 
-    invitation.rsvpStatus = status
-    save_invitation(invitation.dict())
+    # Update RSVP status in DB
+    db.invitations_collections.update_one(
+        {"id": invitation_id},
+        {"$set": {"rsvp_status": rsvp_status}},
+    )
 
-    party_plan = get_latest_party_plan_by_id(invitation.party_plan_id)
-
+    # Update RSVP count in the associated party plan
+    party_plan_id = invitation.get("party_plan_id")
+    party_plan = get_latest_party_plan_by_id(party_plan_id)
     new_rsvp_count = calculate_latest_rsvp_count(party_plan)
+    update_rsvp_count_in_party_plan(party_plan_id, new_rsvp_count)
 
-    update_rsvp_count_in_party_plan(party_plan['_id'], new_rsvp_count)
+    # Send an email based on the RSVP status
+    to_email = invitation.get("account").get("email")
+    if rsvp_status == RsvpStatus.ACCEPTED:
+        send_email(to_email, "RSVP Status Update", "You have accepted the invitation.")
+    elif rsvp_status == RsvpStatus.DECLINED:
+        send_email(to_email, "RSVP Status Update", "You have declined the invitation.")
 
-    return {"status": "success", "message": "RSVP status updated successfully"}
+    # Fetch the updated invitation
+    updated_invitation = db.invitations_collections.find_one({"id": invitation_id})
+    return updated_invitation
