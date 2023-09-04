@@ -1,4 +1,4 @@
-import React { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "./common/config.js";
 import SearchComponent from "./Search.jsx";
@@ -6,12 +6,26 @@ import SearchComponent from "./Search.jsx";
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { id } = useParams();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
-  const[searchResults, setSearchResults] = useState([]);
-  //   const [partyPlan, setPartyPlan] = useState(null);
-  const handleSearch = (searchQuery) => {
-      fetchDataFromGoogleMapsAPI(searchQuery).then((data) => {
-      setSearchResults(data)
+  const [searchResults, setSearchResults] = useState([]);
+  
 
+  const keyword = "keyword"; 
+  const location = "location"; 
+  const date = "date"; 
+  const time = "time";
+
+  const handleSearch = () => {
+    const searchQuery = `${keyword} near ${location} on ${date} at ${time}`;
+
+ 
+    fetchDataFromGoogleMapsAPI(searchQuery)
+      .then((data) => {
+        setSearchResults(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
@@ -32,6 +46,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
 
     fetchPartyPlan();
   }, [id]);
+
   if (!partyPlan) {
     return <div>Loading...</div>;
   }

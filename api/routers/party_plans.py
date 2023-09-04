@@ -45,19 +45,19 @@ def create_party_plan(
     if address:
         geo_data = geo_code(address)
         if geo_data:
-            print(party_plan_data)  # Check the value of party_plan_data
+            print(party_plan_data) 
             print(
                 party_plan_data["api_maps_location"]
-            )  # Check the value of api_maps_location
+            ) 
             print(
                 party_plan_data["api_maps_location"][0]
-            )  # Check the value of the first element
+            )  
             print(
                 party_plan_data["api_maps_location"][0]["geo"]
-            )  # Check the value of geo
+            )  
             party_plan_data["api_maps_location"][0]["geo"] = geo_data
 
-    # Add to the database
+    
     new_party_plan = db.party_plans.insert_one(party_plan_data)
     if not new_party_plan.acknowledged:
         raise HTTPException(
@@ -65,7 +65,7 @@ def create_party_plan(
             detail="Failed to add party plan to database.",
         )
 
-    # fetch the plan you just made
+  
     created_party_plan = db.party_plans.find_one({"id": party_plan_data["id"]})
     if not created_party_plan:
         raise HTTPException(
