@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import UpdateProfile from "./UpdateProfile"; // You would need to create this component
+import UpdateProfile from "./UpdateProfile";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { NavLink } from "react-router-dom";
 

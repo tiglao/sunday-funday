@@ -35,7 +35,7 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
       date_of_birth: profileData.date_of_birth,
       avatar: profileData.avatar,
       email: profileData.email,
-      username: profileData.email, // Added username field with the email value
+      username: profileData.email,
     };
 
     const profileUrl = `http://localhost:8000/updateByEmail?email=${profileData.username}`;
@@ -52,9 +52,6 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
       const responseData = await response.json();
       console.log("Response data:", responseData);
       if (response.ok) {
-        // navigate(`/profile/${profileData.username
-      } else {
-        // Handle error response here
       }
     } catch (error) {
       console.error(error);
@@ -83,7 +80,6 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
             username: data.account.email,
           }));
 
-          // Fetch additional data from /accountByEmail endpoint
           const additionalDataUrl = `http://localhost:8000/accountByEmail?email=${data.account.username}`;
           const additionalDataResponse = await fetch(additionalDataUrl);
           const additionalData = await additionalDataResponse.json();
@@ -97,7 +93,7 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
                   key,
                   value ?? "",
                 ])
-              ), // Merging the additional data
+              ),
             }));
           }
         }
