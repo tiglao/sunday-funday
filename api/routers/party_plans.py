@@ -10,7 +10,7 @@ from models.party_plans import ApiMapsLocation,  PartyPlan, PartyPlanUpdate, Par
 from clients.client import db
 from maps_api import geo_code
 from fastapi.encoders import jsonable_encoder
-from api_keys import API_KEY
+
 
 
 router = APIRouter()
