@@ -141,6 +141,7 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
                 name="full_name"
                 value={profileData.full_name}
                 onChange={handleProfileChange}
+                disabled
               />
             </Form.Group>
             <Form.Group
