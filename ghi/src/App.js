@@ -50,9 +50,10 @@ function App() {
               path="/test"
               element={<ProtectedRoute component={TestSpa} />}
             />
-            <Route path="/invitee" element={<InviteeDashboard />} />
-            <Route path="/test" element={<TestSpa />} />
-            <Route path="/UpdateProfile" element={<UpdateProfile />} />
+            <Route
+              path="/UpdateProfile"
+              element={<ProtectedRoute component={UpdateProfile} />}
+            />
           </Routes>
         </DateProvider>
       </AuthProvider>
