@@ -11,13 +11,14 @@ import Main from "./Main";
 import TestSpa from "./TestSpa";
 import PartyPlanForm from "./PartyPlanForm";
 import { DashboardProvider } from "./utils/DashboardContext";
+import { useNavigate } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
-  // const { token } = useToken(); // Assuming useToken is a custom hook you've defined elsewhere
-
   const domain = /https:\/\/[^/]+/;
   const basename = process.env.PUBLIC_URL.replace(domain, "");
   const baseUrl = process.env.REACT_APP_API_HOST;
+
   return (
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
@@ -27,21 +28,32 @@ function App() {
             <Route
               path="/dashboard/*"
               element={
-                <DashboardProvider>
-                  <Dashboard />
-                </DashboardProvider>
+                <ProtectedRoute
+                  component={() => (
+                    <DashboardProvider>
+                      <Dashboard />
+                    </DashboardProvider>
+                  )}
+                />
               }
             >
               <Route index element={<UserDashboard />} />
               <Route path="party_plans/new" element={<PartyPlanForm />} />
               <Route path="party_plans/:id" element={<PartyPlanDetail />} />
             </Route>
-            <Route path="/invitee" element={<InviteeDashboard />} />
-            <Route path="/test" element={<TestSpa />} />
+            <Route
+              path="/invitee"
+              element={<ProtectedRoute component={InviteeDashboard} />}
+            />
+            <Route
+              path="/test"
+              element={<ProtectedRoute component={TestSpa} />}
+            />
           </Routes>
         </DateProvider>
       </AuthProvider>
     </BrowserRouter>
   );
 }
+
 export default App;
