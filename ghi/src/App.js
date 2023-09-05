@@ -3,10 +3,15 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { AuthProvider, useToken } from "@galvanize-inc/jwtdown-for-react";
 import UserDashboard from "./UserDashboard";
+import Dashboard from "./Dashboard";
 import PartyPlanDetail from "./PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
 import { DateProvider } from "./DateContext";
 import Main from "./Main";
+import TestSpa from "./TestSpa";
+import UpdateProfile from "./UpdateProfile";
+import PartyPlanForm from "./PartyPlanForm";
+import { DashboardProvider } from "./utils/DashboardContext";
 
 function App() {
   // const { token } = useToken(); // Assuming useToken is a custom hook you've defined elsewhere
@@ -19,9 +24,22 @@ function App() {
       <AuthProvider baseUrl={baseUrl}>
         <DateProvider>
           <Routes>
-            <Route path="/" element={<Main />}></Route>
-            <Route path="/dashboard" element={<UserDashboard />}></Route>
-            <Route path="/invitee" element={<InviteeDashboard />}></Route>
+            <Route path="/" element={<Main />} />
+            <Route
+              path="/dashboard/*"
+              element={
+                <DashboardProvider>
+                  <Dashboard />
+                </DashboardProvider>
+              }
+            >
+              <Route index element={<UserDashboard />} />
+              <Route path="party_plans/new" element={<PartyPlanForm />} />
+              <Route path="party_plans/:id" element={<PartyPlanDetail />} />
+            </Route>
+            <Route path="/invitee" element={<InviteeDashboard />} />
+            <Route path="/test" element={<TestSpa />} />
+            <Route path="/UpdateProfile" element={<UpdateProfile />} />
           </Routes>
         </DateProvider>
       </AuthProvider>

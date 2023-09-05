@@ -146,15 +146,15 @@ def update_party_plan(
             # Check if the place_id is already in the existing set
                 if place_id not in existing_place_ids:
                     location = db.locations.find_one({"place_id": str(place_id)})
-                    notes = party_plan_data.get("notes")
-                    account_location_tags = location.get("account_location_tags")
+
                     if not location:
                         raise HTTPException(
                             status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Location with ID {location} not found.",
                         )
 
-
+                    notes = party_plan_data.get("notes")
+                    account_location_tags = location.get("account_location_tags")
                     location_data = {
                         "place_id": place_id,
                         "account_location_tags": account_location_tags,
@@ -261,48 +261,6 @@ def update_party_plan(
 
     return db.party_plans.find_one({"id": str(id)})
 
-@router.put(
-    "/{id}/{place_id}/favorite",
-    response_description="Favorite a location",
-    response_model=PartyPlan,
-)
-def favorite_location(
-    id: UUID,
-    place_id =str,
-    party_plan: PartyPlanUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
-    # get plan by id
-    existing_party_plan = db.party_plans.find_one({"id": str(id)})
-    if not existing_party_plan:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Party with ID {id} not found",
-        )
-
-    party_plan_data = {
-        k: v for k, v in party_plan.dict().items() if v is not None
-    }
-    if "favorite_locations" in party_plan_data:
-            existing_searched_locations = existing_party_plan.get(
-                "searched_locations", []
-            )
-            # initialize
-            if party_plan_data["favorite_locations"] is None:
-                party_plan_data["favorite_locations"] = []
-
-            if not all(
-                fav_id in existing_searched_locations
-                for fav_id in party_plan_data["favorite_locations"]
-            ):
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="All favorite locations must be part of searched locations.",
-                )
-            for fav_id in party_plan_data["favorite_locations"]:
-                db.locations.update_one(
-                    {"place_id": fav_id["place_id"]},
-                )
 
 @router.delete("/{id}", response_description="Delete a party plan")
 def delete_party_plan(
