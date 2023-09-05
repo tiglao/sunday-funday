@@ -24,8 +24,7 @@ Finished the logout feature.
 
 8/25/23 I worked on the user dashboard most of the day making everything responsive. Leah and Tasnia are getting frurther in their google maps issue. Ellie pushed/merged some of her database revamping making db relationships and cascade delete like. Jean is working on the email for the invitees. He had a test runing the other day and it worked. Hes working to implement it into our code.
 
-8/28/23
+9/1/23
+Worked on the account update form. Its pretty much working now. I am waiting for Ellie tomerge her branch since it has a lot of ui elements in it. It will be easier to integrate.
 
-8/29/23
-
-8/30/23
+8/5/23
