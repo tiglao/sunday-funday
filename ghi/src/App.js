@@ -9,6 +9,7 @@ import InviteeDashboard from "./InviteeDashboard";
 import { DateProvider } from "./DateContext";
 import Main from "./Main";
 import TestSpa from "./TestSpa";
+import UpdateProfile from "./UpdateProfile";
 import PartyPlanForm from "./PartyPlanForm";
 import { DashboardProvider } from "./utils/DashboardContext";
 import { useNavigate } from "react-router-dom";
@@ -49,6 +50,9 @@ function App() {
               path="/test"
               element={<ProtectedRoute component={TestSpa} />}
             />
+            <Route path="/invitee" element={<InviteeDashboard />} />
+            <Route path="/test" element={<TestSpa />} />
+            <Route path="/UpdateProfile" element={<UpdateProfile />} />
           </Routes>
         </DateProvider>
       </AuthProvider>
