@@ -10,7 +10,7 @@ from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from maps_api import NearbySearchError, nearby_search
-from models.locations import Location, LocationUpdate
+from models.locations import Location, LocationCreate, LocationUpdate
 from utils.authenticator import authenticator
 from models.party_plans import PartyPlan
 
@@ -23,13 +23,13 @@ router = APIRouter()
     response_model=Location,
 )
 async def create_location(
-    location: Location = Body(...),
+    location_create: LocationCreate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     # check place_id error
 
-    location = jsonable_encoder(location)
-    existing_location = db.locations.find_one({"place_id": location.place_id})
+    locations = jsonable_encoder(location_create)
+    existing_location = db.locations.find_one({"place_id": locations["place_id"]})
     if existing_location:
         raise HTTPException(
             status_code=400,
@@ -38,19 +38,21 @@ async def create_location(
 
     # conversion
     # will need to add data validators later
-    location_dict = jsonable_encoder(location)
 
+    new_location = db.locations.insert_one(locations)
+    if not new_location.acknowledged:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to add location to database.",
+        )
 
-    location_dict["id"] = str(uuid4())
-
-    location_dict["account_ids"] = [location.account_id]
-
-    print("dictionary after making new id:", location_dict)
-
-    new_location = db.locations.insert_one(location_dict)
-
-    created_location = db.locations.find_one({"_id": new_location.inserted_id})
-    created_location["_id"] = str(created_location["_id"])
+    created_location = db.locations.find_one({"place_id": locations["place_id"]})
+    if not created_location:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Party plan with ID {locations['place_id']} not found after insertion.",
+        )
+    # created_location["place_id"] = str(created_location["place_id"])
 
     return created_location
 
@@ -72,37 +74,37 @@ async def search_nearby(
         print(keywords)
         print(party_plan)
         print(party_plan_id)
-    if location is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Latitude and/or longitude not available for this location",
-        )
+        if location is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Latitude and/or longitude not available for this location",
+            )
 
-    try:
-        results = nearby_search(location, keywords)
-        print(results)
-        if results == None:
-            print("none")
-        results_dict = [{"place_id": place["place_id"]} for place in results]
-        print(results_dict)
-    except NearbySearchError:
-        return fastapi.responses.JSONResponse(
-            content=jsonable_encoder({"message": "nearby search failed"}),
-            status_code=400,
-        )
-    locations = []
-    try:
-        for res in results_dict:
-            location = Location(**res)
-            locations.append(location)
-        return fastapi.responses.JSONResponse(
-            content=jsonable_encoder({"locations": locations}), status_code=200
-        )
-    except pydantic.ValidationError as e:
-        return fastapi.responses.JSONResponse(
-            content=jsonable_encoder({"message": e.errors()}),
-            status_code=400,
-        )
+        try:
+            results = nearby_search(location, keywords)
+            print(results)
+            if results == None:
+                print("none")
+            results_dict = [{"place_id": place["place_id"]} for place in results]
+            print(results_dict)
+        except NearbySearchError:
+            return fastapi.responses.JSONResponse(
+                content=jsonable_encoder({"message": "nearby search failed"}),
+                status_code=400,
+            )
+        locations = []
+        try:
+            for res in results_dict:
+                location = Location(**res)
+                locations.append(location)
+            return fastapi.responses.JSONResponse(
+                content=jsonable_encoder({"locations": locations}), status_code=200
+            )
+        except pydantic.ValidationError as e:
+            return fastapi.responses.JSONResponse(
+                content=jsonable_encoder({"message": e.errors()}),
+                status_code=400,
+            )
 
 @router.get(
     "/",
@@ -134,16 +136,16 @@ def find_location(
 
 
 @router.put(
-    "/{id}",
+    "/{place_id}",
     response_description="Update a location",
     response_model=LocationUpdate,
 )
 def update_location(
-    id: UUID,
+    place_id = str,
     location: LocationUpdate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    existing_location = db.locations.find_one({"_id": str(id)})
+    existing_location = db.locations.find_one({"place_id": place_id})
 
     if not existing_location:
         raise HTTPException(
@@ -154,26 +156,26 @@ def update_location(
     location_data = {k: v for k, v in location.dict().items() if v is not None}
 
     if location_data:
-        db.locations.update_one({"_id": str(id)}, {"$set": location_data})
+        db.locations.update_one({"place_id": place_id}, {"$set": location_data})
 
-    return db.locations.find_one({"_id": str(id)})
+    return db.locations.find_one({"place_id": place_id})
 
 
-@router.delete("/{id}", response_description="Delete a location location")
+@router.delete("/{place_id}", response_description="Delete a location location")
 def delete_location(
-    id: str,
     response: Response,
+    place_id= str,
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    delete_result = db.locations.delete_one({"_id": id})
+    delete_result = db.locations.delete_one({"place_id": place_id})
 
     if delete_result.deleted_count == 1:
         return {
             "status": "success",
-            "message": f"Location with id {id}) successfully deleted.",
+            "message": f"Location with id {place_id}) successfully deleted.",
         }
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"No location with ID {id} found. Deletion incomplete.",
+        detail=f"No location with ID {place_id} found. Deletion incomplete.",
     )

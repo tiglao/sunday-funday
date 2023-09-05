@@ -131,38 +131,87 @@ def update_party_plan(
 
     # make sure searched_locations in payload are in locations database and update. this will append the searched_locations array with each update.
     if "searched_locations" in party_plan_data:
-        for location_id in party_plan_data["searched_locations"]:
-            if location_id not in existing_searched_locations:
-                location = db.locations.find_one({"id": str(location_id)})
-                if not location:
-                    raise HTTPException(
-                        status_code=status.HTTP_404_NOT_FOUND,
-                        detail=f"Location with ID {location_id} not found.",
-                    )
-                existing_searched_locations.append(location_id)
+        existing_searched_locations = existing_party_plan.get(
+            "searched_locations", []
+        )
+        print(existing_searched_locations)
+
+        # Create a set of existing location place_ids for efficient lookup
+        existing_place_ids = {location["place_id"] for location in existing_searched_locations}
+
+        for location_place_id in party_plan_data["searched_locations"]:
+            print(location_place_id)
+            place_id = location_place_id["place_id"]
+            if place_id not in existing_place_ids:
+            # Check if the place_id is already in the existing set
+                if place_id not in existing_place_ids:
+                    location = db.locations.find_one({"place_id": str(place_id)})
+                    notes = party_plan_data.get("notes")
+                    account_location_tags = location.get("account_location_tags")
+                    if not location:
+                        raise HTTPException(
+                            status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Location with ID {location} not found.",
+                        )
+
+
+                    location_data = {
+                        "place_id": place_id,
+                        "account_location_tags": account_location_tags,
+                        "notes": notes
+                    }
+
+                    existing_searched_locations.append(location_data)
+                    print(existing_searched_locations)
+
+        # Update the "searched_locations" field in party_plan_data
+        party_plan_data["searched_locations"] = existing_searched_locations
 
     # validate and update favorite_locations in payload. will overwrite existing list.
     if "favorite_locations" in party_plan_data:
         existing_searched_locations = existing_party_plan.get(
             "searched_locations", []
         )
+        existing_favorite_locations = existing_party_plan.get(
+            "favorite_locations", []
+        )
+        print(f"existing favorites {existing_favorite_locations}")
+        favorite_place_ids = [str(location.get("place_id")) for location in party_plan_data["favorite_locations"]]
+        print(f"this is favorite ids {favorite_place_ids}")
         # initialize
         if party_plan_data["favorite_locations"] is None:
             party_plan_data["favorite_locations"] = []
-
+        existing_searched_location_ids = [str(location.get("place_id")) for location in existing_searched_locations]
+        existing_favorite_location_ids = [str(location.get("place_id")) for location in existing_favorite_locations]
         if not all(
-            fav_id in existing_searched_locations
-            for fav_id in party_plan_data["favorite_locations"]
+            place_id in existing_searched_location_ids
+            for place_id in favorite_place_ids
+
         ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="All favorite locations must be part of searched locations.",
             )
-        for fav_id in party_plan_data["favorite_locations"]:
-            db.locations.update_one(
-                {"id": str(fav_id)},
-                {"$set": {"favorite_status": True}},
-            )
+        notes=  party_plan_data.get("notes")
+        account_location_tags = party_plan_data.get("account_location_tags")
+
+        for fav_location in party_plan_data["favorite_locations"]:
+            if fav_location.get("place_id") in existing_favorite_location_ids:
+                fav_location["notes"] = notes
+        # Ensure fav_location is a dictionary
+            if not isinstance(fav_location, dict):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Each item in favorite_locations must be a dictionary.",
+                )
+
+            location_data = {
+                "place_id": str(fav_location.get("place_id")),
+                "account_location_tags": account_location_tags,
+                "notes": notes
+            }
+            existing_favorite_locations.append(location_data)
+            print(f"existing new favorites {existing_favorite_locations}")
 
     # validate that chosen_locations are part of favorite_locations. will overwrite existing list.
     if "chosen_locations" in party_plan_data:
@@ -212,6 +261,48 @@ def update_party_plan(
 
     return db.party_plans.find_one({"id": str(id)})
 
+@router.put(
+    "/{id}/{place_id}/favorite",
+    response_description="Favorite a location",
+    response_model=PartyPlan,
+)
+def favorite_location(
+    id: UUID,
+    place_id =str,
+    party_plan: PartyPlanUpdate = Body(...),
+    # account: dict = Depends(authenticator.get_current_account_data),
+):
+    # get plan by id
+    existing_party_plan = db.party_plans.find_one({"id": str(id)})
+    if not existing_party_plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Party with ID {id} not found",
+        )
+
+    party_plan_data = {
+        k: v for k, v in party_plan.dict().items() if v is not None
+    }
+    if "favorite_locations" in party_plan_data:
+            existing_searched_locations = existing_party_plan.get(
+                "searched_locations", []
+            )
+            # initialize
+            if party_plan_data["favorite_locations"] is None:
+                party_plan_data["favorite_locations"] = []
+
+            if not all(
+                fav_id in existing_searched_locations
+                for fav_id in party_plan_data["favorite_locations"]
+            ):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="All favorite locations must be part of searched locations.",
+                )
+            for fav_id in party_plan_data["favorite_locations"]:
+                db.locations.update_one(
+                    {"place_id": fav_id["place_id"]},
+                )
 
 @router.delete("/{id}", response_description="Delete a party plan")
 def delete_party_plan(
