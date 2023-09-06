@@ -19,22 +19,30 @@ const account_json = {
     "$2b$12$K5mQBUZCaWXIz3FTAR8cROll5WcAWXtmeYvnYIRmFNXXMA8PfW.1S",
 };
 
-const InvitationForm = ({ show, onHide }) => {
+const InvitationForm = ({ show, onHide, partyPlanId }) => {
   const { token } = useAuthContext();
   const [accountId, setAccountId] = useState(account_json._id);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  console.log(
+    `This modal has successfully received the selectedPartyPlanId: ${partyPlanId}`
+  );
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const dummyAccountId = "123e4567-e89b-12d3-a456-426614174001"; // Dummy Account ID
+
     const data = {
-      //   account_id: accountId,
-      //   api_maps_location: apiMapsLocation,
-      //   start_time: new Date(startTime).toISOString(),
-      //   end_time: endTime ? new Date(endTime).toISOString() : null,
-      //   description,
-      //   image,
-      //   keywords: keywords.split(",").map((k) => k.trim()),
+      account: {
+        id: dummyAccountId,
+        fullname: fullName,
+        email: email,
+      },
+      party_plan_id: partyPlanId,
     };
 
-    const apiUrl = `${baseUrl}/invitations/`;
+    const apiUrl = `http://127.0.0.1:8000/invitations/?party_plan_id=${partyPlanId}`;
+
     const fetchConfig = {
       method: "post",
       body: JSON.stringify(data),
@@ -44,14 +52,45 @@ const InvitationForm = ({ show, onHide }) => {
     };
 
     const response = await fetch(apiUrl, fetchConfig);
+
     if (response.ok) {
-      const newPartyPlan = await response.json();
-      //   onFormSubmit();
+      const newInvitation = await response.json();
+      console.log("Invitation created:", newInvitation);
+    } else {
+      console.log("Failed to create invitation");
     }
   };
 
-  // check id
-  const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
+  //   const handleSubmit = async (event) => {
+  //     event.preventDefault();
+  //     const data = {
+  //       //   account_id: accountId,
+  //       //   api_maps_location: apiMapsLocation,
+  //       //   start_time: new Date(startTime).toISOString(),
+  //       //   end_time: endTime ? new Date(endTime).toISOString() : null,
+  //       //   description,
+  //       //   image,
+  //       //   keywords: keywords.split(",").map((k) => k.trim()),
+  //     };
+
+  //     const apiUrl = `${baseUrl}/invitations/`;
+  //     const fetchConfig = {
+  //       method: "post",
+  //       body: JSON.stringify(data),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     };
+
+  //     const response = await fetch(apiUrl, fetchConfig);
+  //     if (response.ok) {
+  //       const newPartyPlan = await response.json();
+  //       //   onFormSubmit();
+  //     }
+  //   };
+
+  //   // check id
+  //   const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
 
   return (
     <Modal show={show} onHide={onHide}>
