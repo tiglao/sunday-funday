@@ -4,6 +4,7 @@ import { baseUrl } from "./utils/config.js";
 import { FaEdit, FaCheck } from "react-icons/fa";
 import { useDashboard } from "./utils/DashboardContext";
 import Button from "react-bootstrap/Button";
+import InvitationForm from "./InviteModal.js";
 
 const account_json = {
   _id: "64ef6496ef30ab1c58616d1a",
@@ -26,7 +27,11 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [invitations, setInvitations] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [updatedValue, setUpdatedValue] = useState("");
-
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const toggleInviteModal = () => setShowInviteModal(!showInviteModal);
+  const openInviteModal = () => {
+    setShowInviteModal(true);
+  };
   useEffect(() => {
     const fetchPartyPlan = async () => {
       try {
@@ -184,13 +189,16 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
                   </ul>
                 </div>
                 <div>
-                  <Button variant="primary">Open Invitation Form</Button>
+                  <Button variant="primary" onClick={openInviteModal}>
+                    Open Invitation Form
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
     </div>
   );
 };
