@@ -4,7 +4,7 @@ import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useDashboard } from "./utils/DashboardContext.js";
 import { baseUrl } from "./utils/config.js";
 
-export const PartyPlanModal = ({ show, onHide }) => {
+export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
   const { token } = useAuthContext();
   const [accountId, setAccountId] = useState("");
   const [description, setDescription] = useState("");
@@ -51,6 +51,19 @@ export const PartyPlanModal = ({ show, onHide }) => {
       console.log("Failed to create party plan");
     }
   };
+  useEffect(() => {
+    if (partyPlanData) {
+      setAccountId(partyPlanData.account_id || "");
+      setDescription(partyPlanData.description || "");
+      setStartTime(partyPlanData.start_time || "");
+      setEndTime(partyPlanData.end_time || "");
+      setLocation(partyPlanData.api_maps_location[0].input || "");
+      setImage(partyPlanData.image || "");
+      setKeywords(
+        partyPlanData.keywords ? partyPlanData.keywords.join(", ") : ""
+      );
+    }
+  }, [partyPlanData]);
 
   return (
     <Modal show={show} onHide={onHide}>

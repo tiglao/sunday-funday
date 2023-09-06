@@ -6,7 +6,6 @@ import React, { useState, useEffect } from "react";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "./utils/config.js";
 import { formatDateTime } from "./utils/dashboardDateTime.js";
-import PartyPlanForm from "./PartyPlanForm.js";
 import { useDashboard } from "./utils/DashboardContext.js";
 import { PartyPlanModal } from "./PartyPlanModal.js";
 
@@ -20,6 +19,7 @@ function UserDashboard() {
   const [currentData, setCurrentData] = useState([]);
   const [waitingModal, setWaitingModal] = useState(false);
   const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
+  const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
   const [showPartyPlanModal, setShowPartyPlanModal] = useState(false);
   const togglePartyPlanModal = () => setShowPartyPlanModal(!showPartyPlanModal);
   const openPartyPlanModal = () => {
@@ -40,8 +40,10 @@ function UserDashboard() {
   };
 
   const handleWaitingArrow = (id) => {
-    setwaitingPartyPlanId(id);
-    setWaitingModal(true);
+    const plan = partyPlans.find((p) => p.id === id);
+    setWaitingPartyPlanData(plan);
+    console.log("handleComingUpArrow triggered with ID:", id);
+    setShowPartyPlanModal(true);
   };
 
   const handleCloseModal = () => {
@@ -186,7 +188,10 @@ function UserDashboard() {
           >
             <div
               className="waiting-arrow"
-              onClick={() => handleWaitingArrow(item.id)}
+              onClick={() => {
+                console.log("Item ID before passing to handler:", item.id);
+                handleWaitingArrow(item.id);
+              }}
             >
               <FaArrowUp style={{ transform: "rotate(45deg)" }} />
             </div>
@@ -246,21 +251,11 @@ function UserDashboard() {
           <div className="row ps-2 waiting-card">{renderWaiting()}</div>
         </div>
       </div>
-      <Modal show={waitingModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Party Plan</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <PartyPlanForm partyPlanId={waitingPartyPlanId} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <PartyPlanModal show={showPartyPlanModal} onHide={togglePartyPlanModal} />
+      <PartyPlanModal
+        show={showPartyPlanModal}
+        onHide={togglePartyPlanModal}
+        partyPlanData={waitingPartyPlanData}
+      />
     </>
   );
 }
