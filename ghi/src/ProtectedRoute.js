@@ -1,10 +1,10 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { Navigate } from "react-router-dom";
 
-function ProtectedRoute({ component: Component }) {
+function ProtectedRoute({ element, ...rest }) {
   const { token } = useToken();
 
-  return token ? <Component /> : <Navigate to="/" replace />;
+  return token ? element : <Navigate to="/" replace />;
 }
 
 export default ProtectedRoute;

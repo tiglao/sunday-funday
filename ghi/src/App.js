@@ -1,18 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
 import "./App.css";
-import { AuthProvider, useToken } from "@galvanize-inc/jwtdown-for-react";
-import UserDashboard from "./UserDashboard";
-import Dashboard from "./Dashboard";
-import PartyPlanDetail from "./PartyPlanDetail";
-import InviteeDashboard from "./InviteeDashboard";
+import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import { DateProvider } from "./DateContext";
 import Main from "./Main";
+import Dashboard from "./Dashboard";
+import UserDashboard from "./UserDashboard";
+import PartyPlanForm from "./PartyPlanForm";
+import PartyPlanDetail from "./PartyPlanDetail";
+import InviteeDashboard from "./InviteeDashboard";
 import TestSpa from "./TestSpa";
 import UpdateProfile from "./UpdateProfile";
-import PartyPlanForm from "./PartyPlanForm";
 import { DashboardProvider } from "./utils/DashboardContext";
-import { useNavigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
@@ -25,35 +23,47 @@ function App() {
       <AuthProvider baseUrl={baseUrl}>
         <DateProvider>
           <Routes>
+            {/* Public route accessible to all */}
             <Route path="/" element={<Main />} />
+
+            {/* Protected routes */}
             <Route
               path="/dashboard/*"
               element={
                 <ProtectedRoute
-                  component={() => (
+                  element={
                     <DashboardProvider>
                       <Dashboard />
                     </DashboardProvider>
-                  )}
+                  }
                 />
               }
             >
+              {/* Dashboard */}
               <Route index element={<UserDashboard />} />
-              <Route path="party_plans/new" element={<PartyPlanForm />} />
-              <Route path="party_plans/:id" element={<PartyPlanDetail />} />
+
+              {/* Party Plans */}
+              <Route
+                path="party_plans/new"
+                element={<ProtectedRoute element={<PartyPlanForm />} />}
+              />
+              <Route
+                path="party_plans/:id"
+                element={<ProtectedRoute element={<PartyPlanDetail />} />}
+              />
+
+              {/* Invitee */}
+              <Route
+                path="invitee"
+                element={<ProtectedRoute element={<InviteeDashboard />} />}
+              />
+
+              {/* Test and UpdateProfile */}
+              <Route
+                path="test"
+                element={<ProtectedRoute element={<TestSpa />} />}
+              />
             </Route>
-            <Route
-              path="/invitee"
-              element={<ProtectedRoute component={InviteeDashboard} />}
-            />
-            <Route
-              path="/test"
-              element={<ProtectedRoute component={TestSpa} />}
-            />
-            <Route
-              path="/UpdateProfile"
-              element={<ProtectedRoute component={UpdateProfile} />}
-            />
           </Routes>
         </DateProvider>
       </AuthProvider>
