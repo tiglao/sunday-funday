@@ -33,9 +33,17 @@ export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
       image,
       keywords: keywords.split(",").map((k) => k.trim()),
     };
-    const apiUrl = `${baseUrl}/party_plans/`;
+
+    let apiUrl = `${baseUrl}/party_plans/`;
+    let formMethod = "post";
+
+    if (partyPlanData) {
+      apiUrl = `${baseUrl}/party_plans/${partyPlanData.id}/`;
+      formMethod = "put";
+    }
+
     const fetchConfig = {
-      method: "post",
+      method: formMethod,
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +54,7 @@ export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
 
     if (response.ok) {
       const newPartyPlan = await response.json();
-      console.log("Party Plan created:", newPartyPlan);
+      console.log("Party Plan:", newPartyPlan);
     } else {
       console.log("Failed to create party plan");
     }
