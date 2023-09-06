@@ -196,8 +196,9 @@ def update_party_plan(
         account_location_tags = party_plan_data.get("account_location_tags")
 
         for fav_location in party_plan_data["favorite_locations"]:
-            if fav_location.get("place_id") in existing_favorite_location_ids:
-                fav_location["notes"] = notes
+            if str(fav_location.get("place_id")) in existing_favorite_location_ids:
+                fav_location["notes"] = fav_location.get("notes")
+                fav_location["account_location_tags"] = fav_location.get("account_location_tags")
         # Ensure fav_location is a dictionary
             if not isinstance(fav_location, dict):
                 raise HTTPException(
@@ -207,9 +208,10 @@ def update_party_plan(
 
             location_data = {
                 "place_id": str(fav_location.get("place_id")),
-                "account_location_tags": account_location_tags,
-                "notes": notes
+                "account_location_tags": fav_location.get("account_location_tags"),
+                "notes": fav_location.get("notes")
             }
+            print(fav_location.get("notes"))
             existing_favorite_locations.append(location_data)
             print(f"existing new favorites {existing_favorite_locations}")
 
