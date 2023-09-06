@@ -29,25 +29,22 @@ const InvitationForm = ({ show, onHide, partyPlanId }) => {
   console.log(
     `This modal has successfully received the selectedPartyPlanId: ${selectedPartyPlanId}`
   );
+
+  const dummyAccountId = "123e4567-e89b-12d3-a456-426614174001";
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const dummyAccountId = "123e4567-e89b-12d3-a456-426614174001"; // Dummy Account ID
-
-    const data = {
-      account: {
-        id: dummyAccountId,
-        fullname: fullName,
-        email: email,
-      },
-      party_plan_id: partyPlanId,
+    const payload = {
+      fullName,
+      email,
     };
 
-    const apiUrl = `http://127.0.0.1:8000/invitations/?party_plan_id=${partyPlanId}`;
-
+    console.log("JSON payload:", JSON.stringify(payload));
+    const apiUrl = `http://127.0.0.1:8000/invitations/?party_plan_id=${selectedPartyPlanId}`;
+    console.log("check URL:", apiUrl);
     const fetchConfig = {
-      method: "post",
-      body: JSON.stringify(data),
+      method: "POST",
+      body: JSON.stringify(payload),
       headers: {
         "Content-Type": "application/json",
       },
@@ -63,48 +60,46 @@ const InvitationForm = ({ show, onHide, partyPlanId }) => {
     }
   };
 
-  //   const handleSubmit = async (event) => {
-  //     event.preventDefault();
-  //     const data = {
-  //       //   account_id: accountId,
-  //       //   api_maps_location: apiMapsLocation,
-  //       //   start_time: new Date(startTime).toISOString(),
-  //       //   end_time: endTime ? new Date(endTime).toISOString() : null,
-  //       //   description,
-  //       //   image,
-  //       //   keywords: keywords.split(",").map((k) => k.trim()),
-  //     };
-
-  //     const apiUrl = `${baseUrl}/invitations/`;
-  //     const fetchConfig = {
-  //       method: "post",
-  //       body: JSON.stringify(data),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     };
-
-  //     const response = await fetch(apiUrl, fetchConfig);
-  //     if (response.ok) {
-  //       const newPartyPlan = await response.json();
-  //       //   onFormSubmit();
-  //     }
-  //   };
-
-  //   // check id
-  //   const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
-
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
         <Modal.Title>Invitation Form</Modal.Title>
       </Modal.Header>
-      <Modal.Body>{/* Your form components go here */}</Modal.Body>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Full Name
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Email
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+        </Form>
+      </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
           Close
         </Button>
-        <Button variant="primary">Send Invitation</Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          Send Invitation
+        </Button>
       </Modal.Footer>
     </Modal>
   );

@@ -7,10 +7,11 @@ from clients.client import db
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
-from models.invitations import Invitation, InvitationUpdate
+from models.invitations import Invitation, InvitationPayload, InvitationUpdate
 from utils.authenticator import authenticator
 
 router = APIRouter()
+
 
 # server 201/ response 201, 422
 @router.post(
@@ -21,16 +22,21 @@ router = APIRouter()
 )
 def create_invitation(
     party_plan_id: UUID,
+    invitation_payload: InvitationPayload = None,
     # invitation: InvitationCreate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    # dummy account
+    print("Debug: Received invitation_payload:", invitation_payload)
     account = {
         "id": "123e4567-e89b-12d3-a456-426614174001",
-        "fullname": "Dummy Name",
-        "email": "dummy.email@example.com",
+        "fullname": invitation_payload.fullName
+        if invitation_payload
+        else "Example Name",
+        "email": invitation_payload.email
+        if invitation_payload
+        else "example.email@example.com",
     }
-
+    print("Debug: Using dummy account:", account)
     required_keys = ["id", "fullname", "email"]
 
     account_info = {key: account.get(key) for key in required_keys}
@@ -74,7 +80,7 @@ def create_invitation(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Invitation with ID {invitation_data['id']} not found after insertion.",
         )
-
+    print("Debug: Created Invitation:", created_invitation)
     return created_invitation
 
 
