@@ -9,7 +9,6 @@ import PartyPlanForm from "./PartyPlanForm";
 import PartyPlanDetail from "./PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
 import TestSpa from "./TestSpa";
-import UpdateProfile from "./UpdateProfile";
 import { DashboardProvider } from "./utils/DashboardContext";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -39,10 +38,7 @@ function App() {
                 />
               }
             >
-              {/* Dashboard */}
               <Route index element={<UserDashboard />} />
-
-              {/* Party Plans */}
               <Route
                 path="party_plans/new"
                 element={<ProtectedRoute element={<PartyPlanForm />} />}
@@ -51,14 +47,10 @@ function App() {
                 path="party_plans/:id"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
               />
-
-              {/* Invitee */}
               <Route
                 path="invitee"
                 element={<ProtectedRoute element={<InviteeDashboard />} />}
               />
-
-              {/* Test and UpdateProfile */}
               <Route
                 path="test"
                 element={<ProtectedRoute element={<TestSpa />} />}
