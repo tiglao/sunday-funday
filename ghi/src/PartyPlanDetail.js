@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { baseUrl } from "./utils/config.js";
 import { FaEdit, FaCheck } from "react-icons/fa";
 import { useDashboard } from "./utils/DashboardContext";
+import Button from "react-bootstrap/Button";
 
 const account_json = {
   _id: "64ef6496ef30ab1c58616d1a",
@@ -22,6 +23,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [accountData, setAccountData] = useState(account_json);
   const { selectedPartyPlanId } = useDashboard();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
+  const [invitations, setInvitations] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [updatedValue, setUpdatedValue] = useState("");
 
@@ -48,6 +50,26 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
       fetchPartyPlan();
     }
   }, [selectedPartyPlanId]);
+
+  useEffect(() => {
+    const fetchInvitations = async () => {
+      if (partyPlan && partyPlan.invitations.length > 0) {
+        try {
+          const response = await fetch(
+            `${baseUrl}/invitations?ids=${partyPlan.invitations.join(",")}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setInvitations(data);
+          }
+        } catch (error) {
+          console.error("Error fetching invitations:", error);
+        }
+      }
+    };
+
+    fetchInvitations();
+  }, [partyPlan]);
 
   const handleEditClick = (field) => {
     setIsEditing(field);
@@ -146,7 +168,24 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             {/* invitations */}
             <div className="col-md-9">
               <div>
-                <div>invitations</div>
+                <div className="invitations-list">
+                  <h5>Invitations</h5>
+                  <ul>
+                    {invitations.map((invite) => (
+                      <li key={invite.id}>
+                        <div>
+                          Guest: {invite.account.fullname} (
+                          {invite.account.email})
+                        </div>
+                        <div>RSVP Status: {invite.rsvp_status}</div>
+                        <div>Sent: {invite.sent_status ? "Yes" : "No"}</div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <Button variant="primary">Open Invitation Form</Button>
+                </div>
               </div>
             </div>
           </div>
