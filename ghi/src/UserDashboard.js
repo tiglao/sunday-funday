@@ -25,6 +25,9 @@ function UserDashboard() {
   const openPartyPlanModal = () => {
     setShowPartyPlanModal(true);
   };
+  const closePartyPlanModal = () => {
+    setShowPartyPlanModal(false);
+  };
 
   const handleComingUpArrow = (id) => {
     setCurrentView("partyPlanDetail");
