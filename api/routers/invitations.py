@@ -1,16 +1,9 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Query
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter, Body, HTTPException, status, Response
 from typing import List
 from uuid import UUID, uuid4
-from pydantic import UUID4
-from models.invitations import Invitation, InvitationUpdate, InvitationCreate, RsvpStatus
-from clients.client import db, get_invitation_by_id, save_invitation
+from models.invitations import Invitation, InvitationUpdate
+from clients.client import db
 from utils.email_service import send_email, send_party_invitation_email
-from utils.services import (
-    get_latest_party_plan_by_id,
-    calculate_latest_rsvp_count,
-    update_rsvp_count_in_party_plan,
-)
 from datetime import datetime
 from utils.authenticator import authenticator
 
@@ -75,17 +68,22 @@ def create_invitation(
         )
 
     # Auto-Send the email
-    email_sent = send_email(
-        to_email=account_info['email'],
-        subject="You're Invited!",
-        content="You have been invited to a party! Click here to Accept/Decline."
-    )
-
-    if not email_sent:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to send invitation email."
+    try:
+        email_sent = send_email(
+            to_email="<Your_To_Email>",
+            subject_template="<Your_Subject_Template>",
+            content_template="<Your_Content_Template>",
+            invitation_id="<Your_Invitation_ID>"
         )
+        if email_sent:
+            # Log or do something when the email is successfully sent
+            print("Email sent successfully.")
+        else:
+            # Log or do something when the email fails to send
+            print("Failed to send email.")
+    except Exception as e:
+        # Handle the exception and log the error
+        print(f"An error occurred while sending email: {e}")
 
     # fetch the instance you just created
     created_invitation = db.invitations.find_one({"id": invitation_id})
@@ -174,64 +172,3 @@ def delete_invitation(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No invitation with ID {id} found. Deletion incomplete.",
     )
-
-
-@router.post("/send-invitation/")
-async def send_invitation(
-    invitation: Invitation,
-    party_name: str,
-    date: str,
-    location: str
-):
-    rsvp_link_accept = f'http://localhost:8000/rsvp/{invitation.id}?status=accept'
-    rsvp_link_decline = f'http://localhost:8000/rsvp/{invitation.id}?status=decline'
-
-    content = send_party_invitation_email(
-        invitation.guest_name, party_name, date, location, rsvp_link_accept, rsvp_link_decline
-    )
-    subject = f"You're Invited to {party_name}!"
-
-    success = send_email(invitation.email, subject, content)
-
-    if success:
-        return {"status": "success", "message": "Invitation sent successfully"}
-    else:
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to send the invitation",
-        )
-
-
-@router.put("/rsvp/{invitation_id}/", response_model=Invitation)
-async def update_rsvp_status(
-    invitation_id: UUID,
-    rsvp_status: RsvpStatus = Query(..., alias="status")
-):
-    print(f"Debug: Received invitation_id: {invitation_id}, rsvp_status: {rsvp_status}")
-    invitation = db.invitations_collections.find_one({"id": invitation_id})
-    print("Debug: Existing invitation:", invitation)
-    if not invitation:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invitation not found")
-
-    # Update RSVP status in DB
-    db.invitations_collections.update_one(
-        {"id": invitation_id},
-        {"$set": {"rsvp_status": rsvp_status}},
-    )
-
-    # Update RSVP count in the associated party plan
-    party_plan_id = invitation.get("party_plan_id")
-    party_plan = get_latest_party_plan_by_id(party_plan_id)
-    new_rsvp_count = calculate_latest_rsvp_count(party_plan)
-    update_rsvp_count_in_party_plan(party_plan_id, new_rsvp_count)
-
-    # Send an email based on the RSVP status
-    to_email = invitation.get("account").get("email")
-    if rsvp_status == RsvpStatus.ACCEPTED:
-        send_email(to_email, "RSVP Status Update", "You have accepted the invitation.")
-    elif rsvp_status == RsvpStatus.DECLINED:
-        send_email(to_email, "RSVP Status Update", "You have declined the invitation.")
-
-    # Fetch the updated invitation
-    updated_invitation = db.invitations_collections.find_one({"id": invitation_id})
-    return updated_invitation

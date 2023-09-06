@@ -1,10 +1,8 @@
-from datetime import datetime
+
 from typing import Dict, List
 from uuid import UUID, uuid4
-
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
-from fastapi.encoders import jsonable_encoder
 from models.emails import ApiEmail, EmailContext
 from utils.authenticator import authenticator
 from utils.invitation_vo import get_invitation

@@ -1,18 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional, Dict
-from clients.client import client
 from uuid import UUID, uuid4
 from datetime import datetime
-from enum import Enum
-
 
 # needs to pull in account full name (no first name, use method to split string) account email
-
-
-class RsvpStatus(str, Enum):
-    YES = "yes"
-    MAYBE = "maybe"
-    NO = "no"
 
 
 class Invitation(BaseModel):
@@ -21,8 +12,6 @@ class Invitation(BaseModel):
     updated: Optional[datetime]
     account: Dict[str, str]
     party_plan_id: UUID
-    rsvp_status: Optional[RsvpStatus]
-    sent_status: Optional[bool]
 
     class Config:
         allow_population_by_field_name = True
@@ -67,19 +56,8 @@ class InvitationCreate(BaseModel):
 #         }
 
 
-def get_invitation_by_id(invitation_id: UUID):
-    return client.db.invitations.find_one({"_id": invitation_id})
-
-
-def update_invitation_rsvp(invitation_id: UUID, status: bool):
-    client.db.invitations.update_one(
-        {"_id": invitation_id},
-        {"$set": {"rsvpStatus": status}}
-    )
-
-
 class InvitationUpdate(BaseModel):
-    rsvp_status: Optional[RsvpStatus]
+    rsvp_status: Optional[bool]
     sent_status: Optional[bool]
 
     class Config:
