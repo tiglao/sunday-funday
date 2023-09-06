@@ -8,6 +8,7 @@ import { baseUrl } from "./utils/config.js";
 import { formatDateTime } from "./utils/dashboardDateTime.js";
 import PartyPlanForm from "./PartyPlanForm.js";
 import { useDashboard } from "./utils/DashboardContext.js";
+import { PartyPlanModal } from "./PartyPlanModal.js";
 
 function UserDashboard() {
   // const { token } = useAuthContext();
@@ -19,6 +20,11 @@ function UserDashboard() {
   const [currentData, setCurrentData] = useState([]);
   const [waitingModal, setWaitingModal] = useState(false);
   const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
+  const [showPartyPlanModal, setShowPartyPlanModal] = useState(false);
+  const togglePartyPlanModal = () => setShowPartyPlanModal(!showPartyPlanModal);
+  const openPartyPlanModal = () => {
+    setShowPartyPlanModal(true);
+  };
 
   const handleComingUpArrow = (id) => {
     setCurrentView("partyPlanDetail");
@@ -223,6 +229,9 @@ function UserDashboard() {
               >
                 my invites
               </Button>
+              <Button variant="secondary" onClick={openPartyPlanModal}>
+                start a party
+              </Button>
             </div>
           </div>
           <div className="d-flex flex-wrap justify-content-start">
@@ -247,6 +256,8 @@ function UserDashboard() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <PartyPlanModal show={showPartyPlanModal} onHide={togglePartyPlanModal} />
     </>
   );
 }
