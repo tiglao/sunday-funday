@@ -6,7 +6,7 @@ console.log(
   "Setup reports node environment as",
   process.env.NODE_ENV,
   hostOS,
-  process.arch
+  process.arch,
 );
 
 if (
@@ -14,7 +14,7 @@ if (
   hostOS.toLowerCase().includes("win")
 ) {
   const configPath = path.resolve(
-    "./node_modules/react-scripts/config/webpack.config.js"
+    "./node_modules/react-scripts/config/webpack.config.js",
   );
   const config = readFileSync(configPath, "utf8");
 
@@ -28,7 +28,7 @@ if (
 
 /* INJECTED BY CUSTOM SETUP SCRIPT */
 watchOptions: { aggregateTimeout: 200, poll: 1000, ignored: '**/node_modules', },
-        `
+        `,
       );
       writeFileSync(configPath, newConfig, "utf8");
       console.log("content written to", configPath);

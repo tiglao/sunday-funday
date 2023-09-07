@@ -13,7 +13,7 @@ export function DateProvider({ children }) {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const utcDate = new Date("2023-08-25T02:56:43.950Z");
     const localDate = new Date(
-      utcDate.toLocaleString("en-US", { timeZone: timeZone })
+      utcDate.toLocaleString("en-US", { timeZone: timeZone }),
     );
     setLocalDate(localDate);
   }, []);

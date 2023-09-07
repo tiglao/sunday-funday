@@ -37,7 +37,7 @@ const SignupForm = () => {
       if (token === null) {
         setIsError(true);
         setErrorMessage(
-          "Oops! The username or password you entered is incorrect. Please double-check and try again."
+          "Oops! The username or password you entered is incorrect. Please double-check and try again.",
         );
         setPassword("");
       } else {

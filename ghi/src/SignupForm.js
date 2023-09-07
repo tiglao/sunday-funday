@@ -41,7 +41,7 @@ const SignupForm = ({ handleSignupClose }) => {
       if (token === null) {
         setIsError(true);
         setErrorMessage(
-          "Oops! That email has already been used. Please use a different email or log in. 🙈"
+          "Oops! That email has already been used. Please use a different email or log in. 🙈",
         );
         setPassword("");
       } else {
