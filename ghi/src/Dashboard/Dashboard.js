@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FaCommentDots, FaArrowRight } from "react-icons/fa";
 import SideNav from "./SideNav";
 import FeedbackModal from "./FeedbackModal";
-import PartyPlanDetail from "./PartyPlanDetail.js";
+import PartyPlanDetail from "./PartyPlan/PartyPlanDetail.js";
 import UserDashboard from "./UserDashboard.js";
 import { useDashboard } from "./utils/DashboardContext";
 

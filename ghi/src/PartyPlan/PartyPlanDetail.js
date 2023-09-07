@@ -1,8 +1,8 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "./utils/config.js";
+import { baseUrl } from "../utils/config.js";
 import { FaEdit, FaCheck } from "react-icons/fa";
-import { useDashboard } from "./utils/DashboardContext";
+import { useDashboard } from "../utils/DashboardContext";
 import Button from "react-bootstrap/Button";
 import InvitationForm from "./InviteModal.js";
 
@@ -82,7 +82,6 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   };
 
   const handleCheckClick = async (field) => {
-    // TODO: Update the backend with the new value
     setIsEditing(null);
     setUpdatedValue("");
   };
@@ -164,41 +163,59 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
           <div className="row mt-4">
             {/* description */}
 
-            <div className="col-md-3">
-              <div>
-                <div>{partyPlan.description}</div>
-                <div>{partyPlan.keywords}</div>
-              </div>
-            </div>
-            {/* invitations */}
-            <div className="col-md-9">
-              <div>
-                <div className="invitations-list">
-                  <h5>Invitations</h5>
-                  <ul>
-                    {invitations.map((invite) => (
-                      <li key={invite.id}>
-                        <div>
-                          Guest: {invite.account.fullname} (
-                          {invite.account.email})
-                        </div>
-                        <div>RSVP Status: {invite.rsvp_status}</div>
-                        <div>Sent: {invite.sent_status ? "Yes" : "No"}</div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <Button variant="primary" onClick={openInviteModal}>
-                    Open Invitation Form
-                  </Button>
-                </div>
-              </div>
-            </div>
+      <div>Created: {partyPlan.created}</div>
+      <div>Last Updated: {partyPlan.updated || "N/A"}</div>
+
+
+      <div>{renderEditableField("Start Time", partyPlan.start_time)}</div>
+      <div>{renderEditableField("End Time", partyPlan.end_time)}</div>
+      <div>{renderEditableField("Description", partyPlan.description)}</div>
+      <div>{renderEditableField("Party Status", partyPlan.party_status)}</div>
+      <div>
+        Image: <img src={partyPlan.image} alt="party" />
+      </div>
+      <div>
+        Invitations:{" "}
+        {partyPlan.invitations ? partyPlan.invitations.join(", ") : "N/A"}
+      </div>
+
+      <div>
+        Keywords: {partyPlan.keywords ? partyPlan.keywords.join(", ") : "N/A"}
+      </div>
+
+      <div>
+        Searched Locations:{" "}
+        {partyPlan.searched_locations
+          ? partyPlan.searched_locations.join(", ")
+          : "N/A"}
+      </div>
+      <div>
+        Favorite Locations:{" "}
+        {partyPlan.favorite_locations
+          ? partyPlan.favorite_locations.join(", ")
+          : "N/A"}
+      </div>
+      <div>
+        Chosen Locations:{" "}
+        {partyPlan.chosen_locations
+          ? partyPlan.chosen_locations.join(", ")
+          : "N/A"}
+      </div>
+
+      <div>
+        {/* EDITABLE BUT ONLY INPUT */}
+        <h3>API Maps Location</h3>
+        {partyPlan.api_maps_location.map((location, index) => (
+          <div key={index}>
+            <div>Geo: {location.geo ? location.geo.join(", ") : "N/A"}</div>
+            <div>Input: {location.input}</div>
           </div>
+        ))}
         </div>
       </div>
       <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
+    </div>
+    </div>
     </div>
   );
 };
