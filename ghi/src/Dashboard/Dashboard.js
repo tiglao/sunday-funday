@@ -2,11 +2,11 @@
 // import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { FaCommentDots, FaArrowRight } from "react-icons/fa";
-import SideNav from "./SideNav";
-import FeedbackModal from "./FeedbackModal";
-import PartyPlanDetail from "./PartyPlan/PartyPlanDetail.js";
+import SideNav from "../SideNav";
+import FeedbackModal from "../FeedbackModal";
+import PartyPlanDetail from "../PartyPlan/PartyPlanDetail.js";
 import UserDashboard from "./UserDashboard.js";
-import { useDashboard } from "./utils/DashboardContext";
+import { useDashboard } from "../utils/DashboardContext";
 
 function Dashboard() {
   // const { token } = useAuthContext();

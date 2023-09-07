@@ -1,12 +1,12 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "./utils/config.js";
+import { baseUrl } from "../utils/config.js";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import { useDateContext } from "./DateContext.js";
+import { useDateContext } from "../utils/DateContext.js";
 
 // import stuff in to use usetoken. for now account data is faked here.
 // want to be able to use the token to give the original account model.

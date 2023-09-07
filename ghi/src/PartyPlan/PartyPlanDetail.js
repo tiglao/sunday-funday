@@ -115,9 +115,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     <div className="container">
       <div className="row">
         <div className="col-12">
-          {/* image/info row */}
           <div className="row">
-            {/* party image*/}
             <div className="col-md-3 text-center">
               <img
                 src={partyPlan.image}
@@ -125,7 +123,6 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
                 className="img-fluid rounded"
               />
             </div>
-            {/* basic info*/}
             <div className="col-md-9 align-self-end">
               <div className="row">
                 <div className="col">
@@ -159,10 +156,37 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
               </div>
             </div>
           </div>
-          {/* more info/invitations row */}
           <div className="row mt-4">
-            {/* description */}
-
+            <div className="col-md-3">
+              <div>
+                <div>{partyPlan.description}</div>
+                <div>{partyPlan.keywords}</div>
+              </div>
+            </div>
+            <div className="col-md-9">
+              <div>
+                <div className="invitations-list">
+                  <h5>Invitations</h5>
+                  <ul>
+                    {invitations.map((invite) => (
+                      <li key={invite.id}>
+                        <div>
+                          Guest: {invite.account.fullname} (
+                          {invite.account.email})
+                        </div>
+                        <div>RSVP Status: {invite.rsvp_status}</div>
+                        <div>Sent: {invite.sent_status ? "Yes" : "No"}</div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <Button variant="primary" onClick={openInviteModal}>
+                    Open Invitation Form
+                  </Button>
+                </div>
+              </div>
+            </div>
       <div>Created: {partyPlan.created}</div>
       <div>Last Updated: {partyPlan.updated || "N/A"}</div>
 
@@ -203,7 +227,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
       </div>
 
       <div>
-        {/* EDITABLE BUT ONLY INPUT */}
+
         <h3>API Maps Location</h3>
         {partyPlan.api_maps_location.map((location, index) => (
           <div key={index}>

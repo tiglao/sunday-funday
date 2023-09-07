@@ -1,7 +1,7 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useDateContext } from "./DateContext";
+import { useDateContext } from "../utils/DateContext";
 
 function InviteeDashboard() {
   const { token } = useAuthContext();
