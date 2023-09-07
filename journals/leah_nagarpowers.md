@@ -7,3 +7,16 @@
 8/24/23- Yesterday I worked on drafting the React component for nearby search and geocode. Today I will finish the back end with Tasnia. Blockers- yesterday the backend stopped working when the new databse info merged so we had to roll it back. It should be fine today. Jean got the mailer to work yesterday, today he is working on styling it.
 
 8/28/23-I rebased my branch and attempted to resolve merge conflicts with main over the weekend. Read about CI/CD and looked into map rendering tutorials. Today I will work with Tasnia to make sure the nearby search works before we move on. Blocker-log & lat and getting nearby search to work. JB- over the weekend he finished the initial coding of the dashboard. Today he will work on reset password issue. Ellie- went over CI/CD with her brother. Who wants to lead deployment? Will look over Merge Requests, almost done with JM's. Making sure the context for the invitation works, learning how to create a value object in mongoDB. Blocker-accounts. JM- had something missing from RSVP, Blocker- missing making a function collection, will talk to Ellie about it later. 
+
+8/29/23- How in the world am I still stuck on this render???
+
+8/30/23- Yesterday I looked over the react google maps documentation again to see if I could get it to work and I'm still lost. 
+
+8/31/23- Blocker- I don't understand how to write this function to get the map to render
+
+9/1/23- Blocker- where are we actually rendering this map because I thought it was in the party plan details but apparently that's not the case. Today I'm working on figuring that out. 
+
+9/3/23- Had a conversation discussing where the map should render with Tasnia on Friday. Today I'm going to fix the issues I'm having 
+
+
+
