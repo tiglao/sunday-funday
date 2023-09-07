@@ -1,4 +1,4 @@
-import MainLogin from "./MainLogin";
+import MainLogin from "./Auth/MainLogin";
 import { useEffect } from "react";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate, useLocation } from "react-router-dom";

@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
-import SignupForm from "./SignupForm";
+import SignupForm from "../Auth/SignupForm";
 
 const LoginModal = () => {
   const [show, setShow] = useState(false);

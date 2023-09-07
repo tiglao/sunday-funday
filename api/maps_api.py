@@ -4,7 +4,6 @@ from turtle import distance
 from typing import List, Optional
 import requests
 from pydantic import BaseModel
-from key import API_KEY
 import fastapi
 
 
