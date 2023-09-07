@@ -22,12 +22,6 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     const fetchDataFromGoogleMapsAPI = async (searchQuery) =>{
       
     }
-      .then((data) => {
-        setSearchResults(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
   };
 
   useEffect(() => {
