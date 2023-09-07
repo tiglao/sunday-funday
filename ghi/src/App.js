@@ -6,7 +6,7 @@ import Main from "./Main";
 import Dashboard from "./Dashboard";
 import UserDashboard from "./UserDashboard";
 import PartyPlanForm from "./PartyPlanForm";
-import PartyPlanDetail from "./PartyPlanDetail";
+import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
 import TestSpa from "./TestSpa";
 import { DashboardProvider } from "./utils/DashboardContext";

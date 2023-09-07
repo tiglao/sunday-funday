@@ -1,13 +1,13 @@
 import { Modal, Button } from "react-bootstrap";
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useState, useEffect } from "react";
-import { baseUrl } from "./utils/config.js";
+import { baseUrl } from "../utils/config.js";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import { useDateContext } from "./DateContext.js";
-import { useDashboard } from "./utils/DashboardContext.js";
+import { useDateContext } from "../DateContext.js";
+import { useDashboard } from "../utils/DashboardContext.js";
 
 const account_json = {
   _id: "64ef6532ef30ab1c58616d1b",

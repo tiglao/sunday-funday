@@ -1,8 +1,8 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "./utils/config.js";
+import { baseUrl } from "../utils/config.js";
 import { FaEdit, FaCheck } from "react-icons/fa";
-import { useDashboard } from "./utils/DashboardContext";
+import { useDashboard } from "../utils/DashboardContext";
 import Button from "react-bootstrap/Button";
 import InvitationForm from "./InviteModal.js";
 
