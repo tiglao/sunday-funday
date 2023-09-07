@@ -40,10 +40,6 @@ function App() {
             >
               <Route index element={<UserDashboard />} />
               <Route
-                path="party_plans/new"
-                element={<ProtectedRoute element={<PartyPlanForm />} />}
-              />
-              <Route
                 path="party_plans/:id"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
               />
