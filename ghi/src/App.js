@@ -12,6 +12,7 @@ import TestSpa from "./TestSpa";
 import UpdateProfile from "./UpdateProfile";
 import PartyPlanForm from "./PartyPlanForm";
 import { DashboardProvider } from "./utils/DashboardContext";
+import SearchResult from "./SearchResults";
 
 function App() {
   // const { token } = useToken(); // Assuming useToken is a custom hook you've defined elsewhere
@@ -40,6 +41,7 @@ function App() {
             <Route path="/invitee" element={<InviteeDashboard />} />
             <Route path="/test" element={<TestSpa />} />
             <Route path="/UpdateProfile" element={<UpdateProfile />} />
+            <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
           </Routes>
         </DateProvider>
       </AuthProvider>
