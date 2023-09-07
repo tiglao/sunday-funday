@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "./common/config.js";
 import SearchComponent from "./Search.jsx";
+import GoogleMap from "./GoogleMap";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { id } = useParams();
@@ -18,7 +19,9 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     const searchQuery = `${keyword} near ${location} on ${date} at ${time}`;
 
  
-    fetchDataFromGoogleMapsAPI(searchQuery)
+    const fetchDataFromGoogleMapsAPI = async (searchQuery) =>{
+      
+    }
       .then((data) => {
         setSearchResults(data);
       })
@@ -106,6 +109,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             <div>Input: {location.input}</div>
           </div>
         ))}
+              <GoogleMap />
       </div>
     </div>
   );
