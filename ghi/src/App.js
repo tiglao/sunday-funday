@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
-import { DateProvider } from "./DateContext";
+import { DateProvider } from "./utils/DateContext";
 import Main from "./Main";
-import Dashboard from "./Dashboard";
-import UserDashboard from "./UserDashboard";
-import PartyPlanForm from "./PartyPlanForm";
-import PartyPlanDetail from "./PartyPlanDetail";
-import InviteeDashboard from "./InviteeDashboard";
-import TestSpa from "./TestSpa";
+import Dashboard from "./Dashboard/Dashboard";
+import UserDashboard from "./Dashboard/UserDashboard";
+import PartyPlanForm from "./PartyPlan/PartyPlanForm";
+import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
+import InviteeDashboard from "./Dashboard/InviteeDashboard";
+import TestSpa from "./Tests/TestSpa";
 import { DashboardProvider } from "./utils/DashboardContext";
 import ProtectedRoute from "./ProtectedRoute";
 

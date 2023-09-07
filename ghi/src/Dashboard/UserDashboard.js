@@ -4,10 +4,10 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
 import { FaArrowUp } from "react-icons/fa";
-import { baseUrl } from "./utils/config.js";
-import { formatDateTime } from "./utils/dashboardDateTime.js";
-import PartyPlanForm from "./PartyPlanForm.js";
-import { useDashboard } from "./utils/DashboardContext.js";
+import { baseUrl } from "../utils/config.js";
+import { formatDateTime } from "../utils/dashboardDateTime.js";
+import PartyPlanForm from "../PartyPlan/PartyPlanForm.js";
+import { useDashboard } from "../utils/DashboardContext.js";
 
 function UserDashboard() {
   // const { token } = useAuthContext();
