@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 
-
 function SearchComponent({ onSearch }) {
-  const [keyword, setKeyword] = useState('');
-  const [location, setLocation] = useState('');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [keyword, setKeyword] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
 
   const handleSearch = () => {
     const searchQuery = {

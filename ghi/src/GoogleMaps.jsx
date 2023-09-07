@@ -26,8 +26,7 @@ function GoogleMap() {
       center: { lat: defaultLat, lng: defaultLng },
       zoom: 8,
     };
-    
-   
+
     const newMap = new window.google.maps.Map(
       document.getElementById("map"),
       mapOptions
@@ -45,12 +44,7 @@ function GoogleMap() {
     setMap(newMap);
   };
 
-  return (
-    <div
-      id="map"
-      style={{ width: "100%", height: "400px" }}
-    ></div>
-  );
+  return <div id="map" style={{ width: "100%", height: "400px" }}></div>;
 }
 
 export default GoogleMap;
