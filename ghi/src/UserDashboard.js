@@ -23,9 +23,6 @@ function UserDashboard() {
   const [showPartyPlanModal, setShowPartyPlanModal] = useState(false);
 
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
-  console.log("what is thissss decoded token:", decodedToken);
-  const accountId = decodedToken?.account?.username;
-  console.log("SHOULD BEEEE account email:", accountId);
 
   const togglePartyPlanModal = () => setShowPartyPlanModal(!showPartyPlanModal);
   const openPartyPlanModal = () => {
@@ -37,7 +34,6 @@ function UserDashboard() {
 
   const handleComingUpArrow = (id) => {
     setCurrentView("partyPlanDetail");
-    console.log("handleComingUpArrow triggered with ID:", id);
     if (id === undefined) {
       console.log("ID is undefined. Something is wrong.");
       return;
@@ -48,7 +44,6 @@ function UserDashboard() {
   const handleWaitingArrow = (id) => {
     const plan = partyPlans.find((p) => p.id === id);
     setWaitingPartyPlanData(plan);
-    console.log("handleComingUpArrow triggered with ID:", id);
     setShowPartyPlanModal(true);
   };
 
@@ -80,7 +75,10 @@ function UserDashboard() {
       const response = await fetch(`${baseUrl}/party_plans/`);
       if (response.ok) {
         const data = await response.json();
-        const compiledPlans = data.map((partyPlan) => ({
+        const filteredPlans = data.filter(
+          (plan) => plan.account_id === decodedToken?.account?.id
+        );
+        const compiledPlans = filteredPlans.map((partyPlan) => ({
           ...partyPlan,
           type: "partyPlan",
         }));
@@ -92,10 +90,6 @@ function UserDashboard() {
   };
 
   const dashboardContextValue = useDashboard();
-
-  useEffect(() => {
-    console.log("Current Context Value:", dashboardContextValue);
-  }, [dashboardContextValue]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -142,7 +136,6 @@ function UserDashboard() {
             className="col-lg-4 col-md-6 col-sm-12 coming-up-col"
             key={index}
             onClick={() => {
-              console.log("Item ID before passing to handler:", item.id);
               handleComingUpArrow(item.id);
             }}
           >
@@ -198,7 +191,6 @@ function UserDashboard() {
             <div
               className="waiting-arrow"
               onClick={() => {
-                console.log("Item ID before passing to handler:", item.id);
                 handleWaitingArrow(item.id);
               }}
             >

@@ -6,7 +6,6 @@ import { baseUrl } from "./utils/config.js";
 
 export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
   const { token } = useAuthContext();
-  const [accountId, setAccountId] = useState("");
   const [description, setDescription] = useState("");
   const { selectedPartyPlanId } = useDashboard();
   const [startTime, setStartTime] = useState("");
@@ -16,10 +15,10 @@ export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
   const [location, setLocation] = useState("");
   const [endTime, setEndTime] = useState("");
   const [showModal, setShowModal] = useState(false);
-  console.log("WHATS IN THIS", token);
+  const decodedToken = JSON.parse(atob(token.split(".")[1]));
+  const accountId = decodedToken?.account?.id;
 
   const handleSubmit = async (event) => {
-    console.log("handleSubmit called");
     event.preventDefault();
     const data = {
       account_id: accountId,
@@ -55,14 +54,12 @@ export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
 
     if (response.ok) {
       const newPartyPlan = await response.json();
-      console.log("Party Plan:", newPartyPlan);
     } else {
       console.log("Failed to create party plan");
     }
   };
   useEffect(() => {
     if (partyPlanData) {
-      setAccountId(partyPlanData.account_id || "");
       setDescription(partyPlanData.description || "");
       setStartTime(partyPlanData.start_time || "");
       setEndTime(partyPlanData.end_time || "");
