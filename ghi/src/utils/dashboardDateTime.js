@@ -14,13 +14,13 @@ export const formatDateTime = (startTime, endTime) => {
     startDate.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-    }),
+    })
   ).toLowerCase();
   const formattedEndTime = removePrecedingZero(
     endDate.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-    }),
+    })
   ).toLowerCase();
 
   const startTimePeriod = formattedStartTime.slice(-2);

@@ -75,7 +75,7 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
               Object.entries(data.account).map(([key, value]) => [
                 key,
                 value ?? "",
-              ]),
+              ])
             ),
             username: data.account.email,
           }));
@@ -92,7 +92,7 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
                 Object.entries(additionalData).map(([key, value]) => [
                   key,
                   value ?? "",
-                ]),
+                ])
               ),
             }));
           }

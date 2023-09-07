@@ -1,10 +1,78 @@
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+// import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import React, { useState, useEffect } from "react";
+import { FaArrowUp } from "react-icons/fa";
+import { baseUrl } from "./utils/config.js";
+import { formatDateTime } from "./utils/dashboardDateTime.js";
+import PartyPlanForm from "./PartyPlanForm.js";
+import { useDashboard } from "./utils/DashboardContext.js";
 
 function UserDashboard() {
-  const { token } = useAuthContext();
-  const navigate = useNavigate();
+  // const { token } = useAuthContext();
+  // const navigate = useNavigate();
+  const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
+  const [selectedLink, setSelectedLink] = useState("parties");
+  const [partyPlans, setPartyPlans] = useState([]);
+  const [invitations, setInvitations] = useState([]);
+  const [currentData, setCurrentData] = useState([]);
+  const [waitingModal, setWaitingModal] = useState(false);
+  const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
+
+  const handleComingUpArrow = (id) => {
+    setCurrentView("partyPlanDetail");
+    console.log("handleComingUpArrow triggered with ID:", id);
+    if (id === undefined) {
+      console.log("ID is undefined. Something is wrong.");
+      return;
+    }
+    showPartyPlanDetail(id);
+  };
+
+  const handleWaitingArrow = (id) => {
+    setwaitingPartyPlanId(id);
+    setWaitingModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setWaitingModal(false);
+  };
+
+  const fetchInvitations = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/invitations/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledInvitations = data.map((invite) => ({
+          ...invite,
+          type: "invitation",
+        }));
+        setInvitations(compiledInvitations);
+      }
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/party_plans/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledPlans = data.map((partyPlan) => ({
+          ...partyPlan,
+          type: "partyPlan",
+        }));
+        setPartyPlans(compiledPlans);
+      }
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
+
+  const dashboardContextValue = useDashboard();
+
   useEffect(() => {
     console.log("Current Context Value:", dashboardContextValue);
   }, [dashboardContextValue]);
@@ -34,7 +102,7 @@ function UserDashboard() {
           imageUrl = item.image;
         } else if (item.type === "invitation") {
           const asscPartyPlan = partyPlans.find(
-            (plan) => plan.id === item.party_plan_id,
+            (plan) => plan.id === item.party_plan_id
           );
           if (asscPartyPlan) {
             displayContent = asscPartyPlan.description;
@@ -46,7 +114,7 @@ function UserDashboard() {
         }
         const { formattedDate, displayTime } = formatDateTime(
           startTime,
-          endTime,
+          endTime
         );
 
         return (
@@ -87,21 +155,18 @@ function UserDashboard() {
         );
       });
     }
-  }, [token, navigate]);
-
-  if (!token) {
     return null;
   };
 
   const renderWaiting = () => {
     const allWaiting = partyPlans.filter(
       (plan) =>
-        plan.party_status === "draft" || plan.party_status === "share draft",
+        plan.party_status === "draft" || plan.party_status === "share draft"
     );
     return allWaiting.map((item, index) => {
       const { formattedDate, displayTime } = formatDateTime(
         item.start_time,
-        item.end_time,
+        item.end_time
       );
 
       return (
@@ -130,9 +195,59 @@ function UserDashboard() {
   };
 
   return (
-    <div>
-      <h1>User Dashboard</h1>
-    </div>
+    <>
+      <div className="row">
+        <div className="col-md-6">
+          <div className="row mb-4">
+            <div className="col-4">
+              <h3>coming up</h3>
+            </div>
+            <div className="col-8 d-flex justify-content-start">
+              <Button
+                variant="link"
+                className="text-decoration-none no-outline"
+                onClick={() => {
+                  setCurrentData(partyPlans);
+                  setSelectedLink("parties");
+                }}
+              >
+                my parties
+              </Button>
+              <Button
+                variant="link"
+                className="text-decoration-none no-outline ml-2"
+                onClick={() => {
+                  setCurrentData(invitations);
+                  setSelectedLink("invites");
+                }}
+              >
+                my invites
+              </Button>
+            </div>
+          </div>
+          <div className="d-flex flex-wrap justify-content-start">
+            {renderComingUp()}
+          </div>
+        </div>
+        <div className="col-md-6 pl-4 waiting-section">
+          <h3 className="ps-2 section-title">waiting on you</h3>
+          <div className="row ps-2 waiting-card">{renderWaiting()}</div>
+        </div>
+      </div>
+      <Modal show={waitingModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Party Plan</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PartyPlanForm partyPlanId={waitingPartyPlanId} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 

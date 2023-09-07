@@ -27,7 +27,7 @@ const InvitationForm = ({ show, onHide, partyPlanId }) => {
   const [email, setEmail] = useState("");
   const { selectedPartyPlanId } = useDashboard();
   console.log(
-    `This modal has successfully received the selectedPartyPlanId: ${selectedPartyPlanId}`,
+    `This modal has successfully received the selectedPartyPlanId: ${selectedPartyPlanId}`
   );
 
   const dummyAccountId = "123e4567-e89b-12d3-a456-426614174001";

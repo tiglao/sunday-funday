@@ -48,7 +48,7 @@ const LoginModal = () => {
       if (token === null) {
         setIsError(true);
         setErrorMessage(
-          "Oops! The email or password you entered is incorrect. 🙈",
+          "Oops! The email or password you entered is incorrect. 🙈"
         );
         setPassword("");
       } else {
