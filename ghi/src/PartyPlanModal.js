@@ -4,7 +4,7 @@ import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useDashboard } from "./utils/DashboardContext.js";
 import { baseUrl } from "./utils/config.js";
 
-export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
+export const PartyPlanForm = ({ show, onHide, partyPlanData }) => {
   const { token } = useAuthContext();
   const [description, setDescription] = useState("");
   const { selectedPartyPlanId } = useDashboard();

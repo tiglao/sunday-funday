@@ -1,13 +1,19 @@
 // import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 // import { useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Button, Modal } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
-import PartyPlanForm from "../PartyPlan/PartyPlanForm.js";
 import { useDashboard } from "../utils/DashboardContext.js";
+import { PartyPlanForm } from "../PartyPlanModal.js";
+import {
+  fetchData,
+  dummyPartyPlans,
+  dummyInvitations,
+  fetchResource,
+} from "../utils/dataService.js";
 
 function UserDashboard() {
   // const { token } = useAuthContext();
@@ -17,8 +23,16 @@ function UserDashboard() {
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
+
+  const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
+  const [showPartyPlanForm, setShowPartyPlanForm] = useState(false);
   const [waitingModal, setWaitingModal] = useState(false);
   const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
+  const [showPartyPlanModal, setShowPartyPlanModal] = useState(false);
+
+  // nav
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleComingUpArrow = (id) => {
     setCurrentView("partyPlanDetail");
@@ -35,10 +49,53 @@ function UserDashboard() {
     setWaitingModal(true);
   };
 
+  // event handlers
+
+  const togglePartyPlanForm = () => setShowPartyPlanForm(!showPartyPlanForm);
+  const openPartyPlanForm = () => {
+    setShowPartyPlanForm(true);
+  };
+  const closePartyPlanModal = () => {
+    setShowPartyPlanForm(false);
+  };
+  const closeWaitingModal = () => {
+    setWaitingModal(false);
+  };
+
+  const refreshDashboard = async () => {
+    await fetchPlans();
+    closePartyPlanModal();
+  };
+
+  // delete
   const handleCloseModal = () => {
     setWaitingModal(false);
   };
 
+  // effect hooks
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPlans();
+      await fetchInvitations();
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("Dummy Party Plans:", dummyPartyPlans);
+    console.log("Dummy Invitations:", dummyInvitations);
+
+    setCurrentData([...partyPlans, ...invitations]);
+  }, [partyPlans, invitations]);
+
+  useEffect(() => {
+    setCurrentData([...partyPlans, ...invitations]);
+  }, [partyPlans, invitations]);
+
+  // data
+  // delete after verify
   const fetchInvitations = async () => {
     try {
       const response = await fetch(`${baseUrl}/invitations/`);
@@ -71,25 +128,8 @@ function UserDashboard() {
     }
   };
 
-  const dashboardContextValue = useDashboard();
-
-  useEffect(() => {
-    console.log("Current Context Value:", dashboardContextValue);
-  }, [dashboardContextValue]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchPlans();
-      await fetchInvitations();
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setCurrentData([...partyPlans, ...invitations]);
-  }, [partyPlans, invitations]);
-
+  //render functions
+  // delete after verify
   const renderComingUp = () => {
     if (currentData) {
       return currentData.map((item, index) => {
