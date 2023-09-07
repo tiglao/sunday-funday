@@ -1,4 +1,4 @@
-// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 // import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -10,7 +10,7 @@ import { useDashboard } from "./utils/DashboardContext.js";
 import { PartyPlanModal } from "./PartyPlanModal.js";
 
 function UserDashboard() {
-  // const { token } = useAuthContext();
+  const { token } = useAuthContext();
   // const navigate = useNavigate();
   const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
   const [selectedLink, setSelectedLink] = useState("parties");
@@ -21,6 +21,12 @@ function UserDashboard() {
   const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
   const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
   const [showPartyPlanModal, setShowPartyPlanModal] = useState(false);
+
+  const decodedToken = JSON.parse(atob(token.split(".")[1]));
+  console.log("what is thissss decoded token:", decodedToken);
+  const accountId = decodedToken?.account?.username;
+  console.log("SHOULD BEEEE account email:", accountId);
+
   const togglePartyPlanModal = () => setShowPartyPlanModal(!showPartyPlanModal);
   const openPartyPlanModal = () => {
     setShowPartyPlanModal(true);
@@ -55,7 +61,10 @@ function UserDashboard() {
       const response = await fetch(`${baseUrl}/invitations/`);
       if (response.ok) {
         const data = await response.json();
-        const compiledInvitations = data.map((invite) => ({
+        const filteredInvitations = data.filter(
+          (invite) => invite.account.email === decodedToken?.account?.username
+        );
+        const compiledInvitations = filteredInvitations.map((invite) => ({
           ...invite,
           type: "invitation",
         }));

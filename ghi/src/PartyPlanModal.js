@@ -16,6 +16,7 @@ export const PartyPlanModal = ({ show, onHide, partyPlanData }) => {
   const [location, setLocation] = useState("");
   const [endTime, setEndTime] = useState("");
   const [showModal, setShowModal] = useState(false);
+  console.log("WHATS IN THIS", token);
 
   const handleSubmit = async (event) => {
     console.log("handleSubmit called");
