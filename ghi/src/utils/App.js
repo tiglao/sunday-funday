@@ -2,15 +2,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import { DateProvider } from "./DateContext";
-import Main from "./Main";
+import Main from "../Main";
 import Dashboard from "./Dashboard";
 import UserDashboard from "./UserDashboard";
 import PartyPlanForm from "./PartyPlanForm";
-import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
+import PartyPlanDetail from "../PartyPlan/PartyPlanDetail";
 import InviteeDashboard from "./InviteeDashboard";
-import TestSpa from "./TestSpa";
-import { DashboardProvider } from "./utils/DashboardContext";
-import ProtectedRoute from "./ProtectedRoute";
+import TestSpa from "../Tests/TestSpa";
+import { DashboardProvider } from "./DashboardContext";
+import ProtectedRoute from "../ProtectedRoute";
 
 function App() {
   const domain = /https:\/\/[^/]+/;
