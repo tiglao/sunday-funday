@@ -210,9 +210,12 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             <div>Geo: {location.geo ? location.geo.join(", ") : "N/A"}</div>
             <div>Input: {location.input}</div>
           </div>
+        ))}
         </div>
       </div>
       <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
+    </div>
+    </div>
     </div>
   );
 };
