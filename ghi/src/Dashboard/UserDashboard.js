@@ -45,9 +45,17 @@ function UserDashboard() {
   };
 
   const handleWaitingArrow = (id) => {
-    setwaitingPartyPlanId(id);
-    setWaitingModal(true);
+    const selectedWaitingPartyPlan = partyPlans.find((plan) => plan.id === id);
+    if (selectedWaitingPartyPlan) {
+      setWaitingPartyPlanData(selectedWaitingPartyPlan);
+    }
+    setShowPartyPlanForm(true); // Open the PartyPlanForm
   };
+
+  // const handleWaitingArrow = (id) => {
+  //   setwaitingPartyPlanId(id);
+  //   setWaitingModal(true);
+  // };
 
   // event handlers
 
