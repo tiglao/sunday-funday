@@ -27,4 +27,8 @@ Finished the logout feature.
 9/1/23
 Worked on the account update form. Its pretty much working now. I am waiting for Ellie tomerge her branch since it has a lot of ui elements in it. It will be easier to integrate.
 
-8/5/23
+9/6/23
+Worked on authentication somehow it broke. I updated the frontend by using protected routes. Started writing my unit tests.
+
+9/7/23
+Worked on unit tests most of the day. Completed some merge requests. Submitted mergrequest for my test.
