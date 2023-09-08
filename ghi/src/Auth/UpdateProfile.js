@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 const UpdateProfile = ({ handleUpdateProfileClose }) => {
-  const [userData, setUserData] = useState({});
   const [profileData, setProfileData] = useState({
     full_name: "",
     date_of_birth: "",
@@ -60,7 +59,6 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
         const data = await response.json();
         console.log("Fetched data:", data);
         if (data && data.account) {
-          setUserData(data.account);
           setProfileData((prevState) => ({
             ...prevState,
             ...Object.fromEntries(
