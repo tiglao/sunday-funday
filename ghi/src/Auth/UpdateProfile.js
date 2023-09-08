@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -13,13 +12,6 @@ const UpdateProfile = ({ handleUpdateProfileClose }) => {
     email: "",
     username: "",
   });
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const navigate = useNavigate();
 
   const handleProfileChange = (event) => {
     setProfileData({

@@ -1,28 +1,30 @@
-// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-// import { useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Button, Modal } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
-import PartyPlanForm from "../PartyPlan/PartyPlanForm.js";
 import { useDashboard } from "../utils/DashboardContext.js";
+import { PartyPlanForm } from "../PartyPlanModal.js";
+import { useAccountContext } from "../utils/AccountContext.js";
 
 function UserDashboard() {
-  // const { token } = useAuthContext();
-  // const navigate = useNavigate();
+  const { accountEmail, accountId } = useAccountContext();
   const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
   const [selectedLink, setSelectedLink] = useState("parties");
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
+  const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
+  const [showPartyPlanForm, setShowPartyPlanForm] = useState(false);
   const [waitingModal, setWaitingModal] = useState(false);
-  const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
+
+  // nav
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleComingUpArrow = (id) => {
     setCurrentView("partyPlanDetail");
-    console.log("handleComingUpArrow triggered with ID:", id);
     if (id === undefined) {
       console.log("ID is undefined. Something is wrong.");
       return;
@@ -31,51 +33,35 @@ function UserDashboard() {
   };
 
   const handleWaitingArrow = (id) => {
-    setwaitingPartyPlanId(id);
-    setWaitingModal(true);
+    const selectedWaitingPartyPlan = partyPlans.find((plan) => plan.id === id);
+    if (selectedWaitingPartyPlan) {
+      setWaitingPartyPlanData(selectedWaitingPartyPlan);
+    }
+    setShowPartyPlanForm(true);
   };
 
-  const handleCloseModal = () => {
+  // event handlers
+
+  const togglePartyPlanForm = () => setShowPartyPlanForm(!showPartyPlanForm);
+  const openPartyPlanForm = () => {
+    setShowPartyPlanForm(true);
+  };
+  const closePartyPlanForm = () => {
+    setShowPartyPlanForm(false);
+  };
+  const closeWaitingModal = () => {
     setWaitingModal(false);
   };
 
-  const fetchInvitations = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/invitations/`);
-      if (response.ok) {
-        const data = await response.json();
-        const compiledInvitations = data.map((invite) => ({
-          ...invite,
-          type: "invitation",
-        }));
-        setInvitations(compiledInvitations);
-      }
-    } catch (error) {
-      console.error("Error fetching invitations:", error);
-    }
+  const refreshDashboard = async () => {
+    await fetchPlans();
+    closePartyPlanForm();
   };
 
-  const fetchPlans = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/party_plans/`);
-      if (response.ok) {
-        const data = await response.json();
-        const compiledPlans = data.map((partyPlan) => ({
-          ...partyPlan,
-          type: "partyPlan",
-        }));
-        setPartyPlans(compiledPlans);
-      }
-    } catch (error) {
-      console.error("Error fetching invitations:", error);
-    }
+  // delete
+  const handleCloseModal = () => {
+    setWaitingModal(false);
   };
-
-  const dashboardContextValue = useDashboard();
-
-  useEffect(() => {
-    console.log("Current Context Value:", dashboardContextValue);
-  }, [dashboardContextValue]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,10 +76,48 @@ function UserDashboard() {
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
 
+  const fetchInvitations = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/invitations/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledInvitations = data
+          .filter((invite) => invite.account.email === accountEmail)
+          .map((invite) => ({
+            ...invite,
+            type: "invitation",
+          }));
+        setInvitations(compiledInvitations);
+      }
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/party_plans/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledPlans = data
+          .filter((plan) => plan.account_id === accountId)
+          .map((partyPlan) => ({
+            ...partyPlan,
+            type: "partyPlan",
+          }));
+        setPartyPlans(compiledPlans);
+      }
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
+
+  //render functions
   const renderComingUp = () => {
     if (currentData) {
       return currentData.map((item, index) => {
         let displayContent, partyPath, startTime, endTime, imageUrl;
+
         if (item.type === "partyPlan") {
           displayContent = item.description;
           partyPath = `/party_plans/${item.id}`;
@@ -112,10 +136,8 @@ function UserDashboard() {
             imageUrl = asscPartyPlan.image;
           }
         }
-        const { formattedDate, displayTime } = formatDateTime(
-          startTime,
-          endTime
-        );
+
+        const { startDate, displayTime } = formatDateTime(startTime, endTime);
 
         return (
           <div
@@ -139,9 +161,7 @@ function UserDashboard() {
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
                 </div>
                 <p className="card-text coming-up-text">
-                  <span className="one-line">
-                    {formattedDate.toLowerCase()}
-                  </span>
+                  <span className="one-line">{startDate.toLowerCase()}</span>
                 </p>
               </div>
             </div>
@@ -164,7 +184,7 @@ function UserDashboard() {
         plan.party_status === "draft" || plan.party_status === "share draft"
     );
     return allWaiting.map((item, index) => {
-      const { formattedDate, displayTime } = formatDateTime(
+      const { startDate, displayTime } = formatDateTime(
         item.start_time,
         item.end_time
       );
@@ -185,7 +205,7 @@ function UserDashboard() {
               {item.description}
               <br />
               <span className="waiting-date-time">
-                {formattedDate.toLowerCase()} | {displayTime}
+                {startDate.toLowerCase()} | {displayTime}
               </span>
             </p>
           </div>
@@ -223,6 +243,9 @@ function UserDashboard() {
               >
                 my invites
               </Button>
+              <Button variant="secondary" onClick={openPartyPlanForm}>
+                start a party
+              </Button>
             </div>
           </div>
           <div className="d-flex flex-wrap justify-content-start">
@@ -234,19 +257,12 @@ function UserDashboard() {
           <div className="row ps-2 waiting-card">{renderWaiting()}</div>
         </div>
       </div>
-      <Modal show={waitingModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Party Plan</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <PartyPlanForm partyPlanId={waitingPartyPlanId} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <PartyPlanForm
+        show={showPartyPlanForm}
+        onHide={togglePartyPlanForm}
+        partyPlanData={waitingPartyPlanData}
+        refreshDashboard={refreshDashboard}
+      />
     </>
   );
 }

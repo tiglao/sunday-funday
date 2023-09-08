@@ -1,263 +1,178 @@
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import React, { useState, useEffect } from "react";
-import { baseUrl } from "../utils/config.js";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import { useDateContext } from "../utils/DateContext.js";
+// import React, { useState, useEffect } from "react";
+// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+// import { baseUrl } from "../utils/config.js";
+// import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+// import { useDashboard } from "../utils/DashboardContext.js";
 
-// import stuff in to use usetoken. for now account data is faked here.
-// want to be able to use the token to give the original account model.
-const account_json = {
-  _id: "64ef6532ef30ab1c58616d1b",
-  email: "test@test.com",
-  full_name: "Test Testerson",
-  date_of_birth: null,
-  avatar: null,
-  username: "test@test.com",
-  hashed_password:
-    "$2b$12$K5mQBUZCaWXIz3FTAR8cROll5WcAWXtmeYvnYIRmFNXXMA8PfW.1S",
-};
+// export const PartyPlanForm = ({
+//   show,
+//   onHide,
+//   partyPlanData,
+//   refreshDashboard,
+// }) => {
+//   const { token } = useAuthContext();
+//   const [description, setDescription] = useState("");
+//   const { selectedPartyPlanId } = useDashboard();
+//   const [startTime, setStartTime] = useState("");
+//   const [image, setImage] = useState("");
+//   const [keywords, setKeywords] = useState("");
+//   const [plans, setPlans] = useState([]);
+//   const [location, setLocation] = useState("");
+//   const [endTime, setEndTime] = useState("");
+//   const [showModal, setShowModal] = useState(false);
+//   const decodedToken = JSON.parse(atob(token.split(".")[1]));
+//   const accountId = decodedToken?.account?.id;
 
-const PartyPlanForm = ({ onFormSubmit, onCancel }) => {
-  const { token } = useAuthContext();
-  const [accountId, setAccountId] = useState(account_json._id);
-  const [startTime, setStartTime] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  const [keywords, setKeywords] = useState("");
-  const [plans, setPlans] = useState([]);
-  const [apiMapsLocation, setApiMapsLocation] = useState([{ input: "" }]);
-  const [endTime, setEndTime] = useState("");
-  const localDate = useDateContext();
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+//     const data = {
+//       account_id: accountId,
+//       api_maps_location: [
+//         {
+//           input: location,
+//         },
+//       ],
+//       start_time: new Date(startTime).toISOString(),
+//       end_time: endTime ? new Date(endTime).toISOString() : null,
+//       description,
+//       image,
+//       keywords: keywords.split(",").map((k) => k.trim()),
+//     };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = {
-      account_id: accountId,
-      api_maps_location: apiMapsLocation,
-      start_time: new Date(startTime).toISOString(),
-      end_time: endTime ? new Date(endTime).toISOString() : null,
-      description,
-      image,
-      keywords: keywords.split(",").map((k) => k.trim()),
-    };
+//     let apiUrl = `${baseUrl}/party_plans/`;
+//     let formMethod = "post";
 
-    const apiUrl = `${baseUrl}/party_plans/`;
-    const fetchConfig = {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+//     if (partyPlanData) {
+//       apiUrl = `${baseUrl}/party_plans/${partyPlanData.id}/`;
+//       formMethod = "put";
+//     }
 
-    const response = await fetch(apiUrl, fetchConfig);
-    if (response.ok) {
-      const newPartyPlan = await response.json();
-      onFormSubmit();
-    }
-  };
+//     const fetchConfig = {
+//       method: formMethod,
+//       body: JSON.stringify(data),
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     };
 
-  // check id
-  const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
+//     const response = await fetch(apiUrl, fetchConfig);
+//     console.log("this is the response:", response);
 
-  useEffect(() => {
-    if (localDate) {
-      const formattedDate = localDate.toISOString().substring(0, 16); // Convert to datetime-local format
-      setStartTime(formattedDate);
-      setEndTime(formattedDate);
-    }
-  }, [localDate]);
-  useEffect(() => {
-    if (isValidObjectId(accountId)) {
-      console.log("Valid account ID");
-    } else {
-      console.log("Invalid account ID");
-    }
-  }, [accountId]);
+//     if (response.ok) {
+//       const newPartyPlan = await response.json();
+//       refreshDashboard();
+//     } else {
+//       console.log("Failed to create party plan");
+//     }
+//   };
+//   useEffect(() => {
+//     if (partyPlanData) {
+//       setDescription(partyPlanData.description || "");
+//       setStartTime(partyPlanData.start_time || "");
+//       setEndTime(partyPlanData.end_time || "");
+//       setLocation(partyPlanData.api_maps_location[0].input || "");
+//       setImage(partyPlanData.image || "");
+//       setKeywords(
+//         partyPlanData.keywords ? partyPlanData.keywords.join(", ") : ""
+//       );
+//     }
+//   }, [partyPlanData]);
 
-  return (
-    <Container className="mt-5 text-white" style={{ backgroundColor: "#333" }}>
-      <Row>
-        <Col className="offset-md-3 col-md-6">
-          <div className="shadow p-4" style={{ backgroundColor: "#444" }}>
-            <h1>Create a Party Plan</h1>
-            <Form onSubmit={handleSubmit} id="create-partyplan-form">
-              <Form.Group>
-                <Form.Label>Account ID:</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={accountId}
-                  onChange={(e) => setAccountId(e.target.value)}
-                />
-              </Form.Group>
+//   return (
+//     <Modal show={show} onHide={onHide}>
+//       <Modal.Header closeButton>
+//         <Modal.Title>Create New Party Plan</Modal.Title>
+//       </Modal.Header>
+//       <Modal.Body>
+//         <Form onSubmit={handleSubmit}>
+//           <Form.Group as={Row}>
+//             <Form.Label column sm="2">
+//               Description
+//             </Form.Label>
+//             <Col sm="10">
+//               <Form.Control
+//                 type="text"
+//                 value={description}
+//                 onChange={(e) => setDescription(e.target.value)}
+//               />
+//             </Col>
+//           </Form.Group>
 
-              <Form.Group>
-                <Form.Label>API Maps Location (Input):</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={apiMapsLocation[0]?.input}
-                  onChange={(e) =>
-                    setApiMapsLocation([{ input: e.target.value }])
-                  }
-                />
-              </Form.Group>
+//           {/* Additional Form Groups for other fields */}
+//           <Form.Group as={Row}>
+//             <Form.Label column sm="2">
+//               Location
+//             </Form.Label>
+//             <Col sm="10">
+//               <Form.Control
+//                 type="text"
+//                 value={location}
+//                 onChange={(e) => setLocation(e.target.value)}
+//               />
+//             </Col>
+//           </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Start Time:</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                />
-              </Form.Group>
+//           <Form.Group as={Row}>
+//             <Form.Label column sm="2">
+//               Start Time
+//             </Form.Label>
+//             <Col sm="10">
+//               <Form.Control
+//                 type="datetime-local"
+//                 value={startTime}
+//                 onChange={(e) => setStartTime(e.target.value)}
+//               />
+//             </Col>
+//           </Form.Group>
 
-              <Form.Group>
-                <Form.Label>End Time:</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                />
-              </Form.Group>
+//           <Form.Group as={Row}>
+//             <Form.Label column sm="2">
+//               End Time
+//             </Form.Label>
+//             <Col sm="10">
+//               <Form.Control
+//                 type="datetime-local"
+//                 value={endTime}
+//                 onChange={(e) => setEndTime(e.target.value)}
+//               />
+//             </Col>
+//           </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Description:</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </Form.Group>
+//           <Form.Group as={Row}>
+//             <Form.Label column sm="2">
+//               Image URL
+//             </Form.Label>
+//             <Col sm="10">
+//               <Form.Control
+//                 type="text"
+//                 value={image}
+//                 onChange={(e) => setImage(e.target.value)}
+//               />
+//             </Col>
+//           </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Image URL:</Form.Label>
-                <Form.Control
-                  type="url"
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Label>Keywords (comma-separated):</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={keywords}
-                  onChange={(e) => setKeywords(e.target.value)}
-                />
-              </Form.Group>
-
-              <Button variant="primary" type="submit">
-                Create
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={onCancel}
-                style={{
-                  marginLeft: "10px",
-                  fontSize: "0.8em",
-                }}
-              >
-                Cancel
-              </Button>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </Container>
-  );
-  // <div className="row">
-  //   <div className="offset-3 col-6">
-  //     <div className="shadow p-4 mt-4">
-  //       <h1>Create a Party Plan</h1>
-  //       <form onSubmit={handleSubmit} id="create-partyplan-form">
-  //         <label>
-  //           Account ID:
-  //           <input
-  //             type="text"
-  //             value={accountId}
-  //             onChange={(e) => setAccountId(e.target.value)}
-  //           />
-  //         </label>
-
-  //         <label>
-  //           API Maps Location (Input):
-  //           <input
-  //             type="text"
-  //             value={apiMapsLocation[0].input}
-  //             onChange={(e) =>
-  //               setApiMapsLocation([{ input: e.target.value }])
-  //             }
-  //           />
-  //         </label>
-
-  //         <label>
-  //           Start Time:
-  //           <input
-  //             type="datetime-local"
-  //             value={startTime}
-  //             onChange={(e) => setStartTime(e.target.value)}
-  //           />
-  //         </label>
-
-  //         <label>
-  //           End Time:
-  //           <input
-  //             type="datetime-local"
-  //             value={endTime}
-  //             onChange={(e) => setEndTime(e.target.value)}
-  //           />
-  //         </label>
-
-  //         <label>
-  //           Description:
-  //           <textarea
-  //             value={description}
-  //             onChange={(e) => setDescription(e.target.value)}
-  //           />
-  //         </label>
-
-  //         <label>
-  //           Image URL:
-  //           <input
-  //             type="url"
-  //             value={image}
-  //             onChange={(e) => setImage(e.target.value)}
-  //           />
-  //         </label>
-
-  //         <label>
-  //           Keywords (comma-separated):
-  //           <input
-  //             type="text"
-  //             value={keywords}
-  //             onChange={(e) => setKeywords(e.target.value)}
-  //           />
-  //         </label>
-  //         <button className="btn btn-primary" type="submit">
-  //           Create
-  //         </button>
-  //         <a
-  //           href="#"
-  //           onClick={onCancel}
-  //           style={{
-  //             marginLeft: "10px",
-  //             color: "gray",
-  //             fontSize: "0.8em",
-  //             textDecoration: "none",
-  //           }}
-  //         >
-  //           Cancel
-  //         </a>
-  //       </form>
-  //     </div>
-  //   </div>
-  // </div>
-  //   );
-};
-
-export default PartyPlanForm;
+//           <Form.Group as={Row}>
+//             <Form.Label column sm="2">
+//               Keywords
+//             </Form.Label>
+//             <Col sm="10">
+//               <Form.Control
+//                 type="text"
+//                 value={keywords}
+//                 onChange={(e) => setKeywords(e.target.value)}
+//               />
+//             </Col>
+//           </Form.Group>
+//         </Form>
+//       </Modal.Body>
+//       <Modal.Footer>
+//         <Button variant="secondary" onClick={onHide}>
+//           Close
+//         </Button>
+//         <Button variant="primary" onClick={handleSubmit}>
+//           Create
+//         </Button>
+//       </Modal.Footer>
+//     </Modal>
+//   );
+// };

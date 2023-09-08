@@ -3,6 +3,7 @@ import uuid
 from turtle import distance
 from typing import List, Optional
 import requests
+from key import API_KEY
 from pydantic import BaseModel
 import fastapi
 

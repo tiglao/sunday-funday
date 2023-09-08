@@ -11,18 +11,13 @@ export function DashboardProvider({ children }) {
   const [selectedPartyPlanId, setSelectedPartyPlanId] = useState(null);
 
   const showPartyPlanDetail = (partyPlanId) => {
-    console.log("showPartyPlanDetail called with ID:", partyPlanId);
     setSelectedPartyPlanId(partyPlanId);
     setCurrentView("partyPlanDetail");
   };
 
-  useEffect(() => {
-    console.log("After setting, selectedPartyPlanId:", selectedPartyPlanId);
-  }, [selectedPartyPlanId]);
+  useEffect(() => {}, [selectedPartyPlanId]);
 
-  useEffect(() => {
-    console.log("After setting, currentView:", currentView);
-  }, [currentView]);
+  useEffect(() => {}, [currentView]);
 
   const value = {
     currentView,

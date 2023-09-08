@@ -1,37 +1,41 @@
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "../utils/config.js";
 import { FaEdit, FaCheck } from "react-icons/fa";
-import { useDashboard } from "../utils/DashboardContext";
 import Button from "react-bootstrap/Button";
+import { baseUrl } from "../utils/config.js";
+import { useDashboard } from "../utils/DashboardContext";
 import InvitationForm from "./InviteModal.js";
-
-const account_json = {
-  _id: "64ef6496ef30ab1c58616d1a",
-  email: "example@example.com",
-  full_name: "Jack Frost",
-  date_of_birth: "06/19/1976",
-  avatar:
-    "https://render.fineartamerica.com/images/images-profile-flow/400/images/artworkimages/mediumlarge/3/open-third-eye-nobodys-hero.jpg",
-  username: "example@example.com",
-  hashed_password:
-    "$2b$12$vsDdjNYiHI9cxvfeO4gzue/NBNbfoE.G32lF68saKOdpJQd/oKQm.",
-};
+import { useAccountContext } from "../utils/AccountContext.js";
+import { useNavigate, Outlet } from "react-router-dom";
+import { formatDateTime } from "../utils/dashboardDateTime.js";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
-  const { token } = useAuthContext();
-  const [accountId, setAccountId] = useState(account_json._id);
-  const [accountData, setAccountData] = useState(account_json);
+  const { accountAvatar, accountFullName } = useAccountContext();
   const { selectedPartyPlanId } = useDashboard();
+  const navigate = useNavigate();
+  const { token } = useAuthContext();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
   const [invitations, setInvitations] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [updatedValue, setUpdatedValue] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [displayTime, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
+
+  const emailAllGuests = () => {
+    const allEmails = invitations
+      .map((invite) => invite.account.email)
+      .join(",");
+    window.location.href = `mailto:${allEmails}`;
+  };
   const toggleInviteModal = () => setShowInviteModal(!showInviteModal);
   const openInviteModal = () => {
     setShowInviteModal(true);
   };
+
   useEffect(() => {
     const fetchPartyPlan = async () => {
       try {
@@ -44,7 +48,19 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             ...data,
             type: "partyPlan",
           });
+          const { startDate, startTime, endDate, endTime, displayTime } =
+            formatDateTime(data.start_time, data.end_time);
+          console.log("Formatted Start Date:", startDate);
+          console.log("Formatted Start Time:", startTime);
+          console.log("Formatted End Date:", endDate);
+          console.log("Formatted End Time:", endTime);
+          console.log("Formatted Display Time:", displayTime);
           console.log("Fetched specific party plan:", data);
+          setStartTime(startTime);
+          setEndTime(endTime);
+          setStartDate(startDate);
+          setEndDate(endDate);
+          setEndDate(displayTime);
         }
       } catch (error) {
         console.error("Error fetching specific plan:", error);
@@ -82,6 +98,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   };
 
   const handleCheckClick = async (field) => {
+    // TODO: Update the backend with the new value
     setIsEditing(null);
     setUpdatedValue("");
   };
@@ -112,134 +129,95 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   }
 
   return (
-    <div className="container">
+    <div className="container party-plan-detail">
+      {/* First Row */}
       <div className="row">
-        <div className="col-12">
+        <div className="col-md-5">
+          {/* Party Image */}
+          <img
+            src={partyPlan.image}
+            alt={partyPlan.description}
+            className="img-fluid party-image"
+          />
+        </div>
+        <div className="col-md-7 align-self-end">
+          {/* Basic Info */}
           <div className="row">
-            <div className="col-md-3 text-center">
+            <div className="col start-date">{startDate}</div>
+          </div>
+          <div className="row mb-4">
+            <div className="col display-time">
+              {startTime} - {endTime}
+            </div>
+          </div>{" "}
+          {/* party planner */}
+          <div className="planner-description d-flex flex-column align-items-start">
+            <div className="account-avatar">
               <img
-                src={partyPlan.image}
-                alt={partyPlan.description}
-                className="img-fluid rounded"
+                src={
+                  accountAvatar
+                    ? accountAvatar
+                    : "https://i.pinimg.com/originals/fa/80/ed/fa80ed839cd94404434407f892a736cc.jpg"
+                }
+                alt="planner-avatar"
+                className="account-avatar-crop"
               />
             </div>
-            <div className="col-md-9 align-self-end">
-              <div className="row">
-                <div className="col">
-                  {renderEditableField(
-                    "Start Time",
-                    partyPlan.start_time.toLowerCase()
-                  )}
-                </div>
-              </div>
-              <div className="row">
-                <div className="col">
-                  {renderEditableField(
-                    "End Time",
-                    partyPlan.end_time.toLowerCase()
-                  )}
-                </div>
-              </div>
-              {/* party planner */}
-              <div className="planner-description">
-                <div className="planner-image">
-                  <img
-                    src={accountData.avatar}
-                    alt="planner-avatar"
-                    className="rounded-square"
-                    style={{ width: "70px", height: "70px" }}
-                  />
-                </div>
-                <div className="planner-name">
-                  Planned by: {accountData.full_name}
-                </div>
-              </div>
-            </div>
+            <div className="planner-name">Planned by: {accountFullName}</div>
           </div>
-          <div className="row mt-4">
-            <div className="col-md-3">
-              <div>
-                <div>{partyPlan.description}</div>
-                <div>{partyPlan.keywords}</div>
-              </div>
-            </div>
-            <div className="col-md-9">
-              <div>
-                <div className="invitations-list">
-                  <h5>Invitations</h5>
-                  <ul>
-                    {invitations.map((invite) => (
-                      <li key={invite.id}>
-                        <div>
-                          Guest: {invite.account.fullname} (
-                          {invite.account.email})
-                        </div>
-                        <div>RSVP Status: {invite.rsvp_status}</div>
-                        <div>Sent: {invite.sent_status ? "Yes" : "No"}</div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <Button variant="primary" onClick={openInviteModal}>
-                    Open Invitation Form
-                  </Button>
-                </div>
-              </div>
-            </div>
-      <div>Created: {partyPlan.created}</div>
-      <div>Last Updated: {partyPlan.updated || "N/A"}</div>
-
-
-      <div>{renderEditableField("Start Time", partyPlan.start_time)}</div>
-      <div>{renderEditableField("End Time", partyPlan.end_time)}</div>
-      <div>{renderEditableField("Description", partyPlan.description)}</div>
-      <div>{renderEditableField("Party Status", partyPlan.party_status)}</div>
-      <div>
-        Image: <img src={partyPlan.image} alt="party" />
-      </div>
-      <div>
-        Invitations:{" "}
-        {partyPlan.invitations ? partyPlan.invitations.join(", ") : "N/A"}
-      </div>
-
-      <div>
-        Keywords: {partyPlan.keywords ? partyPlan.keywords.join(", ") : "N/A"}
-      </div>
-
-      <div>
-        Searched Locations:{" "}
-        {partyPlan.searched_locations
-          ? partyPlan.searched_locations.join(", ")
-          : "N/A"}
-      </div>
-      <div>
-        Favorite Locations:{" "}
-        {partyPlan.favorite_locations
-          ? partyPlan.favorite_locations.join(", ")
-          : "N/A"}
-      </div>
-      <div>
-        Chosen Locations:{" "}
-        {partyPlan.chosen_locations
-          ? partyPlan.chosen_locations.join(", ")
-          : "N/A"}
-      </div>
-
-      <div>
-
-        <h3>API Maps Location</h3>
-        {partyPlan.api_maps_location.map((location, index) => (
-          <div key={index}>
-            <div>Geo: {location.geo ? location.geo.join(", ") : "N/A"}</div>
-            <div>Input: {location.input}</div>
-          </div>
-        ))}
         </div>
       </div>
+
+      {/* Second Row */}
+      <div className="row mt-4">
+        <div className="col-md-6">
+          {/* Description and Keywords */}
+          <div className="keywords">{partyPlan.keywords.join(", ")}</div>
+          <div className="description mb-3">{partyPlan.description}</div>
+        </div>
+
+        <div className="col-md-6">
+          {/* Invitations */}
+          <div className="d-flex flex-wrap justify-content-start">
+            {invitations.map((invite, index) => (
+              <div key={invite.id} className="m-2 invite-card-container">
+                <div className="invite-card">
+                  <div className="invite-card-image-wrapper">
+                    <img
+                      src={
+                        invite.account.avatar || "https://picsum.photos/140/80"
+                      }
+                      alt={`${invite.account.fullname}'s avatar`}
+                      className="invite-card-image"
+                    />
+                  </div>
+                  <div className="invite-card-content">
+                    <small className="invite-card-text font-monospace">
+                      <a
+                        href={`mailto:${invite.account.email}`}
+                        className="invite-card-link"
+                      >
+                        {invite.account.fullname}
+                      </a>
+                    </small>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <Button variant="primary" onClick={openInviteModal}>
+              invite someone
+            </Button>
+            <Button variant="secondary" onClick={emailAllGuests}>
+              email ail
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
-    </div>
-    </div>
     </div>
   );
 };
