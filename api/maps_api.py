@@ -3,9 +3,13 @@ import uuid
 from turtle import distance
 from typing import List, Optional
 import requests
-from key import API_KEY
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import fastapi
+
+load_dotenv()
+SEARCH_API_KEY = os.getenv("SEARCH_API_KEY")
+GEOCODE_API_KEY = os.getenv("GEOCODE_API_KEY")
 
 
 def geo_code(address):
