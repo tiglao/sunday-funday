@@ -11,6 +11,7 @@ import InviteeDashboard from "./Dashboard/InviteeDashboard";
 import TestSpa from "./Tests/TestSpa";
 import { DashboardProvider } from "./utils/DashboardContext";
 import ProtectedRoute from "./ProtectedRoute";
+import { AccountContextProvider } from "./utils/AccountContext";
 
 function App() {
   const domain = /https:\/\/[^/]+/;
@@ -31,9 +32,11 @@ function App() {
               element={
                 <ProtectedRoute
                   element={
-                    <DashboardProvider>
-                      <Dashboard />
-                    </DashboardProvider>
+                    <AccountContextProvider>
+                      <DashboardProvider>
+                        <Dashboard />
+                      </DashboardProvider>
+                    </AccountContextProvider>
                   }
                 />
               }
