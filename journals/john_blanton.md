@@ -24,11 +24,10 @@ Finished the logout feature.
 
 8/25/23 I worked on the user dashboard most of the day making everything responsive. Leah and Tasnia are getting frurther in their google maps issue. Ellie pushed/merged some of her database revamping making db relationships and cascade delete like. Jean is working on the email for the invitees. He had a test runing the other day and it worked. Hes working to implement it into our code.
 
-9/1/23
-Worked on the account update form. Its pretty much working now. I am waiting for Ellie tomerge her branch since it has a lot of ui elements in it. It will be easier to integrate.
+9/1/23 Worked on the account update form. Its pretty much working now. I am waiting for Ellie tomerge her branch since it has a lot of ui elements in it. It will be easier to integrate.
 
-9/6/23
-Worked on authentication somehow it broke. I updated the frontend by using protected routes. Started writing my unit tests.
+9/6/23 Worked on authentication somehow it broke. I updated the frontend by using protected routes. Started writing my unit tests.
 
-9/7/23
-Worked on unit tests most of the day. Completed some merge requests. Submitted mergrequest for my test.
+9/7/23 Worked on unit tests most of the day. Completed some merge requests. Submitted mergrequest for my test.
+
+9/8/23 Working on learning on deployment and cleaning up code. Test is written and merged.
