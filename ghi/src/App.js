@@ -3,8 +3,6 @@ import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import { DateProvider } from "./utils/DateContext";
 import UserDashboard from "./Dashboard/UserDashboard";
-import Dashboard from "./Dashboard/Dashboard";
-import PartyPlanForm from "./PartyPlan/PartyPlanForm";
 import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
 import InviteeDashboard from "./Dashboard/InviteeDashboard";
 import Main from "./Main";
@@ -12,6 +10,7 @@ import TestSpa from "./Tests/TestSpa";
 import { DashboardProvider } from "./utils/DashboardContext";
 import SearchResult from "./SearchResults";
 import ProtectedRoute from "./ProtectedRoute";
+import { AccountContextProvider } from "./utils/AccountContext";
 
 function App() {
   const domain = /https:\/\/[^/]+/;
@@ -32,18 +31,16 @@ return (
               element={
                 <ProtectedRoute
                   element={
-                    <DashboardProvider>
-                      <Dashboard />
-                    </DashboardProvider>
+                    <AccountContextProvider>
+                      <DashboardProvider>
+                        <Dashboard />
+                      </DashboardProvider>
+                    </AccountContextProvider>
                   }
                 />
               }
             >
               <Route index element={<UserDashboard />} />
-              <Route
-                path="party_plans/new"
-                element={<ProtectedRoute element={<PartyPlanForm />} />}
-              />
               <Route
                 path="party_plans/:id"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}

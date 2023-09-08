@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Modal } from "react-bootstrap";
 import LoginForm from "./Dashboard/LoginForm";
 import SignupForm from "./Auth/SignupForm";
