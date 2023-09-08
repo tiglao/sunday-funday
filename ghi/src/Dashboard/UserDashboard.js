@@ -112,16 +112,18 @@ function UserDashboard() {
   }, [partyPlans, invitations]);
 
   // data
-  // delete after verify
+
   const fetchInvitations = async () => {
     try {
       const response = await fetch(`${baseUrl}/invitations/`);
       if (response.ok) {
         const data = await response.json();
-        const compiledInvitations = data.map((invite) => ({
-          ...invite,
-          type: "invitation",
-        }));
+        const compiledInvitations = data
+          .filter((invite) => invite.account.email === accountEmail)
+          .map((invite) => ({
+            ...invite,
+            type: "invitation",
+          }));
         setInvitations(compiledInvitations);
       }
     } catch (error) {
@@ -134,16 +136,51 @@ function UserDashboard() {
       const response = await fetch(`${baseUrl}/party_plans/`);
       if (response.ok) {
         const data = await response.json();
-        const compiledPlans = data.map((partyPlan) => ({
-          ...partyPlan,
-          type: "partyPlan",
-        }));
+        const compiledPlans = data
+          .filter((plan) => plan.account_id === accountId)
+          .map((partyPlan) => ({
+            ...partyPlan,
+            type: "partyPlan",
+          }));
         setPartyPlans(compiledPlans);
       }
     } catch (error) {
       console.error("Error fetching invitations:", error);
     }
   };
+
+  // delete after verify
+  // const fetchInvitations = async () => {
+  //   try {
+  //     const response = await fetch(`${baseUrl}/invitations/`);
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const compiledInvitations = data.map((invite) => ({
+  //         ...invite,
+  //         type: "invitation",
+  //       }));
+  //       setInvitations(compiledInvitations);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching invitations:", error);
+  //   }
+  // };
+
+  // const fetchPlans = async () => {
+  //   try {
+  //     const response = await fetch(`${baseUrl}/party_plans/`);
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const compiledPlans = data.map((partyPlan) => ({
+  //         ...partyPlan,
+  //         type: "partyPlan",
+  //       }));
+  //       setPartyPlans(compiledPlans);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching invitations:", error);
+  //   }
+  // };
 
   //render functions
   // delete after verify
