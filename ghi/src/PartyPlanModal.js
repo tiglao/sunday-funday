@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-import { useDashboard } from "./utils/DashboardContext.js";
 import { baseUrl } from "./utils/config.js";
 
 export const PartyPlanForm = ({
@@ -12,14 +11,11 @@ export const PartyPlanForm = ({
 }) => {
   const { token } = useAuthContext();
   const [description, setDescription] = useState("");
-  const { selectedPartyPlanId } = useDashboard();
   const [startTime, setStartTime] = useState("");
   const [image, setImage] = useState("");
   const [keywords, setKeywords] = useState("");
-  const [plans, setPlans] = useState([]);
   const [location, setLocation] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
   const accountId = decodedToken?.account?.id;
 
@@ -58,7 +54,7 @@ export const PartyPlanForm = ({
     const response = await fetch(apiUrl, fetchConfig);
 
     if (response.ok) {
-      const newPartyPlan = await response.json();
+      await response.json();
       refreshDashboard();
     } else {
       console.log("Failed to create party plan");
@@ -168,7 +164,7 @@ export const PartyPlanForm = ({
           Close
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          Create
+          Submit
         </Button>
       </Modal.Footer>
     </Modal>

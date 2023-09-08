@@ -1,5 +1,3 @@
-// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
-// import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
@@ -8,17 +6,9 @@ import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
 import { useDashboard } from "../utils/DashboardContext.js";
 import { PartyPlanForm } from "../PartyPlanModal.js";
-import {
-  fetchData,
-  dummyPartyPlans,
-  dummyInvitations,
-  fetchResource,
-} from "../utils/dataService.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 
 function UserDashboard() {
-  // const { token } = useAuthContext();
-  // const navigate = useNavigate();
   const { accountEmail, accountId } = useAccountContext();
   const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
   const [selectedLink, setSelectedLink] = useState("parties");
@@ -28,7 +18,6 @@ function UserDashboard() {
   const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
   const [showPartyPlanForm, setShowPartyPlanForm] = useState(false);
   const [waitingModal, setWaitingModal] = useState(false);
-  const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
 
   // nav
   const navigate = useNavigate();
@@ -36,7 +25,6 @@ function UserDashboard() {
 
   const handleComingUpArrow = (id) => {
     setCurrentView("partyPlanDetail");
-    console.log("handleComingUpArrow triggered with ID:", id);
     if (id === undefined) {
       console.log("ID is undefined. Something is wrong.");
       return;
@@ -49,13 +37,8 @@ function UserDashboard() {
     if (selectedWaitingPartyPlan) {
       setWaitingPartyPlanData(selectedWaitingPartyPlan);
     }
-    setShowPartyPlanForm(true); // Open the PartyPlanForm
+    setShowPartyPlanForm(true);
   };
-
-  // const handleWaitingArrow = (id) => {
-  //   setwaitingPartyPlanId(id);
-  //   setWaitingModal(true);
-  // };
 
   // event handlers
 
@@ -80,17 +63,6 @@ function UserDashboard() {
     setWaitingModal(false);
   };
 
-  // effect hooks
-  // do not use until it works
-  // useEffect(() => {
-  //   const loadAsyncData = async () => {
-  //     const data = await fetchData(accountId, accountEmail);
-  //     setCurrentData(data);
-  //   };
-  //   loadAsyncData();
-  // }, [accountId, accountEmail]);
-
-  // omission makes coming up cards invalid
   useEffect(() => {
     const fetchData = async () => {
       await fetchPlans();
@@ -103,15 +75,6 @@ function UserDashboard() {
   useEffect(() => {
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
-
-  useEffect(() => {
-    console.log("Dummy Party Plans:", dummyPartyPlans);
-    console.log("Dummy Invitations:", dummyInvitations);
-
-    setCurrentData([...partyPlans, ...invitations]);
-  }, [partyPlans, invitations]);
-
-  // data
 
   const fetchInvitations = async () => {
     try {
@@ -149,41 +112,7 @@ function UserDashboard() {
     }
   };
 
-  // delete after verify
-  // const fetchInvitations = async () => {
-  //   try {
-  //     const response = await fetch(`${baseUrl}/invitations/`);
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       const compiledInvitations = data.map((invite) => ({
-  //         ...invite,
-  //         type: "invitation",
-  //       }));
-  //       setInvitations(compiledInvitations);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching invitations:", error);
-  //   }
-  // };
-
-  // const fetchPlans = async () => {
-  //   try {
-  //     const response = await fetch(`${baseUrl}/party_plans/`);
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       const compiledPlans = data.map((partyPlan) => ({
-  //         ...partyPlan,
-  //         type: "partyPlan",
-  //       }));
-  //       setPartyPlans(compiledPlans);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching invitations:", error);
-  //   }
-  // };
-
   //render functions
-  // delete after verify
   const renderComingUp = () => {
     if (currentData) {
       return currentData.map((item, index) => {
@@ -328,7 +257,6 @@ function UserDashboard() {
           <div className="row ps-2 waiting-card">{renderWaiting()}</div>
         </div>
       </div>
-      <Outlet />
       <PartyPlanForm
         show={showPartyPlanForm}
         onHide={togglePartyPlanForm}
