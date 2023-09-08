@@ -4,6 +4,7 @@ from models.invitations import Invitation
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
+import logging
 
 load_dotenv()
 DB_NAME = os.environ.get("DB_NAME")
@@ -35,24 +36,11 @@ def send_email(to_email, subject, content):
         html_content=content
     )
 
-    print(f"Sending email to {to_email} with subject: {subject}")
-
+    logging.info(f"Sending email to {to_email} with subject: {subject}")
     try:
         response = sendgrid_client.send(message)
-        print(f"Email sent successfully, response: {response.status_code}")
+        logging.info(f"Email sent successfully, response: {response.status_code}")
+        return True  # Return True to indicate the email was sent successfully
     except SendGridException as e:
-        print(f"Failed to send email: {e}")
-
-
-def send_party_invitation_email(invitation: Invitation):
-    party_plan = invitation.party_plan
-    subject = "You're Invited to a Party!"
-
-    with open('invitation_template.html', 'r') as file:
-        html = file.read()
-        html = html.replace('{guest_name}', invitation.guest_name)
-        html = html.replace('{party_name}', party_plan.name)
-        html = html.replace('{date}', str(party_plan.date))
-        html = html.replace('{location}', party_plan.location.address)
-
-    send_email(email=invitation.email, subject=subject, content=html)
+        logging.error(f"Failed to send email: {e}")
+        return False  # Return False to indicate the email failed to send

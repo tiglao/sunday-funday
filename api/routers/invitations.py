@@ -3,11 +3,15 @@ from typing import List
 from uuid import UUID, uuid4
 from models.invitations import Invitation, InvitationUpdate, InvitationCreate
 from clients.client import db
-from utils.email_service import send_email, send_party_invitation_email
+from utils.email_service import send_email
 from datetime import datetime
 from utils.authenticator import authenticator
+import logging
+
 
 router = APIRouter()
+
+logging.basicConfig(level=logging.INFO)
 
 
 # server 201/ response 201, 422
@@ -26,63 +30,66 @@ def create_invitation(
     account = {
         "id": "123e4567-e89b-12d3-a456-426614174001",
         "fullname": "Dummy Name",
-        "email": "dummy.email@example.com",
+        "email": "jc.marti.2809@gmail.com",
     }
+    try:
+        # find associated party plan
+        associated_party_plan = db.party_plans.find_one({"id": str(party_plan_id)})
+        if not associated_party_plan:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No party plan found with ID {party_plan_id}",
+            )
 
-    # find associated party plan
-    associated_party_plan = db.party_plans.find_one({"id": str(party_plan_id)})
-    if not associated_party_plan:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No party plan found with ID {party_plan_id}",
+        # id, timestamp, account info
+        invitation_id = str(uuid4())
+        invitation_data = {
+            "id": invitation_id,
+            "created": datetime.now(),
+            "account": account,  # Replace with your real account data
+            "party_plan_id": str(party_plan_id),
+        }
+
+        # add to db
+        new_invitation = db.invitations.insert_one(invitation_data)
+        if not new_invitation.acknowledged:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to add invitation to database.",
+            )
+
+        party_name = associated_party_plan.get("name", "a party")
+        email_content = f"You have been invited to {party_name}!"
+        logging.info("About to send email...")
+
+        # Auto-Send the email
+        email_sent = send_email(
+            to_email=account['email'],
+            subject="You're Invited!",
+            content=email_content
         )
+        if not email_sent:
+            logging.error("Failed to send invitation email.")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send invitation email."
+            )
+        # Fetch the created invitation from the database
+        created_invitation = db.invitations.find_one({"id": invitation_id})
+        if not created_invitation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Invitation with ID {invitation_data['id']} not found after insertion.",
+            )
 
-    # id, timestamp, account info
-    invitation_id = str(uuid4())
-    invitation_data = {
-        "id": invitation_id,
-        "created": datetime.now(),
-        "account": account,  # Replace with your real account data
-        "party_plan_id": str(party_plan_id),
-    }
+        return created_invitation
 
-    # add to db
-    new_invitation = db.invitations.insert_one(invitation_data)
-    if not new_invitation.acknowledged:
+    except Exception as e:
+        logging.error(f"General Exception: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to add invitation to database.",
+            detail=str(e)
         )
-
-    party_name = associated_party_plan.get("name", "a party")
-    email_content = f"You have been invited to {party_name}!"
-    # Auto-Send the email
-    email_sent = send_email(
-        to_email=account['email'],
-        subject="You're Invited!",
-        content=email_content
-    )
-
-    if not email_sent:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to send invitation email."
-        )
-        if email_sent:
-            # Log or do something when the email is successfully sent
-            print("Email sent successfully.")
-        else:
-            # Log or do something when the email fails to send
-            print("Failed to send email.")
-
-    created_invitation = db.invitations.find_one({"id": invitation_id})
-    if not created_invitation:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Invitation with ID {invitation_data['id']} not found after insertion.",
-        )
-
-    return created_invitation
 
 
 @router.get(
