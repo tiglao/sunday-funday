@@ -5,12 +5,12 @@ import { DateProvider } from "./utils/DateContext";
 import Main from "./Main";
 import Dashboard from "./Dashboard/Dashboard";
 import UserDashboard from "./Dashboard/UserDashboard";
-import PartyPlanForm from "./PartyPlan/PartyPlanForm";
 import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
 import InviteeDashboard from "./Dashboard/InviteeDashboard";
 import TestSpa from "./Tests/TestSpa";
 import { DashboardProvider } from "./utils/DashboardContext";
 import ProtectedRoute from "./ProtectedRoute";
+import { AccountContextProvider } from "./utils/AccountContext";
 
 function App() {
   const domain = /https:\/\/[^/]+/;
@@ -31,18 +31,16 @@ function App() {
               element={
                 <ProtectedRoute
                   element={
-                    <DashboardProvider>
-                      <Dashboard />
-                    </DashboardProvider>
+                    <AccountContextProvider>
+                      <DashboardProvider>
+                        <Dashboard />
+                      </DashboardProvider>
+                    </AccountContextProvider>
                   }
                 />
               }
             >
               <Route index element={<UserDashboard />} />
-              <Route
-                path="party_plans/new"
-                element={<ProtectedRoute element={<PartyPlanForm />} />}
-              />
               <Route
                 path="party_plans/:id"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
