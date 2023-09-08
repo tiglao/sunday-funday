@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Modal } from "react-bootstrap";
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
+import LoginForm from "./Dashboard/LoginForm";
+import SignupForm from "./Auth/SignupForm";
+import UpdateProfile from "./Auth/UpdateProfile";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { NavLink } from "react-router-dom";
 
@@ -9,6 +10,7 @@ function Nav() {
   // auth
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [showUpdateProfile, setShowUpdateProfile] = useState(false);
 
   const handleLoginClose = () => setShowLogin(false);
   const handleLoginShow = () => setShowLogin(true);
@@ -16,12 +18,16 @@ function Nav() {
   const handleSignupClose = () => setShowSignup(false);
   const handleSignupShow = () => setShowSignup(true);
 
+  const handleUpdateProfileClose = () => setShowUpdateProfile(false);
+  const handleUpdateProfileShow = () => setShowUpdateProfile(true);
+
   const handleSignupFromLogin = () => {
     handleLoginClose();
     handleSignupShow();
   };
   const { token } = useToken();
   const { logout } = useToken();
+  const updateProfileRef = useRef();
 
   const handleLogout = () => {
     logout();
@@ -64,6 +70,16 @@ function Nav() {
                   Dashboard
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink
+                  ref={updateProfileRef}
+                  className="text-decoration-none d-block"
+                  onMouseEnter={() => handleHover(updateProfileRef)}
+                  onClick={handleUpdateProfileShow}
+                >
+                  Update Profile
+                </NavLink>
+              </li>
               <li className="nav-item logout">
                 <NavLink
                   className="text-decoration-none logout-link"
@@ -80,9 +96,7 @@ function Nav() {
                 <NavLink
                   ref={loginRef}
                   className="text-decoration-none d-block"
-                  onMouseEnter={() => {
-                    handleHover(loginRef);
-                  }}
+                  onMouseEnter={() => handleHover(loginRef)}
                   onClick={handleLoginShow}
                 >
                   Login
@@ -92,29 +106,28 @@ function Nav() {
                 <NavLink
                   ref={signupRef}
                   className="text-decoration-none d-block"
-                  onMouseEnter={() => {
-                    handleHover(signupRef);
-                  }}
+                  onMouseEnter={() => handleHover(signupRef)}
                   onClick={handleSignupShow}
                 >
                   Signup
                 </NavLink>
               </li>
-              <li>
-                <Modal show={showLogin} onHide={handleLoginClose}>
-                  <LoginForm
-                    handleSignupFromLogin={handleSignupFromLogin}
-                    handleLoginClose={handleLoginClose}
-                  />
-                </Modal>
-                <Modal show={showSignup} onHide={handleSignupClose}>
-                  <SignupForm handleSignupClose={handleSignupClose} />
-                </Modal>
-              </li>
             </>
           )}
         </ul>
       </nav>
+      <Modal show={showUpdateProfile} onHide={handleUpdateProfileClose}>
+        <UpdateProfile handleUpdateProfileClose={handleUpdateProfileClose} />
+      </Modal>
+      <Modal show={showLogin} onHide={handleLoginClose}>
+        <LoginForm
+          handleSignupFromLogin={handleSignupFromLogin}
+          handleLoginClose={handleLoginClose}
+        />
+      </Modal>
+      <Modal show={showSignup} onHide={handleSignupClose}>
+        <SignupForm handleSignupClose={handleSignupClose} />
+      </Modal>
     </div>
   );
 }

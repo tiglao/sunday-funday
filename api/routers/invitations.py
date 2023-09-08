@@ -5,6 +5,9 @@ from models.invitations import Invitation, InvitationUpdate, InvitationCreate
 from clients.client import db
 from utils.email_service import send_email
 from datetime import datetime
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.encoders import jsonable_encoder
+from models.invitations import Invitation, InvitationPayload, InvitationUpdate
 from utils.authenticator import authenticator
 import logging
 
@@ -23,10 +26,11 @@ logging.basicConfig(level=logging.INFO)
 )
 def create_invitation(
     party_plan_id: UUID,
+    invitation_payload: InvitationPayload = None,
     # invitation: InvitationCreate = Body(...),
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    # dummy account
+    print("Debug: Received invitation_payload:", invitation_payload)
     account = {
         "id": "123e4567-e89b-12d3-a456-426614174001",
         "fullname": "Dummy Name",

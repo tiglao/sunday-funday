@@ -1,12 +1,12 @@
 // import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 // import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCommentDots, FaArrowRight } from "react-icons/fa";
-import SideNav from "./SideNav";
-import FeedbackModal from "./FeedbackModal";
-import PartyPlanDetail from "./PartyPlanDetail.js";
+import SideNav from "../SideNav";
+import FeedbackModal from "../FeedbackModal";
+import PartyPlanDetail from "../PartyPlan/PartyPlanDetail.js";
 import UserDashboard from "./UserDashboard.js";
-import { useDashboard } from "./utils/DashboardContext";
+import { useDashboard } from "../utils/DashboardContext";
 
 function Dashboard() {
   // const { token } = useAuthContext();
@@ -15,6 +15,9 @@ function Dashboard() {
   const { currentView, setCurrentView, setSelectedPartyPlanId } =
     useDashboard();
 
+  useEffect(() => {
+    console.log(`currentView changed in Dashvboard: ${currentView}`);
+  }, [currentView]);
   return (
     <>
       <div className="bg-dark shadow">

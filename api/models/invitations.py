@@ -78,6 +78,11 @@ class InvitationUpdate(BaseModel):
         }
 
 
+class InvitationPayload(BaseModel):
+    fullName: str
+    email: str
+
+
 # user inputs emails (has email strings that are associated with account).
 
 
