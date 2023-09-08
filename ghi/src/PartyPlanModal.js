@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { baseUrl } from "./utils/config.js";
+import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 export const PartyPlanForm = ({
   show,
@@ -9,6 +11,7 @@ export const PartyPlanForm = ({
   partyPlanData,
   refreshDashboard,
 }) => {
+  const navigate = useNavigate();
   const { token } = useAuthContext();
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -18,6 +21,7 @@ export const PartyPlanForm = ({
   const [endTime, setEndTime] = useState("");
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
   const accountId = decodedToken?.account?.id;
+  const {partyplanid} = useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -54,8 +58,11 @@ export const PartyPlanForm = ({
     const response = await fetch(apiUrl, fetchConfig);
 
     if (response.ok) {
-      await response.json();
+      const createdParty = await response.json();
+      const createdPartyId = createdParty.id
       refreshDashboard();
+
+      navigate(`/locations/${createdPartyId}/search_nearby`);
     } else {
       console.log("Failed to create party plan");
     }

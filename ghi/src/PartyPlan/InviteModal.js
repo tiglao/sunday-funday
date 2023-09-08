@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import { useDashboard } from "../utils/DashboardContext.js";
+import { useParams } from "react-router-dom";
 
 const account_json = {
   _id: "64ef6532ef30ab1c58616d1b",
@@ -24,7 +25,7 @@ const InvitationForm = ({ show, onHide, partyPlanId }) => {
   const [accountId, setAccountId] = useState(account_json._id);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const { selectedPartyPlanId } = useDashboard();
+  const {selectedPartyPlanId} = useParams()
   console.log(
     `This modal has successfully received the selectedPartyPlanId: ${selectedPartyPlanId}`
   );

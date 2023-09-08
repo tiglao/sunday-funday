@@ -3,6 +3,8 @@ import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import { DateProvider } from "./utils/DateContext";
 import UserDashboard from "./Dashboard/UserDashboard";
+import Dashboard from "./Dashboard/Dashboard";
+import PartyPlanForm from "./PartyPlan/PartyPlanForm";
 import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
 import InviteeDashboard from "./Dashboard/InviteeDashboard";
 import Main from "./Main";
@@ -27,7 +29,7 @@ return (
 
             {/* Protected routes */}
             <Route
-              path="/dashboard/*"
+              path="/dashboard"
               element={
                 <ProtectedRoute
                   element={
@@ -42,7 +44,7 @@ return (
             >
               <Route index element={<UserDashboard />} />
               <Route
-                path="party_plans/:id"
+                path="party_plans/:partyplanid"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
               />
               <Route
@@ -55,6 +57,10 @@ return (
               />
             </Route>
             <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
+              <Route
+                path="party_plans/:partyplanid"
+                element={<PartyPlanDetail />} />
+
           </Routes>
         </DateProvider>
       </AuthProvider>

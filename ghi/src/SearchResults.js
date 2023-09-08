@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { baseUrl } from './utils/config';
 
+
 function SearchResult(){
     const {partyplanid} = useParams();
     const[results, setResults] = useState([])

@@ -1,19 +1,20 @@
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaCheck } from "react-icons/fa";
 import Button from "react-bootstrap/Button";
 import { baseUrl } from "../utils/config.js";
 import { useDashboard } from "../utils/DashboardContext";
 import InvitationForm from "./InviteModal.js";
-import { useAccountContext } from "../utils/AccountContext.js";
+// import { useAccountContext } from "../utils/AccountContext.js";
 import { useNavigate, Outlet } from "react-router-dom";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
+import { useParams } from "react-router-dom";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
-  const { accountAvatar, accountFullName } = useAccountContext();
-  const { selectedPartyPlanId } = useDashboard();
+  // const { accountAvatar, accountFullName } = useAccountContext();
+
   const navigate = useNavigate();
-  const { token } = useAuthContext();
+  // const { token } = useAuthContext();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
   const [invitations, setInvitations] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
@@ -24,6 +25,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [endDate, setEndDate] = useState("");
   const [displayTime, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const {partyplanid} = useParams()
 
   const emailAllGuests = () => {
     const allEmails = invitations
@@ -40,7 +42,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     const fetchPartyPlan = async () => {
       try {
         const response = await fetch(
-          `${baseUrl}/party_plans/${selectedPartyPlanId}`
+          `${baseUrl}/party_plans/${partyplanid}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -67,10 +69,10 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
       }
     };
 
-    if (selectedPartyPlanId) {
+    if (partyplanid) {
       fetchPartyPlan();
     }
-  }, [selectedPartyPlanId]);
+  }, [partyplanid]);
 
   useEffect(() => {
     const fetchInvitations = async () => {
@@ -151,7 +153,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             </div>
           </div>{" "}
           {/* party planner */}
-          <div className="planner-description d-flex flex-column align-items-start">
+          {/* <div className="planner-description d-flex flex-column align-items-start">
             <div className="account-avatar">
               <img
                 src={
@@ -164,7 +166,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
               />
             </div>
             <div className="planner-name">Planned by: {accountFullName}</div>
-          </div>
+          </div> */}
         </div>
       </div>
 

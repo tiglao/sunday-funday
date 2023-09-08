@@ -7,6 +7,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import { useDateContext } from "./DateContext.js";
+import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 // import stuff in to use usetoken. for now account data is faked here.
 // want to be able to use the token to give the original account model.
@@ -21,6 +23,7 @@ const account_json = {
     "$2b$12$K5mQBUZCaWXIz3FTAR8cROll5WcAWXtmeYvnYIRmFNXXMA8PfW.1S",
 };
 
+
 const PartyPlanForm = ({ onFormSubmit, onCancel }) => {
   const { token } = useAuthContext();
   const [accountId, setAccountId] = useState(account_json._id);
@@ -32,6 +35,7 @@ const PartyPlanForm = ({ onFormSubmit, onCancel }) => {
   const [apiMapsLocation, setApiMapsLocation] = useState([{ input: "" }]);
   const [endTime, setEndTime] = useState("");
   const localDate = useDateContext();
+  const {partyplanid} = useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -54,15 +58,20 @@ const PartyPlanForm = ({ onFormSubmit, onCancel }) => {
       },
     };
 
+    const navigate = useNavigate();
+
     const response = await fetch(apiUrl, fetchConfig);
     if (response.ok) {
       const newPartyPlan = await response.json();
       onFormSubmit();
+
+      navigate(`/locations/${partyplanid}/search_nearby`);
     }
   };
 
   // check id
   const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
+
 
   useEffect(() => {
     if (localDate) {
@@ -151,9 +160,10 @@ const PartyPlanForm = ({ onFormSubmit, onCancel }) => {
                 />
               </Form.Group>
 
-              <Button variant="primary" type="submit">
+              <Button onClick={handleTestNavigation} variant="primary" type="submit">
                 Create
               </Button>
+              <Button onClick={handleTestNavigation}>Test Navigation</Button>
               <Button
                 variant="secondary"
                 onClick={onCancel}
