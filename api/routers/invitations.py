@@ -34,7 +34,7 @@ def create_invitation(
     account = {
         "id": "123e4567-e89b-12d3-a456-426614174001",
         "fullname": "Dummy Name",
-        "email": "jc.marti.2809@gmail.com",
+        "email": "dummyemail@example.com", # input your email here for testing purposes
     }
     try:
         # find associated party plan
