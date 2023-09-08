@@ -16,6 +16,7 @@ from models.party_plans import PartyPlan
 
 router = APIRouter()
 
+
 @router.post(
     "/",
     response_description="Create a new location",
@@ -24,10 +25,7 @@ router = APIRouter()
 )
 async def create_location(
     location: Location = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    # check place_id error
-
     location = jsonable_encoder(location)
     existing_location = db.locations.find_one({"place_id": location.place_id})
     if existing_location:
@@ -36,10 +34,7 @@ async def create_location(
             detail="Location with this place_id already exists",
         )
 
-    # conversion
-    # will need to add data validators later
     location_dict = jsonable_encoder(location)
-
 
     location_dict["id"] = str(uuid4())
 
@@ -58,10 +53,8 @@ async def create_location(
 @router.get(
     "/{party_plan_id}/search_nearby",
     response_description="Search nearby locations",
-    # response_class=List[Location],
 )
 async def search_nearby(
-    # location: tuple, keywords: Optional[List[str]] = [],
     party_plan_id=str,
 ):
     party_plan = db.party_plans.find_one({"id": party_plan_id})
@@ -104,14 +97,13 @@ async def search_nearby(
             status_code=400,
         )
 
+
 @router.get(
     "/",
     response_description="List all locations",
     response_model=List[Location],
 )
-def list_locations(
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
+def list_locations():
     locations = list(db.locations.find(limit=100))
     return locations
 
@@ -123,7 +115,6 @@ def list_locations(
 )
 def find_location(
     place_id: str,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (location := db.locations.find_one({"place_id": place_id})) is not None:
         return location
@@ -141,7 +132,6 @@ def find_location(
 def update_location(
     id: UUID,
     location: LocationUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_location = db.locations.find_one({"_id": str(id)})
 
@@ -163,7 +153,6 @@ def update_location(
 def delete_location(
     id: str,
     response: Response,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.locations.delete_one({"_id": id})
 

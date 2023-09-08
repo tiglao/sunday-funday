@@ -42,26 +42,6 @@ async def get_token(
         }
 
 
-# AUTH clause. Use this function when ready
-# @router.get("/token", response_model=AccountToken | None)
-# async def get_token(
-#     request: Request,
-#     account: AccountOut = Depends(authenticator.try_get_current_account_data),
-# ) -> AccountToken | None:
-#     print("request is:", request)
-#     if not account:
-#          raise HTTPException(status_code=404, detail="Account not found")
-#     elif authenticator.cookie_name not in request.cookies:
-#         raise HTTPException(
-#             status_code=400, detail="Required cookie not found"
-#         )
-#     elif authenticator.cookie_name in request.cookies:
-#         return {
-#             "access_token": request.cookies[authenticator.cookie_name],
-#             "type": "Bearer",
-#         }
-
-
 @router.post("/api/accounts", response_model=AccountToken | HttpError)
 async def create_account(
     info: Account,
@@ -88,13 +68,10 @@ async def create_account(
     response_model=AccountUpdate,
 )
 def update_account_by_email(
-    email: str,  # Take the email as a string parameter
+    email: str,
     account: AccountUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    existing_account = db.accounts.find_one(
-        {"email": email}
-    )  # Look up account by email
+    existing_account = db.accounts.find_one({"email": email})
     if not existing_account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -104,9 +81,7 @@ def update_account_by_email(
     account_data = {k: v for k, v in account.dict().items() if v is not None}
 
     if account_data:
-        db.accounts.update_one(
-            {"email": email}, {"$set": account_data}
-        )  # Update account by email
+        db.accounts.update_one({"email": email}, {"$set": account_data})
 
     return db.accounts.find_one({"email": email})
 
@@ -114,27 +89,21 @@ def update_account_by_email(
 @router.get(
     "/accounts",
     response_description="Get a list of all accounts",
-    response_model=List[
-        AccountAll
-    ],  # Assuming AccountOut is your output model
+    response_model=List[AccountAll],
 )
 def get_all_accounts():
-    accounts = db.accounts.find()  # This fetches all accounts
-    accounts_list = list(
-        accounts
-    )  # Convert to list since find() returns a cursor
+    accounts = db.accounts.find()
+    accounts_list = list(accounts)
     return accounts_list
 
 
 @router.get(
     "/accountByEmail",
     response_description="Get an account by email",
-    response_model=AccountAll,  # Assuming AccountAll is your output model
+    response_model=AccountAll,
 )
-def get_account_by_email(email: str):  # Changed id to email here
-    account = db.accounts.find_one(
-        {"email": email}  # Changed to look up by email
-    )
+def get_account_by_email(email: str):
+    account = db.accounts.find_one({"email": email})
     if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
