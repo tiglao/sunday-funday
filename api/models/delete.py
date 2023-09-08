@@ -19,20 +19,9 @@ def last_entry(linked_list: Node = None) -> Node:
     return None
 
 
-# Test the function
-print(last_entry(None))  # Should print None
-
-# Create sample linked list: Node("C") -> Node("A") -> Node("T")
 node1 = Node(value="C", link=None)
 node2 = Node(value="A", link=node1)
 node3 = Node(value="T", link=node2)
 
-# Should print the last node with value "T"
-print(last_entry(node3).value)
-
-# Create another sample linked list: Node(100) -> Node(2)
 node4 = Node(value=100, link=None)
 node5 = Node(value=2, link=node4)
-
-# Should print the last node with value 2
-print(last_entry(node5).value)

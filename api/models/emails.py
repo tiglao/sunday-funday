@@ -6,8 +6,6 @@ from uuid import UUID
 from models.invitations import Invitation, RsvpStatus
 from pydantic import BaseModel
 
-# needs to pull in account full name (no first name, use method to split string) account email
-
 
 class SentStatus(str, Enum):
     PENDING = "pending"
@@ -19,12 +17,12 @@ class SentStatus(str, Enum):
 
 class EmailContext(BaseModel):
     invitation_id: UUID
-    created_at: datetime  # use information from invitation created
-    updated_at: Optional[datetime]  # use information from invitation updated
+    created_at: datetime
+    updated_at: Optional[datetime]
     account: Dict[str, str]
     party_plan_id: UUID
     rsvp_status: Optional[RsvpStatus]
-    sent_status: SentStatus  # should be a limited number of types of statuses
+    sent_status: SentStatus
 
 
 class ApiEmail(BaseModel):

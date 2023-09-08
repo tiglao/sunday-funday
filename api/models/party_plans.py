@@ -71,7 +71,6 @@ class PartyPlan(BaseModel):
 
 
 class PartyPlanCreate(BaseModel):
-    # id, account_id, created, party_status auto-generated
     account_id: str
     api_maps_location: List[ApiMapsLocation]
     start_time: datetime

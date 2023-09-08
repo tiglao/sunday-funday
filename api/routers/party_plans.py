@@ -6,11 +6,15 @@ from uuid import UUID, uuid4
 from bson.binary import Binary
 from datetime import datetime, timedelta
 from utils.authenticator import authenticator
-from models.party_plans import ApiMapsLocation,  PartyPlan, PartyPlanUpdate, PartyPlanCreate
+from models.party_plans import (
+    ApiMapsLocation,
+    PartyPlan,
+    PartyPlanUpdate,
+    PartyPlanCreate,
+)
 from clients.client import db
 from maps_api import geo_code
 from fastapi.encoders import jsonable_encoder
-
 
 
 router = APIRouter()
@@ -24,28 +28,22 @@ router = APIRouter()
 )
 def create_party_plan(
     party_plan: PartyPlanCreate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    # generate id, timestamp, default status of draft
     party_plan_data = jsonable_encoder(party_plan)
     party_plan_data["id"] = str(uuid4())
     party_plan_data["created"] = datetime.now()
     party_plan_data["party_status"] = "draft"
 
-    # Geocode the general_location
-    address =  party_plan_data["api_maps_location"][0]["input"]
+    address = party_plan_data["api_maps_location"][0]["input"]
     if address:
         geo_data = geo_code(address)
         if geo_data:
-            print(party_plan_data)  # Check the value of party_plan_data
-            print(party_plan_data["api_maps_location"])  # Check the value of api_maps_location
-            print(party_plan_data["api_maps_location"][0])  # Check the value of the first element
-            print(party_plan_data["api_maps_location"][0]["geo"])  # Check the value of geo
+            print(party_plan_data)
+            print(party_plan_data["api_maps_location"])
+            print(party_plan_data["api_maps_location"][0])
+            print(party_plan_data["api_maps_location"][0]["geo"])
             party_plan_data["api_maps_location"][0]["geo"] = geo_data
 
-
-
-    # Add to the database
     new_party_plan = db.party_plans.insert_one(party_plan_data)
     if not new_party_plan.acknowledged:
         raise HTTPException(
@@ -53,7 +51,6 @@ def create_party_plan(
             detail="Failed to add party plan to database.",
         )
 
-    # fetch the plan you just made
     created_party_plan = db.party_plans.find_one({"id": party_plan_data["id"]})
     if not created_party_plan:
         raise HTTPException(
@@ -69,14 +66,10 @@ def create_party_plan(
     response_description="List all party plans",
     response_model=List[PartyPlan],
 )
-def list_party_plans(
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
+def list_party_plans():
     party_plans = list(db.party_plans.find(limit=100))
     for party in party_plans:
-        # fetch associated invitations
         invitations = list(db.invitations.find({"party_plan_id": party["id"]}))
-        # return list of invitation ids
         party["invitations"] = [inv["id"] for inv in invitations]
 
     return party_plans
@@ -89,15 +82,12 @@ def list_party_plans(
 )
 def find_party_plan(
     id: str,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     party_plan = db.party_plans.find_one({"id": id})
     if party_plan:
-        # fetch associated invitations
         invitations = list(
             db.invitations.find({"party_plan_id": party_plan["id"]})
         )
-        # return list of invitation ids
         party_plan["invitations"] = [inv["id"] for inv in invitations]
 
         return party_plan
@@ -115,9 +105,7 @@ def find_party_plan(
 def update_party_plan(
     id: UUID,
     party_plan: PartyPlanUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    # get plan by id
     existing_party_plan = db.party_plans.find_one({"id": str(id)})
     if not existing_party_plan:
         raise HTTPException(
@@ -129,7 +117,6 @@ def update_party_plan(
         k: v for k, v in party_plan.dict().items() if v is not None
     }
 
-    # make sure searched_locations in payload are in locations database and update. this will append the searched_locations array with each update.
     if "searched_locations" in party_plan_data:
         for location_id in party_plan_data["searched_locations"]:
             if location_id not in existing_searched_locations:
@@ -141,12 +128,10 @@ def update_party_plan(
                     )
                 existing_searched_locations.append(location_id)
 
-    # validate and update favorite_locations in payload. will overwrite existing list.
     if "favorite_locations" in party_plan_data:
         existing_searched_locations = existing_party_plan.get(
             "searched_locations", []
         )
-        # initialize
         if party_plan_data["favorite_locations"] is None:
             party_plan_data["favorite_locations"] = []
 
@@ -164,7 +149,6 @@ def update_party_plan(
                 {"$set": {"favorite_status": True}},
             )
 
-    # validate that chosen_locations are part of favorite_locations. will overwrite existing list.
     if "chosen_locations" in party_plan_data:
         existing_favorite_locations = existing_party_plan.get(
             "favorite_locations", []
@@ -180,8 +164,6 @@ def update_party_plan(
         party_plan_data["chosen_locations"] = [
             chosen_id for chosen_id in party_plan_data["chosen_locations"]
         ]
-
-    # validate invitations in payload
     if "invitations" in party_plan_data:
         invitations_to_validate = party_plan_data["invitations"]
         associated_invitations = list(
@@ -199,12 +181,10 @@ def update_party_plan(
                 detail="Some provided invitation IDs are not associated with this party plan.",
             )
 
-        # add validated invitation IDs to the party plan
         party_plan_data["invitations"] = [
             UUID(str(inv_id)) for inv_id in invitations_to_validate
         ]
 
-    # timestamp
     current_time = datetime.now()
     party_plan_data["updated"] = current_time
 
@@ -217,7 +197,6 @@ def update_party_plan(
 def delete_party_plan(
     id: str,
     response: Response,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.party_plans.delete_one({"id": id})
     if delete_result.deleted_count == 1:
