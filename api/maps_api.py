@@ -46,5 +46,3 @@ def nearby_search(location, keywords):
     data = response.json()
     if data["status"] == "OK":
         return data["results"]
-    else:
-        print("issue!")

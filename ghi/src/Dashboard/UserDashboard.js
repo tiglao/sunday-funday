@@ -4,10 +4,10 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
 import { FaArrowUp } from "react-icons/fa";
-import { baseUrl } from "./utils/config.js";
-import { formatDateTime } from "./utils/dashboardDateTime.js";
-import PartyPlanForm from "./PartyPlanForm.js";
-import { useDashboard } from "./utils/DashboardContext.js";
+import { baseUrl } from "../utils/config.js";
+import { formatDateTime } from "../utils/dashboardDateTime.js";
+import PartyPlanForm from "../PartyPlan/PartyPlanForm.js";
+import { useDashboard } from "../utils/DashboardContext.js";
 
 function UserDashboard() {
   // const { token } = useAuthContext();
@@ -57,24 +57,19 @@ function UserDashboard() {
 
   const fetchPlans = async () => {
     try {
-    const response = await fetch(`${baseUrl}/party_plans/`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status}`);
+      const response = await fetch(`${baseUrl}/party_plans/`);
+      if (response.ok) {
+        const data = await response.json();
+        const compiledPlans = data.map((partyPlan) => ({
+          ...partyPlan,
+          type: "partyPlan",
+        }));
+        setPartyPlans(compiledPlans);
       }
-
-      const data = await response.json();
-      const compiledPlans = data.map((partyPlan) => ({
-        ...partyPlan,
-        type: "partyPlan",
-      }));
-
-      console.log(compiledPlans);
-      setPartyPlans(compiledPlans);
-  } catch (error) {
-    console.error("Error fetching plans:", error);
-  }
-};
+    } catch (error) {
+      console.error("Error fetching invitations:", error);
+    }
+  };
 
   const dashboardContextValue = useDashboard();
 

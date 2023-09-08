@@ -1,67 +1,48 @@
 import React, { Component } from 'react';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-class GoogleMapsComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.mapRef = React.createRef();
-    this.state = {
-      map: null,
-      places: [],
-    };
-  }
+const containerStyle = {
+  width: '400px',
+  height: '400px'
+};
 
-  componentDidMount() {
-    // Load Google Maps script
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=places`;
-    script.async = true;
-    script.onload = this.initMap;
-    document.head.appendChild(script);
-  }
+const center = {
+  lat: -3.745,
+  lng: -38.523
+};
 
-  initMap = () => {
-    const center = { lat: 48.8566 N, lng: 2.3522 E };
-    const map = new window.google.maps.Map(this.mapRef.current, {
-      center,
-      zoom: 15,
-    });
-    this.setState({ map });
-  };
+function MyComponent() {
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: "YOUR_API_KEY"
+  })
 
-  searchNearbyPlaces = () => {
-    const { map } = this.state;
+  const [map, setMap] = React.useState(null)
 
-    const service = new window.google.maps.places.PlacesService(map);
+  const onLoad = React.useCallback(function callback(map) {
+    // This is just an example of getting and using the map instance!!! don't just blindly copy!
+    const bounds = new window.google.maps.LatLngBounds(center);
+    map.fitBounds(bounds);
 
-    const request = {
-      location: map.getCenter(),
-      radius: 1000,
-      type: ['restaurant', 'cafe', 'bar'],
-    };
+    setMap(map)
+  }, [])
 
-    service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        this.setState({ places: results });
-      }
-    });
-  };
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null)
+  }, [])
 
-  render() {
-    return (
-      <div>
-        <button onClick={this.searchNearbyPlaces}>Search Nearby Places</button>
-        <div ref={this.mapRef} style={{ width: '100%', height: '400px' }}></div>
-        <div>
-          <h2>Nearby Places</h2>
-          <ul>
-            {this.state.places.map((place, index) => (
-              <li key={index}>{place.name}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-  }
+  return isLoaded ? (
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={10}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+      >
+        { /* Child components, such as markers, info windows, etc. */ }
+        <></>
+      </GoogleMap>
+  ) : <></>
 }
 
-export default GoogleMapsComponent;
+export default React.memo(MyComponent)
