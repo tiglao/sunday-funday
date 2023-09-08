@@ -4,7 +4,12 @@ import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useDashboard } from "./utils/DashboardContext.js";
 import { baseUrl } from "./utils/config.js";
 
-export const PartyPlanForm = ({ show, onHide, partyPlanData }) => {
+export const PartyPlanForm = ({
+  show,
+  onHide,
+  partyPlanData,
+  refreshDashboard,
+}) => {
   const { token } = useAuthContext();
   const [description, setDescription] = useState("");
   const { selectedPartyPlanId } = useDashboard();
@@ -54,6 +59,7 @@ export const PartyPlanForm = ({ show, onHide, partyPlanData }) => {
 
     if (response.ok) {
       const newPartyPlan = await response.json();
+      refreshDashboard();
     } else {
       console.log("Failed to create party plan");
     }
@@ -91,7 +97,6 @@ export const PartyPlanForm = ({ show, onHide, partyPlanData }) => {
             </Col>
           </Form.Group>
 
-          {/* Additional Form Groups for other fields */}
           <Form.Group as={Row}>
             <Form.Label column sm="2">
               Location

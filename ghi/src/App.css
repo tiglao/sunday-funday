@@ -476,8 +476,6 @@ div.dashboard-main {
   border-radius: 10%;
 }
 
-/* party plan detail */
-
 .party-plan-detail {
   padding-left: 50px !important;
   font-family: var(--sans-serif);
@@ -489,19 +487,6 @@ div.dashboard-main {
 }
 
 .end-date {
-  font-size: 2rem;
-}
-
-.invitations-list {
-  margin-top: 1rem;
-  font-family: var(--sans-serif);
-}
-
-.invitations-list ul li {
-  padding: 4px;
-}
-
-.invited-subtitle {
   font-size: 2rem;
 }
 
@@ -519,7 +504,56 @@ div.dashboard-main {
   float: right;
 }
 
-.first-row-right,
-.second-row-left {
-  padding-left: 20px !important;
+/* invite card */
+
+.card-img-wrapper {
+  overflow: hidden;
+  height: 80px;
+}
+
+.card-body a:hover {
+  color: #ffd700;
+}
+
+.invited-subtitle {
+  font-size: 2rem;
+}
+
+.invite-card-container {
+  width: calc(25% - 1rem);
+  height: 170px;
+  margin: 0.5rem;
+}
+
+.invite-card-image-wrapper {
+  overflow: hidden;
+  height: 60px;
+}
+
+.invite-card-image {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.invite-card-content {
+  overflow: hidden;
+  height: calc(170px - 60px);
+}
+
+.invite-card-text {
+  font-size: 0.7rem;
+}
+
+.invite-card-link {
+  color: #ffffff !important;
+  font-style: bold;
+  display: inline-block;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.invite-card-link:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }

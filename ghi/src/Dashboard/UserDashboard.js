@@ -14,21 +14,21 @@ import {
   dummyInvitations,
   fetchResource,
 } from "../utils/dataService.js";
+import { useAccountContext } from "../utils/AccountContext.js";
 
 function UserDashboard() {
   // const { token } = useAuthContext();
   // const navigate = useNavigate();
+  const { accountEmail, accountId } = useAccountContext();
   const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
   const [selectedLink, setSelectedLink] = useState("parties");
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-
   const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
   const [showPartyPlanForm, setShowPartyPlanForm] = useState(false);
   const [waitingModal, setWaitingModal] = useState(false);
   const [waitingPartyPlanId, setwaitingPartyPlanId] = useState(null);
-  const [showPartyPlanModal, setShowPartyPlanModal] = useState(false);
 
   // nav
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ function UserDashboard() {
   const openPartyPlanForm = () => {
     setShowPartyPlanForm(true);
   };
-  const closePartyPlanModal = () => {
+  const closePartyPlanForm = () => {
     setShowPartyPlanForm(false);
   };
   const closeWaitingModal = () => {
@@ -64,7 +64,7 @@ function UserDashboard() {
 
   const refreshDashboard = async () => {
     await fetchPlans();
-    closePartyPlanModal();
+    closePartyPlanForm();
   };
 
   // delete
@@ -73,7 +73,16 @@ function UserDashboard() {
   };
 
   // effect hooks
+  // do not use until it works
+  // useEffect(() => {
+  //   const loadAsyncData = async () => {
+  //     const data = await fetchData(accountId, accountEmail);
+  //     setCurrentData(data);
+  //   };
+  //   loadAsyncData();
+  // }, [accountId, accountEmail]);
 
+  // omission makes coming up cards invalid
   useEffect(() => {
     const fetchData = async () => {
       await fetchPlans();
@@ -84,13 +93,13 @@ function UserDashboard() {
   }, []);
 
   useEffect(() => {
-    console.log("Dummy Party Plans:", dummyPartyPlans);
-    console.log("Dummy Invitations:", dummyInvitations);
-
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
 
   useEffect(() => {
+    console.log("Dummy Party Plans:", dummyPartyPlans);
+    console.log("Dummy Invitations:", dummyInvitations);
+
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
 
@@ -134,6 +143,7 @@ function UserDashboard() {
     if (currentData) {
       return currentData.map((item, index) => {
         let displayContent, partyPath, startTime, endTime, imageUrl;
+
         if (item.type === "partyPlan") {
           displayContent = item.description;
           partyPath = `/party_plans/${item.id}`;
@@ -152,10 +162,8 @@ function UserDashboard() {
             imageUrl = asscPartyPlan.image;
           }
         }
-        const { formattedDate, displayTime } = formatDateTime(
-          startTime,
-          endTime
-        );
+
+        const { startDate, displayTime } = formatDateTime(startTime, endTime);
 
         return (
           <div
@@ -179,9 +187,7 @@ function UserDashboard() {
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
                 </div>
                 <p className="card-text coming-up-text">
-                  <span className="one-line">
-                    {formattedDate.toLowerCase()}
-                  </span>
+                  <span className="one-line">{startDate.toLowerCase()}</span>
                 </p>
               </div>
             </div>
@@ -204,7 +210,7 @@ function UserDashboard() {
         plan.party_status === "draft" || plan.party_status === "share draft"
     );
     return allWaiting.map((item, index) => {
-      const { formattedDate, displayTime } = formatDateTime(
+      const { startDate, displayTime } = formatDateTime(
         item.start_time,
         item.end_time
       );
@@ -225,7 +231,7 @@ function UserDashboard() {
               {item.description}
               <br />
               <span className="waiting-date-time">
-                {formattedDate.toLowerCase()} | {displayTime}
+                {startDate.toLowerCase()} | {displayTime}
               </span>
             </p>
           </div>
@@ -263,6 +269,9 @@ function UserDashboard() {
               >
                 my invites
               </Button>
+              <Button variant="secondary" onClick={openPartyPlanForm}>
+                start a party
+              </Button>
             </div>
           </div>
           <div className="d-flex flex-wrap justify-content-start">
@@ -274,19 +283,13 @@ function UserDashboard() {
           <div className="row ps-2 waiting-card">{renderWaiting()}</div>
         </div>
       </div>
-      <Modal show={waitingModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Party Plan</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <PartyPlanForm partyPlanId={waitingPartyPlanId} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <Outlet />
+      <PartyPlanForm
+        show={showPartyPlanForm}
+        onHide={togglePartyPlanForm}
+        partyPlanData={waitingPartyPlanData}
+        refreshDashboard={refreshDashboard}
+      />
     </>
   );
 }

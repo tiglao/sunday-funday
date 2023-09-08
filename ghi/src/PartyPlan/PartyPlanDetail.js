@@ -7,6 +7,7 @@ import { useDashboard } from "../utils/DashboardContext";
 import InvitationForm from "./InviteModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 import { useNavigate, Outlet } from "react-router-dom";
+import { formatDateTime } from "../utils/dashboardDateTime.js";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { accountAvatar, accountFullName } = useAccountContext();
@@ -17,7 +18,13 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [invitations, setInvitations] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [updatedValue, setUpdatedValue] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [displayTime, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
+
   const emailAllGuests = () => {
     const allEmails = invitations
       .map((invite) => invite.account.email)
@@ -41,7 +48,19 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             ...data,
             type: "partyPlan",
           });
+          const { startDate, startTime, endDate, endTime, displayTime } =
+            formatDateTime(data.start_time, data.end_time);
+          console.log("Formatted Start Date:", startDate);
+          console.log("Formatted Start Time:", startTime);
+          console.log("Formatted End Date:", endDate);
+          console.log("Formatted End Time:", endTime);
+          console.log("Formatted Display Time:", displayTime);
           console.log("Fetched specific party plan:", data);
+          setStartTime(startTime);
+          setEndTime(endTime);
+          setStartDate(startDate);
+          setEndDate(endDate);
+          setEndDate(displayTime);
         }
       } catch (error) {
         console.error("Error fetching specific plan:", error);
@@ -124,19 +143,11 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
         <div className="col-md-7 align-self-end">
           {/* Basic Info */}
           <div className="row">
-            <div className="col start-date">
-              {renderEditableField(
-                "Start Time",
-                partyPlan.start_time.toLowerCase()
-              )}
-            </div>
+            <div className="col start-date">{startDate}</div>
           </div>
           <div className="row mb-4">
-            <div className="col end-date">
-              {renderEditableField(
-                "End Time",
-                partyPlan.end_time.toLowerCase()
-              )}
+            <div className="col display-time">
+              {startTime} - {endTime}
             </div>
           </div>{" "}
           {/* party planner */}
@@ -159,27 +170,42 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
 
       {/* Second Row */}
       <div className="row mt-4">
-        <div className="col-md-5">
+        <div className="col-md-6">
           {/* Description and Keywords */}
           <div className="keywords">{partyPlan.keywords.join(", ")}</div>
           <div className="description mb-3">{partyPlan.description}</div>
         </div>
-        <div className="col-md-7">
+
+        <div className="col-md-6">
           {/* Invitations */}
-          <div className="invitations-list">
-            <div className="invited-subtitle">Your invite list</div>
-            <div>
-              <ul className="invitations-unstyled-list">
-                {invitations.map((invite) => (
-                  <li key={invite.id} className="invitation-item">
-                    <a href={`mailto:${invite.account.email}`}>
-                      {invite.account.fullname}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="d-flex flex-wrap justify-content-start">
+            {invitations.map((invite, index) => (
+              <div key={invite.id} className="m-2 invite-card-container">
+                <div className="invite-card">
+                  <div className="invite-card-image-wrapper">
+                    <img
+                      src={
+                        invite.account.avatar || "https://picsum.photos/140/80"
+                      }
+                      alt={`${invite.account.fullname}'s avatar`}
+                      className="invite-card-image"
+                    />
+                  </div>
+                  <div className="invite-card-content">
+                    <small className="invite-card-text font-monospace">
+                      <a
+                        href={`mailto:${invite.account.email}`}
+                        className="invite-card-link"
+                      >
+                        {invite.account.fullname}
+                      </a>
+                    </small>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
+
           <div>
             <Button variant="primary" onClick={openInviteModal}>
               invite someone
