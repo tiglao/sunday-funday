@@ -1,9 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict
-from clients.client import client
 from uuid import UUID, uuid4
 from datetime import datetime
-
 
 # needs to pull in account full name (no first name, use method to split string) account email
 
@@ -66,17 +64,6 @@ class InvitationCreate(BaseModel):
 #                 }
 #             }
 #         }
-
-
-def get_invitation_by_id(invitation_id: UUID):
-    return client.db.invitations.find_one({"_id": invitation_id})
-
-
-def update_invitation_rsvp(invitation_id: UUID, status: bool):
-    client.db.invitations.update_one(
-        {"_id": invitation_id},
-        {"$set": {"rsvpStatus": status}}
-    )
 
 
 class InvitationUpdate(BaseModel):

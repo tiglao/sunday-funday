@@ -2,6 +2,7 @@ from uuid import UUID
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from fastapi import Depends
 
 load_dotenv()
 
@@ -11,11 +12,8 @@ DB_NAME = os.environ.get("DB_NAME")
 print("DATABASE_URL:", DATABASE_URL)
 print("DB_NAME:", DB_NAME)
 
-# client = MongoClient(DATABASE_URL)
-# db = client[DB_NAME]
-
 client = MongoClient(
-    DATABASE_URL,  # uuidRepresentation=UuidRepresentation.STANDARD
+    DATABASE_URL,
     uuidRepresentation="standard",
 )
 db = client[DB_NAME]

@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response, Query
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter, Body, HTTPException, status, Response
 from typing import List
 from uuid import UUID, uuid4
 from models.invitations import Invitation, InvitationUpdate, InvitationCreate
@@ -69,6 +68,12 @@ def create_invitation(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to send invitation email."
         )
+        if email_sent:
+            # Log or do something when the email is successfully sent
+            print("Email sent successfully.")
+        else:
+            # Log or do something when the email fails to send
+            print("Failed to send email.")
 
     created_invitation = db.invitations.find_one({"id": invitation_id})
     if not created_invitation:
