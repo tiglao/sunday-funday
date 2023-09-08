@@ -26,11 +26,3 @@ def get_database():
     client = MongoClient(DATABASE_URL)
     db = client[DB_NAME]
     return db
-
-
-def get_invitation_by_id(invitation_id: UUID):
-    return invitations_collection.find_one({"_id": invitation_id})
-
-
-def save_invitation(invitation: dict):
-    invitations_collection.replace_one({"_id": invitation["_id"]}, invitation, upsert=True)

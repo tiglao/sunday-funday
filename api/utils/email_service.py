@@ -7,6 +7,17 @@ import os
 load_dotenv()
 
 
+def read_html_template(file_path: str) -> str:
+    with open(file_path, 'r') as file:
+        return file.read()
+
+
+def fill_html_template(template_str: str, data: dict) -> str:
+    for key, value in data.items():
+        template_str = template_str.replace(f"{{{{ {key} }}}}", str(value))
+    return template_str
+
+
 def send_email(to_email, subject, content):
     sendgrid_client = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
     message = Mail(

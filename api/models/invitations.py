@@ -1,18 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, Dict
 from clients.client import client
 from uuid import UUID, uuid4
 from datetime import datetime
-from enum import Enum
 
 
 # needs to pull in account full name (no first name, use method to split string) account email
-
-
-class RsvpStatus(str, Enum):
-    YES = "yes"
-    MAYBE = "maybe"
-    NO = "no"
 
 
 class Invitation(BaseModel):
@@ -21,7 +14,6 @@ class Invitation(BaseModel):
     updated: Optional[datetime]
     account: Dict[str, str]
     party_plan_id: UUID
-    rsvp_status: Optional[RsvpStatus]
     sent_status: Optional[bool]
 
     class Config:
@@ -44,13 +36,22 @@ class Invitation(BaseModel):
 
 
 class InvitationCreate(BaseModel):
-    id: Optional[UUID] = uuid4()
+    id: Optional[UUID] = Field(default_factory=uuid4)
     account_id: str
-    rsvp_status: bool = False
     guest_name: str
     email: str
-    rsvp_status: Optional[bool] = None
-    created_at: Optional[datetime] = datetime.now()
+    party_plan_id: UUID
+    created_at: Optional[datetime] = Field(default_factory=datetime.now)
+
+    def model_dump(self):
+        return {
+            "id": str(self.id),
+            "account_id": self.account_id,
+            "guest_name": self.guest_name,
+            "email": self.email,
+            "created_at": self.created_at,
+        }
+
 # class InvitationCreate(BaseModel):
 #     account: Dict[str, str]
 
@@ -79,7 +80,6 @@ def update_invitation_rsvp(invitation_id: UUID, status: bool):
 
 
 class InvitationUpdate(BaseModel):
-    rsvp_status: Optional[RsvpStatus]
     sent_status: Optional[bool]
 
     class Config:
