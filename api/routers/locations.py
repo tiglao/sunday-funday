@@ -56,6 +56,24 @@ async def create_location(
 
     return created_location
 
+@router.get(
+    "/{place_id}",
+    response_description="Get a single location by ID",
+    response_model=Location,
+)
+def find_party_plan(
+    place_id: str,
+    # account: dict = Depends(authenticator.get_current_account_data),
+):
+    location = db.locations.find_one({"place_id": place_id})
+    if location:
+        # fetch associated invitations
+        return location
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Location with ID {id} not found",
+    )
+
 
 @router.get(
     "/{party_plan_id}/search_nearby",

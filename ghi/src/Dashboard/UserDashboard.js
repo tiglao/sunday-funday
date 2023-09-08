@@ -57,19 +57,24 @@ function UserDashboard() {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch(`${baseUrl}/party_plans/`);
-      if (response.ok) {
-        const data = await response.json();
-        const compiledPlans = data.map((partyPlan) => ({
-          ...partyPlan,
-          type: "partyPlan",
-        }));
-        setPartyPlans(compiledPlans);
+    const response = await fetch(`${baseUrl}/party_plans/`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
       }
-    } catch (error) {
-      console.error("Error fetching invitations:", error);
-    }
-  };
+
+      const data = await response.json();
+      const compiledPlans = data.map((partyPlan) => ({
+        ...partyPlan,
+        type: "partyPlan",
+      }));
+
+      console.log(compiledPlans);
+      setPartyPlans(compiledPlans);
+  } catch (error) {
+    console.error("Error fetching plans:", error);
+  }
+};
 
   const dashboardContextValue = useDashboard();
 

@@ -1,15 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { AuthProvider, useToken } from "@galvanize-inc/jwtdown-for-react";
-import UserDashboard from "./UserDashboard";
-import Dashboard from "./Dashboard";
-import PartyPlanDetail from "./PartyPlanDetail";
-import InviteeDashboard from "./InviteeDashboard";
-import { DateProvider } from "./DateContext";
+import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
+import { DateProvider } from "./utils/DateContext";
+import UserDashboard from "./Dashboard/UserDashboard";
+import Dashboard from "./Dashboard/Dashboard";
+import PartyPlanForm from "./PartyPlan/PartyPlanForm";
+import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
+import InviteeDashboard from "./Dashboard/InviteeDashboard";
 import Main from "./Main";
-import TestSpa from "./TestSpa";
-import UpdateProfile from "./UpdateProfile";
-import PartyPlanForm from "./PartyPlanForm";
+import TestSpa from "./Tests/TestSpa";
 import { DashboardProvider } from "./utils/DashboardContext";
 import SearchResult from "./SearchResults";
 import ProtectedRoute from "./ProtectedRoute";
@@ -19,7 +18,7 @@ function App() {
   const basename = process.env.PUBLIC_URL.replace(domain, "");
   const baseUrl = process.env.REACT_APP_API_HOST;
 
-  return (
+return (
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
         <DateProvider>
@@ -53,13 +52,12 @@ function App() {
                 path="invitee"
                 element={<ProtectedRoute element={<InviteeDashboard />} />}
               />
-              <Route path="/UpdateProfile" element={<UpdateProfile />} />
-              <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
               <Route
                 path="test"
                 element={<ProtectedRoute element={<TestSpa />} />}
               />
             </Route>
+            <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
           </Routes>
         </DateProvider>
       </AuthProvider>

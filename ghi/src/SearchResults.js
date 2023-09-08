@@ -26,20 +26,35 @@ function SearchResult(){
         };
         fetchSearch();
     },[partyplanid]);
-    const createLocation = async (locationData) => {
-        try {
-            const existingResponse = await fetch(`${baseUrl}/locations/${locationData.place_id}`);
+    useEffect(() => {
+        const createLocations = async () => {
+        for (const result of results) {
+            try {
+            const existingResponse = await fetch(
+                `${baseUrl}/locations/${result.place_id}`
+            );
             if (existingResponse.ok) {
                 const existingLocation = await existingResponse.json();
                 if (existingLocation) {
-                    console.log('Location with this place_id already exists:', existingLocation);
-                    return; // Location already exists, so return without creating a duplicate
+                console.log(
+                    'Location with this place_id already exists:',
+                    existingLocation
+                );
+                continue; // Skip this iteration and move to the next result
                 }
             }
+
+            // Map the search result to a format compatible with your LocationCreate model
+            const locationData = {
+                // Map the necessary fields from result to your LocationCreate model fields
+                place_id: result.place_id,
+                // Add other fields as needed
+            };
+
             const response = await fetch(`${baseUrl}/locations/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(locationData),
             });
@@ -52,25 +67,47 @@ function SearchResult(){
 
             const createdLocation = await response.json();
             console.log('Created location:', createdLocation);
-        } catch (error) {
+            } catch (error) {
             console.error('Error creating location:', error);
+            }
+        }
+        };
+    createLocations();
+  }, [results]);
+    useEffect(() => {
+    const addToSearched = async () => {
+        try {
+            // Map the created locations to the required format
+            const searchedLocations = results.map(result => ({
+                place_id: result.place_id,
+                // Add other fields as needed
+            }));
+
+            // Update the party plan with the newly created locations
+            const response = await fetch(`${baseUrl}/party_plans/${partyplanid}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ searched_locations: searchedLocations }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error updating party plan:', errorData);
+                throw new Error('Failed to update party plan');
+            }
+
+            const updatedPartyPlan = await response.json();
+            console.log('Updated party plan:', updatedPartyPlan);
+        } catch (error) {
+            console.error('Error updating party plan:', error);
         }
     };
 
-    useEffect(() => {
-        // Iterate through the search results and create locations
-        results.forEach((result) => {
-            // Map the search result to a format compatible with your LocationCreate model
-            const locationData = {
-                // Map the necessary fields from result to your LocationCreate model fields
-                place_id: result.place_id,
-                // Add other fields as needed
-            };
-
-            // Call the createLocation function to create the location
-            createLocation(locationData);
-        });
-    }, [results]);
+    // Call addToSearched after creating locations
+    addToSearched();
+}, [results]);
 
     console.log("2",results)
     return(
