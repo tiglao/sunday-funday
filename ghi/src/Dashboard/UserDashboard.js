@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Button, Modal } from "react-bootstrap";
+import React, { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
@@ -29,7 +29,8 @@ function UserDashboard() {
       console.log("ID is undefined. Something is wrong.");
       return;
     }
-    showPartyPlanDetail(id);
+
+    navigate(`/dashboard/party_plans/${id}`);
   };
 
   const handleWaitingArrow = (id) => {
@@ -64,19 +65,10 @@ function UserDashboard() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchPlans();
-      await fetchInvitations();
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
 
-  const fetchInvitations = async () => {
+  const fetchInvitations = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/invitations/`);
       if (response.ok) {
@@ -92,9 +84,9 @@ function UserDashboard() {
     } catch (error) {
       console.error("Error fetching invitations:", error);
     }
-  };
+  }, [accountEmail]);
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/party_plans/`);
       if (response.ok) {
@@ -110,7 +102,16 @@ function UserDashboard() {
     } catch (error) {
       console.error("Error fetching invitations:", error);
     }
-  };
+  }, [accountId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPlans();
+      await fetchInvitations();
+    };
+
+    fetchData();
+  }, [fetchPlans, fetchInvitations]);
 
   //render functions
   const renderComingUp = () => {
@@ -143,10 +144,6 @@ function UserDashboard() {
           <div
             className="col-lg-4 col-md-6 col-sm-12 coming-up-col"
             key={index}
-            onClick={() => {
-              console.log("Item ID before passing to handler:", item.id);
-              handleComingUpArrow(item.id);
-            }}
           >
             <div className="card coming-up-card rounded">
               <div
@@ -155,8 +152,11 @@ function UserDashboard() {
               ></div>
               <div className="card-body">
                 <div
-                  onClick={() => handleComingUpArrow(item.id)}
                   className="coming-up-arrow"
+                  onClick={() => {
+                    console.log("Item ID before passing to handler:", item.id);
+                    handleComingUpArrow(item.id);
+                  }}
                 >
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
                 </div>
