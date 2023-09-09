@@ -128,7 +128,18 @@ button:focus {
   fill: white;
 }
 
-/* header */
+/* dashboard */
+
+div.dashboard-main {
+  padding-left: 50px !important;
+  font-family: var(--sans-serif);
+}
+
+.extra-bottom-space {
+  padding-bottom: 400px;
+}
+
+/* dashboard - header */
 
 .curved-border {
   border-radius: 25px;
@@ -169,12 +180,12 @@ button:focus {
   background-color: #bde3ff;
 }
 
-/* footer */
+/* dashboard - footer */
 
 .footer-container {
-  position: fixed;
+  position: sticky;
   bottom: 0;
-  width: 100%;
+  z-index: 1000; /* make sure it stays above the rest of the content */
 }
 
 .footer-container,
@@ -197,17 +208,10 @@ svg {
   height: auto;
 }
 
-/* central container */
+/* dashboard - central container */
 .center {
   background-color: #1b3649;
   color: #ffffff;
-}
-
-/* dashboard-main */
-
-div.dashboard-main {
-  padding-left: 50px !important;
-  font-family: var(--sans-serif);
 }
 
 /* sidenav */
@@ -384,7 +388,7 @@ div.dashboard-main {
   text-decoration: none;
 }
 
-/* user dashboard - waiting section */
+/* userdashboard - waiting */
 
 .waiting-section {
   padding-left: 6em;
@@ -421,26 +425,10 @@ div.dashboard-main {
   transform: rotate(45deg) translateY(4px);
 }
 
-/* party plan edit */
+/* partyplandetail */
 
 .party-plan-detail {
   color: #ffffff;
-}
-
-.editable-field {
-  position: relative;
-}
-
-.icon {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.editable-field:hover .icon {
-  display: inline;
 }
 
 .account-avatar {
@@ -504,7 +492,7 @@ div.dashboard-main {
   float: right;
 }
 
-/* invite card */
+/* partyplandetail - invite card */
 
 .card-img-wrapper {
   overflow: hidden;

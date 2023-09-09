@@ -43,14 +43,14 @@ function Dashboard() {
 
       {/* Central Container */}
       <div>
-        <div className="center container-xxl p-0 min-vh-100">
+        <div className="center container-xxl p-0 min-vh-100 extra-bottom-space">
           <div className="row mx-5 mt-5">
             {/* Side Nav */}
             <div className="col-2 border main-nav rounded-3 text-end p-3 d-none d-lg-block">
               <SideNav />
             </div>
             {/* Main Content Area */}
-            <div className="dashboard-main col-md-10 col-12 p-0">
+            <div className="dashboard-main col-md-10 col-12 p-0 extra-bottom-space">
               <Outlet />
               {/* {currentView === "userDashboard" && (
                 <UserDashboard

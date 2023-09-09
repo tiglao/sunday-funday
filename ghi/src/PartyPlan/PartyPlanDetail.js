@@ -15,8 +15,8 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [setEndDate] = useState("");
-  const [setDisplayTime] = useState("");
+  const [, setEndDate] = useState("");
+  const [, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
 
   const emailAllGuests = () => {
@@ -87,8 +87,6 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
         } catch (error) {
           console.error("Error fetching invitations:", error);
         }
-      } else {
-        console.log("No invitations to fetch.");
       }
     };
 

@@ -154,7 +154,6 @@ function UserDashboard() {
                 <div
                   className="coming-up-arrow"
                   onClick={() => {
-                    console.log("Item ID before passing to handler:", item.id);
                     handleComingUpArrow(item.id);
                   }}
                 >
@@ -231,17 +230,17 @@ function UserDashboard() {
                   setSelectedLink("parties");
                 }}
               >
-                my parties
+                parties
               </Button>
               <Button
                 variant="link"
-                className="text-decoration-none no-outline ml-2"
+                className="text-decoration-none no-outline me-5"
                 onClick={() => {
                   setCurrentData(invitations);
                   setSelectedLink("invites");
                 }}
               >
-                my invites
+                invites
               </Button>
               <Button variant="secondary" onClick={openPartyPlanForm}>
                 start a party
