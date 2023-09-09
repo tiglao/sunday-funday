@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { baseUrl } from "../utils/config.js";
 import InvitationForm from "./InviteModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
-import { useNavigate } from "react-router-dom";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
@@ -16,8 +15,8 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [displayTime, setDisplayTime] = useState("");
+  const [setEndDate] = useState("");
+  const [setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
 
   const emailAllGuests = () => {
@@ -30,16 +29,26 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const openInviteModal = () => {
     setShowInviteModal(true);
   };
+  useEffect(() => {
+    const handleBrowserBackButton = (e) => {
+      e.preventDefault();
+      navigate("/dashboard");
+    };
+
+    window.addEventListener("popstate", handleBrowserBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBrowserBackButton);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
       try {
-        console.log("Fetching party plan with ID:", id);
         const response = await fetch(`${baseUrl}/party_plans/${id}`);
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Data fetched:", data);
           setPartyPlan(data);
 
           const { startDate, startTime, endDate, endTime, displayTime } =
@@ -94,7 +103,6 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     );
   }
 
-  console.log("Party plan ID:", id);
   return (
     <div className="container party-plan-detail">
       {/* First Row */}
