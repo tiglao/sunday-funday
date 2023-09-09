@@ -11,8 +11,6 @@ from clients.client import db
 from maps_api import geo_code
 from fastapi.encoders import jsonable_encoder
 
-
-
 router = APIRouter()
 
 
@@ -42,8 +40,6 @@ def create_party_plan(
             print(party_plan_data["api_maps_location"][0])  # Check the value of the first element
             print(party_plan_data["api_maps_location"][0]["geo"])  # Check the value of geo
             party_plan_data["api_maps_location"][0]["geo"] = geo_data
-
-
 
     # Add to the database
     new_party_plan = db.party_plans.insert_one(party_plan_data)

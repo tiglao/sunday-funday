@@ -1,9 +1,9 @@
-from datetime import date, datetime
-from enum import Enum
-from typing import Dict, List, Optional
+from pydantic import BaseModel, HttpUrl
 from uuid import UUID
+from datetime import datetime
+from enum import Enum
+from typing import List, Optional
 from models.locations import Location
-from pydantic import BaseModel, Field, HttpUrl
 
 
 class PartyStatus(str, Enum):
