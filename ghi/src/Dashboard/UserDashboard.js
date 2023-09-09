@@ -1,30 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
-import { useDashboard } from "../utils/DashboardContext.js";
 import { PartyPlanForm } from "../PartyPlanModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 
 function UserDashboard() {
   const { accountEmail, accountId } = useAccountContext();
-  const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
-  const [selectedLink, setSelectedLink] = useState("parties");
+  const [_, setSelectedLink] = useState("parties");
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
   const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
   const [showPartyPlanForm, setShowPartyPlanForm] = useState(false);
-  const [waitingModal, setWaitingModal] = useState(false);
 
   // nav
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleComingUpArrow = (id) => {
-    setCurrentView("partyPlanDetail");
     if (id === undefined) {
       console.log("ID is undefined. Something is wrong.");
       return;
@@ -50,18 +45,10 @@ function UserDashboard() {
   const closePartyPlanForm = () => {
     setShowPartyPlanForm(false);
   };
-  const closeWaitingModal = () => {
-    setWaitingModal(false);
-  };
 
   const refreshDashboard = async () => {
     await fetchPlans();
     closePartyPlanForm();
-  };
-
-  // delete
-  const handleCloseModal = () => {
-    setWaitingModal(false);
   };
 
   useEffect(() => {
@@ -130,8 +117,6 @@ function UserDashboard() {
             (plan) => plan.id === item.party_plan_id
           );
           if (asscPartyPlan) {
-            displayContent = asscPartyPlan.description;
-            partyPath = `/party_plans/${item.party_plan_id}`;
             startTime = asscPartyPlan.start_time;
             endTime = asscPartyPlan.end_time;
             imageUrl = asscPartyPlan.image;
