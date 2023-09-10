@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { baseUrl } from "./utils/config.js";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
+import { useAccountContext } from "./utils/AccountContext.js";
 
 export const PartyPlanForm = ({
   show,
@@ -12,15 +12,15 @@ export const PartyPlanForm = ({
   refreshDashboard,
 }) => {
   const navigate = useNavigate();
-  const { token } = useAuthContext();
+  // const { token } = useAuthContext();
+  const { accountId } = useAccountContext();
+
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
   const [image, setImage] = useState("");
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
   const [endTime, setEndTime] = useState("");
-  const decodedToken = JSON.parse(atob(token.split(".")[1]));
-  const accountId = decodedToken?.account?.id;
   const {partyplanid} = useParams();
 
   const handleSubmit = async (event) => {
@@ -38,6 +38,7 @@ export const PartyPlanForm = ({
       image,
       keywords: keywords.split(",").map((k) => k.trim()),
     };
+    console.log("Submitting data:", data);
 
     let apiUrl = `${baseUrl}/party_plans/`;
     let formMethod = "post";
@@ -55,17 +56,43 @@ export const PartyPlanForm = ({
       },
     };
 
-    const response = await fetch(apiUrl, fetchConfig);
+    // const response = await fetch(apiUrl, fetchConfig);
 
-    if (response.ok) {
-      const createdParty = await response.json();
-      const createdPartyId = createdParty.id
-      refreshDashboard();
+    // if (response.ok) {
+    //   const jsonResponse = await response.json();
+    //   console.log("API Response:", jsonResponse);
+    //   refreshDashboard();
+    // } else {
+    //   console.log("Failed to create party plan");
+    // }
 
-      navigate(`/locations/${createdPartyId}/search_nearby`);
-    } else {
-      console.log("Failed to create party plan");
-    }
+    console.log("Fetching API with config:", fetchConfig); // Debugging
+
+    fetch(apiUrl, fetchConfig)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.log(
+            "Failed to create party plan. HTTP Status:",
+            response.status
+          ); // Debugging
+          return null;
+        }
+      })
+      .then((jsonResponse) => {
+        if (jsonResponse) {
+          const createdParty = await response.json();
+          const createdPartyId = createdParty.id
+          console.log("API Response:", jsonResponse); // Debugging
+          refreshDashboard();
+          navigate(`/locations/${createdPartyId}/search_nearby`);
+
+        }
+      })
+      .catch((error) => {
+        console.log("Fetch error:", error); // Debugging
+      });
   };
   useEffect(() => {
     if (partyPlanData) {
@@ -83,7 +110,7 @@ export const PartyPlanForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>Create New Party Plan</Modal.Title>
+        <Modal.Title>Plan Your Party</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>

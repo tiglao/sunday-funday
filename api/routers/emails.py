@@ -1,10 +1,8 @@
-from datetime import datetime
+
 from typing import Dict, List
 from uuid import UUID, uuid4
-
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
-from fastapi.encoders import jsonable_encoder
 from models.emails import ApiEmail, EmailContext
 from utils.authenticator import authenticator
 from utils.invitation_vo import get_invitation
@@ -48,7 +46,7 @@ def create_email(
         "to": f"{account['fullname']} <{account['email']}>",
         "subject": "Your Invitation",
         "template": "some_template",
-        "api_context": email_context.dict(),
+        "api_context": email_context.model_dump(),
     }
     # add to db
     new_email = db.emails.insert_one(email_data)
@@ -116,7 +114,7 @@ def update_email(
             detail=f"Email with ID {id} not found",
         )
 
-    email_data = {k: v for k, v in email.dict().items() if v is not None}
+    email_data = {k: v for k, v in email.model_dump().items() if v is not None}
 
     if email_data:
         db.emails.update_one({"id": str(id)}, {"$set": email_data})

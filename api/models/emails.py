@@ -2,8 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional
 from uuid import UUID
-
-from models.invitations import Invitation, RsvpStatus
+from models.invitations import Invitation
 from pydantic import BaseModel
 
 # needs to pull in account full name (no first name, use method to split string) account email
@@ -23,7 +22,6 @@ class EmailContext(BaseModel):
     updated_at: Optional[datetime]  # use information from invitation updated
     account: Dict[str, str]
     party_plan_id: UUID
-    rsvp_status: Optional[RsvpStatus]
     sent_status: SentStatus  # should be a limited number of types of statuses
 
 

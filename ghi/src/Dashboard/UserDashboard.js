@@ -1,35 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Button, Modal } from "react-bootstrap";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
-import { useDashboard } from "../utils/DashboardContext.js";
 import { PartyPlanForm } from "../PartyPlanModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 
 function UserDashboard() {
   const { accountEmail, accountId } = useAccountContext();
-  const { currentView, setCurrentView, showPartyPlanDetail } = useDashboard();
-  const [selectedLink, setSelectedLink] = useState("parties");
+  const [_, setSelectedLink] = useState("parties");
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
   const [waitingPartyPlanData, setWaitingPartyPlanData] = useState(null);
   const [showPartyPlanForm, setShowPartyPlanForm] = useState(false);
-  const [waitingModal, setWaitingModal] = useState(false);
 
   // nav
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleComingUpArrow = (id) => {
-    setCurrentView("partyPlanDetail");
     if (id === undefined) {
       console.log("ID is undefined. Something is wrong.");
       return;
     }
-    showPartyPlanDetail(id);
+
+    navigate(`/dashboard/party_plans/${id}`);
   };
 
   const handleWaitingArrow = (id) => {
@@ -49,34 +45,17 @@ function UserDashboard() {
   const closePartyPlanForm = () => {
     setShowPartyPlanForm(false);
   };
-  const closeWaitingModal = () => {
-    setWaitingModal(false);
-  };
 
   const refreshDashboard = async () => {
     await fetchPlans();
     closePartyPlanForm();
   };
 
-  // delete
-  const handleCloseModal = () => {
-    setWaitingModal(false);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchPlans();
-      await fetchInvitations();
-    };
-
-    fetchData();
-  }, []);
-
   useEffect(() => {
     setCurrentData([...partyPlans, ...invitations]);
   }, [partyPlans, invitations]);
 
-  const fetchInvitations = async () => {
+  const fetchInvitations = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/invitations/`);
       if (response.ok) {
@@ -92,9 +71,9 @@ function UserDashboard() {
     } catch (error) {
       console.error("Error fetching invitations:", error);
     }
-  };
+  }, [accountEmail]);
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/party_plans/`);
       if (!response.ok) {
@@ -115,27 +94,16 @@ function UserDashboard() {
     } catch (error) {
       console.error("Error fetching invitations:", error);
     }
-  };
-  const dashboardContextValue = useDashboard();
+  }, [accountId]);
 
-    useEffect(() => {
-      console.log("Current Context Value:", dashboardContextValue);
-    }, [dashboardContextValue]);
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPlans();
+      await fetchInvitations();
+    };
 
-    useEffect(() => {
-      const fetchData = async () => {
-        await fetchPlans();
-        await fetchInvitations();
-      };
-
-      fetchData();
-    }, []);
-
-    useEffect(() => {
-      setCurrentData([...partyPlans, ...invitations]);
-    }, [partyPlans, invitations]);
-
-
+    fetchData();
+  }, [fetchPlans, fetchInvitations]);
 
   //render functions
   const renderComingUp = () => {
@@ -154,8 +122,6 @@ function UserDashboard() {
             (plan) => plan.id === item.party_plan_id
           );
           if (asscPartyPlan) {
-            displayContent = asscPartyPlan.description;
-            partyPath = `/party_plans/${item.party_plan_id}`;
             startTime = asscPartyPlan.start_time;
             endTime = asscPartyPlan.end_time;
             imageUrl = asscPartyPlan.image;
@@ -168,10 +134,6 @@ function UserDashboard() {
           <div
             className="col-lg-4 col-md-6 col-sm-12 coming-up-col"
             key={index}
-            onClick={() => {
-              console.log("Item ID before passing to handler:", item.id);
-              handleComingUpArrow(item.id);
-            }}
           >
             <div className="card coming-up-card rounded">
               <div
@@ -180,8 +142,10 @@ function UserDashboard() {
               ></div>
               <div className="card-body">
                 <div
-                  onClick={() => handleComingUpArrow(item.id)}
                   className="coming-up-arrow"
+                  onClick={() => {
+                    handleComingUpArrow(item.id);
+                  }}
                 >
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
                 </div>
@@ -256,17 +220,17 @@ function UserDashboard() {
                   setSelectedLink("parties");
                 }}
               >
-                my parties
+                parties
               </Button>
               <Button
                 variant="link"
-                className="text-decoration-none no-outline ml-2"
+                className="text-decoration-none no-outline me-5"
                 onClick={() => {
                   setCurrentData(invitations);
                   setSelectedLink("invites");
                 }}
               >
-                my invites
+                invites
               </Button>
               <Button variant="secondary" onClick={openPartyPlanForm}>
                 start a party

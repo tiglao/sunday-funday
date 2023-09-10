@@ -1,29 +1,23 @@
-// import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaCheck } from "react-icons/fa";
+import { useParams, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { baseUrl } from "../utils/config.js";
-import { useDashboard } from "../utils/DashboardContext";
 import InvitationForm from "./InviteModal.js";
-// import { useAccountContext } from "../utils/AccountContext.js";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useAccountContext } from "../utils/AccountContext.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
 import { useParams } from "react-router-dom";
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
-  // const { accountAvatar, accountFullName } = useAccountContext();
-
+  const { id } = useParams();
+  const { accountAvatar, accountFullName } = useAccountContext();
   const navigate = useNavigate();
-  // const { token } = useAuthContext();
   const [partyPlan, setPartyPlan] = useState(parentPartyPlan || null);
   const [invitations, setInvitations] = useState([]);
-  const [isEditing, setIsEditing] = useState(null);
-  const [updatedValue, setUpdatedValue] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [displayTime, setDisplayTime] = useState("");
+  const [, setEndDate] = useState("");
+  const [, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
   const {partyplanid} = useParams()
 
@@ -37,42 +31,47 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const openInviteModal = () => {
     setShowInviteModal(true);
   };
+  useEffect(() => {
+    const handleBrowserBackButton = (e) => {
+      e.preventDefault();
+      navigate("/dashboard");
+    };
+
+    window.addEventListener("popstate", handleBrowserBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBrowserBackButton);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
       try {
-        const response = await fetch(
-          `${baseUrl}/party_plans/${partyplanid}`
-        );
+        const response = await fetch(`${baseUrl}/party_plans/${id}`);
+
         if (response.ok) {
           const data = await response.json();
-          setPartyPlan({
-            ...data,
-            type: "partyPlan",
-          });
+          setPartyPlan(data);
+
           const { startDate, startTime, endDate, endTime, displayTime } =
             formatDateTime(data.start_time, data.end_time);
-          console.log("Formatted Start Date:", startDate);
-          console.log("Formatted Start Time:", startTime);
-          console.log("Formatted End Date:", endDate);
-          console.log("Formatted End Time:", endTime);
-          console.log("Formatted Display Time:", displayTime);
-          console.log("Fetched specific party plan:", data);
           setStartTime(startTime);
           setEndTime(endTime);
           setStartDate(startDate);
           setEndDate(endDate);
-          setEndDate(displayTime);
+          setDisplayTime(displayTime);
+        } else {
+          console.log("Response not okay. Status:", response.status);
         }
       } catch (error) {
         console.error("Error fetching specific plan:", error);
       }
     };
 
-    if (partyplanid) {
+    if (id) {
       fetchPartyPlan();
     }
-  }, [partyplanid]);
+  }, [id]);
 
   useEffect(() => {
     const fetchInvitations = async () => {
@@ -84,6 +83,8 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
           if (response.ok) {
             const data = await response.json();
             setInvitations(data);
+          } else {
+            console.log("Response not okay. Status:", response.status);
           }
         } catch (error) {
           console.error("Error fetching invitations:", error);
@@ -94,40 +95,12 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     fetchInvitations();
   }, [partyPlan]);
 
-  const handleEditClick = (field) => {
-    setIsEditing(field);
-    setUpdatedValue(partyPlan[field]);
-  };
-
-  const handleCheckClick = async (field) => {
-    // TODO: Update the backend with the new value
-    setIsEditing(null);
-    setUpdatedValue("");
-  };
-
-  const renderEditableField = (field, value) => {
-    if (isEditing === field) {
-      return (
-        <div>
-          <input
-            type="text"
-            value={updatedValue}
-            onChange={(e) => setUpdatedValue(e.target.value)}
-          />
-          <FaCheck className="icon" onClick={() => handleCheckClick(field)} />
-        </div>
-      );
-    }
+  if (!partyPlan) {
     return (
-      <div className="editable-field">
-        {value}
-        <FaEdit className="icon" onClick={() => handleEditClick(field)} />
+      <div className="container party-plan-detail">
+        <h1>Loading...</h1> {/* Or any other placeholder */}
       </div>
     );
-  };
-
-  if (!partyPlan) {
-    return <div>Loading...</div>;
   }
 
   return (
@@ -213,10 +186,18 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
               invite someone
             </Button>
             <Button variant="secondary" onClick={emailAllGuests}>
-              email ail
+              email all
             </Button>
           </div>
         </div>
+      </div>
+      <div className="row">
+        <div className="col-md-5">
+          <Button variant="secondary" onClick={() => navigate(-1)}>
+            Go Back
+          </Button>
+        </div>
+        <div className="col-md-7 align-self-end"></div>
       </div>
 
       <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
