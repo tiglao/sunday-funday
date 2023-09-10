@@ -6,6 +6,8 @@ from uuid import UUID, uuid4
 import fastapi
 import pydantic
 import requests
+from maps_api import PlaceError
+from maps_api import get_place_info
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
@@ -135,6 +137,15 @@ def list_locations(
     locations = list(db.locations.find(limit=100))
     return locations
 
+@router.get(
+    "/places/{place_id}"
+)
+def get_place(place_id:str):
+    try:
+       response = get_place_info(place_id)
+       return fastapi.responses.JSONResponse(content=jsonable_encoder(response), status_code= 200)
+    except PlaceError:
+        return fastapi.responses.JSONResponse(content="error getting place id", status_code=500)
 
 @router.get(
     "/{place_id}",
