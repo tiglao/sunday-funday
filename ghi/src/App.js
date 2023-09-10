@@ -29,7 +29,7 @@ return (
 
             {/* Protected routes */}
             <Route
-              path="/dashboard"
+              path="/dashboard/*"
               element={
                 <ProtectedRoute
                   element={
@@ -44,7 +44,7 @@ return (
             >
               <Route index element={<UserDashboard />} />
               <Route
-                path="party_plans/:partyplanid"
+                path="party_plans/:id"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
               />
               <Route
@@ -56,6 +56,7 @@ return (
                 element={<ProtectedRoute element={<TestSpa />} />}
               />
             </Route>
+
             <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
               {/* <Route
                 path="party_plans/:partyplanid"

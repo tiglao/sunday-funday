@@ -6,7 +6,6 @@ import InvitationForm from "./InviteModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
 
-
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { id } = useParams();
   const { accountAvatar, accountFullName } = useAccountContext();
@@ -19,7 +18,6 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [, setEndDate] = useState("");
   const [, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
-
 
   const emailAllGuests = () => {
     const allEmails = invitations
@@ -126,7 +124,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
             </div>
           </div>{" "}
           {/* party planner */}
-          {/* <div className="planner-description d-flex flex-column align-items-start">
+          <div className="planner-description d-flex flex-column align-items-start">
             <div className="account-avatar">
               <img
                 src={
@@ -139,7 +137,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
               />
             </div>
             <div className="planner-name">Planned by: {accountFullName}</div>
-          </div> */}
+          </div>
         </div>
       </div>
 
