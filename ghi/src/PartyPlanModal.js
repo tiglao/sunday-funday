@@ -21,10 +21,12 @@ export const PartyPlanForm = ({
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [jsonResponse, setJsonResponse] = useState(null);
   const {partyplanid} = useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("Submit button clicked!");
     const data = {
       account_id: accountId,
       api_maps_location: [
@@ -82,11 +84,11 @@ export const PartyPlanForm = ({
       })
       .then((jsonResponse) => {
         if (jsonResponse) {
-          const createdParty = await response.json();
+          const createdParty = jsonResponse;
           const createdPartyId = createdParty.id
           console.log("API Response:", jsonResponse); // Debugging
           refreshDashboard();
-          navigate(`/locations/${createdPartyId}/search_nearby`);
+          navigate(`/locations/${jsonResponse.id}/search_nearby`);
 
         }
       })
@@ -94,6 +96,8 @@ export const PartyPlanForm = ({
         console.log("Fetch error:", error); // Debugging
       });
   };
+
+
   useEffect(() => {
     if (partyPlanData) {
       setDescription(partyPlanData.description || "");
@@ -198,7 +202,7 @@ export const PartyPlanForm = ({
           Close
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          Submit
+          Subm
         </Button>
       </Modal.Footer>
     </Modal>

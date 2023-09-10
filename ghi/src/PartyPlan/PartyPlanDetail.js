@@ -5,7 +5,7 @@ import { baseUrl } from "../utils/config.js";
 import InvitationForm from "./InviteModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
-import { useParams } from "react-router-dom";
+
 
 const PartyPlanDetail = ({ parentPartyPlan }) => {
   const { id } = useParams();
@@ -19,7 +19,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [, setEndDate] = useState("");
   const [, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const {partyplanid} = useParams()
+
 
   const emailAllGuests = () => {
     const allEmails = invitations

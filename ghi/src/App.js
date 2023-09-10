@@ -57,9 +57,9 @@ return (
               />
             </Route>
             <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
-              <Route
+              {/* <Route
                 path="party_plans/:partyplanid"
-                element={<PartyPlanDetail />} />
+                element={<PartyPlanDetail />} /> */}
 
           </Routes>
         </DateProvider>

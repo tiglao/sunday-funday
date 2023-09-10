@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { baseUrl } from './utils/config';
 
+import { useNavigate } from 'react-router-dom';
 
 function SearchResult(){
     const {partyplanid} = useParams();
-    const[results, setResults] = useState([])
+    const[results, setResults] = useState([]);
+    const [dataIsLoaded, setDataIsLoaded] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() =>{
         const fetchSearch = async () => {
@@ -104,11 +107,18 @@ function SearchResult(){
         } catch (error) {
             console.error('Error updating party plan:', error);
         }
+        setDataIsLoaded(true);
     };
 
     // Call addToSearched after creating locations
     addToSearched();
 }, [results]);
+    useEffect(() => {
+    // Redirect once data is loaded and conditions are met
+    if (dataIsLoaded) {
+      navigate(`/party_plans/${partyplanid}`);
+    }
+  }, [dataIsLoaded]);
 
     console.log("2",results)
     return(
