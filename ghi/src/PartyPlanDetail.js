@@ -203,17 +203,21 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
       </div>
 
       <div>
-        {/* EDITABLE BUT ONLY INPUT */}
+
         <h3>API Maps Location</h3>
         {partyPlan.api_maps_location.map((location, index) => (
           <div key={index}>
             <div>Geo: {location.geo ? location.geo.join(", ") : "N/A"}</div>
             <div>Input: {location.input}</div>
           </div>
+          </div>
+        )
+          </div>
         </div>
       </div>
       <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
     </div>
+        
   );
 };
 
