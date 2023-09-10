@@ -10,6 +10,7 @@ services:
       DB_NAME: ${DB_NAME}
       SIGNING_KEY: ${SIGNING_KEY}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      API_KEY: ${API_KEY}
     build:
       context: api
       dockerfile: Dockerfile.dev

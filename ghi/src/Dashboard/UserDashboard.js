@@ -76,6 +76,10 @@ function UserDashboard() {
   const fetchPlans = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/party_plans/`);
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+
       if (response.ok) {
         const data = await response.json();
         const compiledPlans = data
@@ -84,6 +88,7 @@ function UserDashboard() {
             ...partyPlan,
             type: "partyPlan",
           }));
+        console.log(compiledPlans);
         setPartyPlans(compiledPlans);
       }
     } catch (error) {

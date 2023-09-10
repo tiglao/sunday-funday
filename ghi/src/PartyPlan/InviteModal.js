@@ -4,11 +4,12 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useDashboard } from "../utils/DashboardContext.js";
+import { useParams } from "react-router-dom";
 
 const InvitationForm = ({ show, onHide, partyPlanId }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const { selectedPartyPlanId } = useDashboard();
+  const { selectedPartyPlanId } = useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();

@@ -8,14 +8,16 @@ from dotenv import load_dotenv
 import fastapi
 
 load_dotenv()
-SEARCH_API_KEY = os.getenv("SEARCH_API_KEY")
-GEOCODE_API_KEY = os.getenv("GEOCODE_API_KEY")
+API_KEY = os.environ.get("API_KEY")
+
+
+
 
 
 def geo_code(address):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
 
-    endpoint = f"{base_url}?address={address}&key={SEARCH_API_KEY}"
+    endpoint = f"{base_url}?address={address}&key={API_KEY}"
     response = requests.get(endpoint)
     response.raise_for_status()
     results = response.json()
@@ -30,16 +32,18 @@ def geo_code(address):
 class NearbySearchError(Exception):
     pass
 
+class PlaceError(Exception):
+    pass
 
 def nearby_search(location, keywords):
     base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
-        "key": SEARCH_API_KEY,
+        "key": API_KEY,
         "location": f"{location}",
         "radius": 1000,
         "keyword": keywords,
     }
-    endpoint = f"{base_url}?keyword={keywords}&location={location}&radius=1500&key={SEARCH_API_KEY}"
+    endpoint = f"{base_url}?keyword={keywords}&location={location}&radius=1500&key={API_KEY}"
     response = requests.get(endpoint)
     response.raise_for_status()
     if response.status_code != 200:
@@ -47,3 +51,18 @@ def nearby_search(location, keywords):
     data = response.json()
     if data["status"] == "OK":
         return data["results"]
+
+def get_place_info(place_id: str) -> dict:
+    url = "https://maps.googleapis.com/maps/api/place/details/json"
+    print(os.environ)
+    params = {
+        "place_id": place_id,
+        "key": API_KEY
+    }
+
+    response = requests.get(url, params=params)
+
+    if response.status_code != 200:
+        raise PlaceError()
+    
+    return response.json()
