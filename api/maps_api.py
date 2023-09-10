@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 import fastapi
 
 load_dotenv()
-SEARCH_API_KEY = os.getenv("SEARCH_API_KEY")
-GEOCODE_API_KEY = os.getenv("GEOCODE_API_KEY")
+SEARCH_API_KEY = os.getenv("API_KEY")
+# GEOCODE_API_KEY = os.getenv("GEOCODE_API_KEY")
 
 
 def geo_code(address):
