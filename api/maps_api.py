@@ -46,3 +46,19 @@ def nearby_search(location, keywords):
     data = response.json()
     if data["status"] == "OK":
         return data["results"]
+
+
+def get_place_info(place_id: str) -> dict:
+    url = "https://maps.googleapis.com/maps/api/place/details/json"
+    print(os.environ)
+    params = {
+        "place_id": place_id,
+        "key": API_KEY
+    }
+
+    response = requests.get(url, params=params)
+
+    if response.status_code != 200:
+        raise PlaceError()
+    
+    return response.json()
