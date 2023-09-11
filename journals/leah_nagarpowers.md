@@ -10,3 +10,7 @@
 
 
 9/7/23- Yesterday the kids being home prevented me from doing most things and I was still utterly stuck on the google maps render. Today I am going to fix the Party Plan Details.js. Blockers- just stuck on the map render
+
+9/10/23- Spent time working on a get place info endpoint after Shabbat. Today I want to finsh that endpoint. No blockers.
+
+9/11/23- Finished the endpoint last night and PlaceError. Today I need to write a test for getting a partyplan and then render data on the frontend. Blocker- my car got T-boned this morning but everyone is okay. 

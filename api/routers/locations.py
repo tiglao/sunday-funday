@@ -8,7 +8,12 @@ import pydantic
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
-from maps_api import NearbySearchError, PlaceError, nearby_search, get_place_info
+from maps_api import (
+    NearbySearchError,
+    PlaceError,
+    nearby_search,
+    get_place_info,
+)
 from models.locations import Location, LocationCreate, LocationUpdate
 from utils.authenticator import authenticator
 from models.party_plans import PartyPlan
@@ -26,13 +31,14 @@ async def create_location(
     location: Location = Body(...),
 ):
     locations = jsonable_encoder(location)
-    existing_location = db.locations.find_one({"place_id": locations.get("place_id")})
+    existing_location = db.locations.find_one(
+        {"place_id": locations.get("place_id")}
+    )
     if existing_location:
         raise HTTPException(
             status_code=400,
             detail="Location with this place_id already exists",
         )
-
 
     new_location = db.locations.insert_one(locations)
     if not new_location.acknowledged:
@@ -41,15 +47,17 @@ async def create_location(
             detail="Failed to add location to database.",
         )
 
-    created_location = db.locations.find_one({"place_id": locations["place_id"]})
+    created_location = db.locations.find_one(
+        {"place_id": locations["place_id"]}
+    )
     if not created_location:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Party plan with ID {locations['place_id']} not found after insertion.",
         )
 
-
     return created_location
+
 
 @router.get(
     "/{place_id}",
@@ -91,7 +99,9 @@ async def search_nearby(
             results = nearby_search(location, keywords)
             if results == None:
                 print("none")
-            results_dict = [{"place_id": place["place_id"]} for place in results]
+            results_dict = [
+                {"place_id": place["place_id"]} for place in results
+            ]
         except NearbySearchError:
             return fastapi.responses.JSONResponse(
                 content=jsonable_encoder({"message": "nearby search failed"}),
@@ -103,7 +113,8 @@ async def search_nearby(
                 location = Location(**res)
                 locations.append(location)
             return fastapi.responses.JSONResponse(
-                content=jsonable_encoder({"locations": locations}), status_code=200
+                content=jsonable_encoder({"locations": locations}),
+                status_code=200,
             )
         except pydantic.ValidationError as e:
             return fastapi.responses.JSONResponse(
@@ -122,24 +133,28 @@ def list_locations():
     return locations
 
 
-@router.get(
-    "/places/{place_id}"
-)
-def get_place(place_id:str):
+@router.get("/places/{place_id}")
+def get_place(place_id: str):
     try:
-       response = get_place_info(place_id)
-       print(response)
-       info_dict = {
-           "name": response["name"],
-           "address" : response.get("formatted_address"),
-           "phone number" : response["formatted_phone_number"],
-           "hours of operation" : response["current_opening_hours"]["weekday_text"],
-           "rating" : response["rating"],
-           "price level": response["price_level"]
-       }
-       return fastapi.responses.JSONResponse(content=jsonable_encoder(info_dict), status_code= 200)
+        response = get_place_info(place_id)
+        print(response)
+        info_dict = {
+            "name": response["name"],
+            "address": response.get("formatted_address"),
+            "phone number": response["formatted_phone_number"],
+            "hours of operation": response["current_opening_hours"][
+                "weekday_text"
+            ],
+            "rating": response["rating"],
+            "price level": response["price_level"],
+        }
+        return fastapi.responses.JSONResponse(
+            content=jsonable_encoder(info_dict), status_code=200
+        )
     except PlaceError:
-        return fastapi.responses.JSONResponse(content="error getting place id", status_code=500)
+        return fastapi.responses.JSONResponse(
+            content="error getting place id", status_code=500
+        )
 
 
 @router.get(
@@ -164,7 +179,7 @@ def find_location(
     response_model=LocationUpdate,
 )
 def update_location(
-    place_id = str,
+    place_id=str,
     location: LocationUpdate = Body(...),
 ):
     existing_location = db.locations.find_one({"place_id": place_id})
@@ -178,15 +193,19 @@ def update_location(
     location_data = {k: v for k, v in location.dict().items() if v is not None}
 
     if location_data:
-        db.locations.update_one({"place_id": place_id}, {"$set": location_data})
+        db.locations.update_one(
+            {"place_id": place_id}, {"$set": location_data}
+        )
 
     return db.locations.find_one({"place_id": place_id})
 
 
-@router.delete("/{place_id}", response_description="Delete a location location")
+@router.delete(
+    "/{place_id}", response_description="Delete a location location"
+)
 def delete_location(
     response: Response,
-    place_id= str,
+    place_id=str,
     # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.locations.delete_one({"place_id": place_id})

@@ -1,3 +1,4 @@
+import fastapi
 import os
 import uuid
 from turtle import distance
@@ -5,7 +6,7 @@ from typing import List, Optional
 import requests
 from pydantic import BaseModel
 from dotenv import load_dotenv
-import fastapi
+
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -33,6 +34,7 @@ class NearbySearchError(Exception):
 class PlaceError(Exception):
     pass
 
+
 def nearby_search(location, keywords):
     base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
@@ -54,14 +56,11 @@ def nearby_search(location, keywords):
 def get_place_info(place_id: str) -> dict:
     url = "https://maps.googleapis.com/maps/api/place/details/json"
     print(os.environ)
-    params = {
-        "place_id": place_id,
-        "key": API_KEY
-    }
+    params = {"place_id": place_id, "key": API_KEY}
 
     response = requests.get(url, params=params)
 
     if response.status_code != 200:
         raise PlaceError()
-    
+
     return response.json()
