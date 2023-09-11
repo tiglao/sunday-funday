@@ -51,10 +51,6 @@ function UserDashboard() {
     closePartyPlanForm();
   };
 
-  useEffect(() => {
-    setCurrentData([...partyPlans, ...invitations]);
-  }, [partyPlans, invitations]);
-
   const fetchInvitations = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/invitations/`);
@@ -100,6 +96,10 @@ function UserDashboard() {
     fetchData();
   }, [fetchPlans, fetchInvitations]);
 
+  useEffect(() => {
+    setCurrentData([...partyPlans, ...invitations]);
+  }, [partyPlans, invitations]);
+
   //render functions
   const renderComingUp = () => {
     if (currentData) {
@@ -133,6 +133,7 @@ function UserDashboard() {
                 className="coming-up-image rounded"
                 style={{ backgroundImage: `url(${imageUrl})` }}
               ></div>
+
               <div className="card-body">
                 <div
                   className="coming-up-arrow"
@@ -142,13 +143,15 @@ function UserDashboard() {
                 >
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
                 </div>
+
                 <p className="card-text coming-up-text">
                   <span className="one-line">{startDate.toLowerCase()}</span>
                 </p>
               </div>
             </div>
+
             <div className="description-under-card">
-              <span className="coming-up-time">
+              <span>
                 {displayTime}
                 <br />
               </span>
