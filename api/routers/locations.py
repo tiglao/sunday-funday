@@ -128,7 +128,6 @@ def list_locations():
 def get_place(place_id:str):
     try:
        response = get_place_info(place_id)
-       print(response)
        info_dict = {
            "name": response["name"],
            "address" : response.get("formatted_address"),
