@@ -25,8 +25,8 @@ router = APIRouter()
 async def create_location(
     location: Location = Body(...),
 ):
-    location = jsonable_encoder(location)
-    existing_location = db.locations.find_one({"place_id": location.place_id})
+    locations = jsonable_encoder(location)
+    existing_location = db.locations.find_one({"place_id": locations.get("place_id")})
     if existing_location:
         raise HTTPException(
             status_code=400,

@@ -4,7 +4,6 @@ import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import { DateProvider } from "./utils/DateContext";
 import UserDashboard from "./Dashboard/UserDashboard";
 import Dashboard from "./Dashboard/Dashboard";
-import PartyPlanForm from "./PartyPlan/PartyPlanForm";
 import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
 import Main from "./Main";
 import SearchResult from "./SearchResults";
