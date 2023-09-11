@@ -20,9 +20,9 @@ class Note(BaseModel):
         schema_extra = {
             "example": {
                 "comment": "I like to code LOL",
-                "account_id": "123e4567-e89b-12d3-a456-426614174001",  # example UUID
-                "party_plan_id": "123e4567-e89b-12d3-a456-426614174002",  # example UUID
-                "location_id": "123e4567-e89b-12d3-a456-426614174003",  # example UUID
+                "account_id": "123e4567-e89b-12d3-a456-426614174001",
+                "party_plan_id": "123e4567-e89b-12d3-a456-426614174002",
+                "location_id": "123e4567-e89b-12d3-a456-426614174003",
             }
         }
 
@@ -60,7 +60,7 @@ class NoteUpdate(BaseModel):
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
-                "updated_time": "2022-02-22T16:30:00",  # ISO 8601 format
+                "updated_time": "2022-02-22T16:30:00",
                 "comment": "I sometimes like to code LOL",
             }
         }
