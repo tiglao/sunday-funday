@@ -30,6 +30,9 @@ class NearbySearchError(Exception):
     pass
 
 
+class PlaceError(Exception):
+    pass
+
 def nearby_search(location, keywords):
     base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
