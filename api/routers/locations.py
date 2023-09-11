@@ -39,8 +39,6 @@ async def create_location(
 
     location_dict["account_ids"] = [location.account_id]
 
-    print("dictionary after making new id:", location_dict)
-
     new_location = db.locations.insert_one(location_dict)
 
     created_location = db.locations.find_one({"_id": new_location.inserted_id})
@@ -60,10 +58,6 @@ async def search_nearby(
     if party_plan is not None:
         location = f'{party_plan["api_maps_location"][0]["geo"][0]},{party_plan["api_maps_location"][0]["geo"][1]}'
         keywords = party_plan["keywords"]
-        print(location)
-        print(keywords)
-        print(party_plan)
-        print(party_plan_id)
     if location is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -72,11 +66,9 @@ async def search_nearby(
 
     try:
         results = nearby_search(location, keywords)
-        print(results)
         if results == None:
             print("none")
         results_dict = [{"place_id": place["place_id"]} for place in results]
-        print(results_dict)
     except NearbySearchError:
         return fastapi.responses.JSONResponse(
             content=jsonable_encoder({"message": "nearby search failed"}),
