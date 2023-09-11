@@ -202,7 +202,7 @@ export const PartyPlanForm = ({
           Close
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          Subm
+          Submit
         </Button>
       </Modal.Footer>
     </Modal>
