@@ -17,7 +17,6 @@ router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 
 
-# server 201/ response 201, 422
 @router.post(
     "/",
     response_description="Create a new invitation",
@@ -61,16 +60,14 @@ def create_invitation(
                 detail=f"No party plan found with ID {party_plan_id}",
             )
 
-        # id, timestamp, account info
         invitation_id = str(uuid4())
         invitation_data = {
             "id": invitation_id,
             "created": datetime.now(),
-            "account": account,  # Replace with your real account data
+            "account": account,
             "party_plan_id": str(party_plan_id),
         }
 
-        # add to db
         new_invitation = db.invitations.insert_one(invitation_data)
         if not new_invitation.acknowledged:
             raise HTTPException(
@@ -82,10 +79,11 @@ def create_invitation(
         email_content = f"You have been invited to {party_name}!"
         logging.info("About to send email...")
 
-        # Auto-Send the email
         email_sent = send_email(
             to_email=account["email"],
+            to_email=account["email"],
             subject="You're Invited!",
+            content=email_content,
             content=email_content,
         )
         if not email_sent:
@@ -93,8 +91,8 @@ def create_invitation(
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to send invitation email.",
+                detail="Failed to send invitation email.",
             )
-        # Fetch the created invitation from the database
         created_invitation = db.invitations.find_one({"id": invitation_id})
         if not created_invitation:
             raise HTTPException(
@@ -108,6 +106,7 @@ def create_invitation(
         logging.error(f"General Exception: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )
 
 
@@ -116,14 +115,11 @@ def create_invitation(
     response_description="List all invitations",
     response_model=List[Invitation],
 )
-def list_invitations(
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
+def list_invitations():
     invitations = list(db.invitations.find(limit=100))
     return invitations
 
 
-# server 200/ response 200, 422
 @router.get(
     "/{id}",
     response_description="Get a single invitation by ID",
@@ -131,7 +127,6 @@ def list_invitations(
 )
 def find_invitation(
     id: str,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (invitation := db.invitations.find_one({"id": id})) is not None:
         return invitation
@@ -141,7 +136,6 @@ def find_invitation(
     )
 
 
-# server 200/ response
 @router.put(
     "/{id}",
     response_description="Update an invitation",
@@ -150,7 +144,6 @@ def find_invitation(
 def update_invitation(
     id: UUID,
     invitation: InvitationUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_invitation = db.invitations.find_one({"id": str(id)})
 
@@ -174,7 +167,6 @@ def update_invitation(
 def delete_invitation(
     id: str,
     response: Response,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.invitations.delete_one({"id": id})
     if delete_result.deleted_count == 1:

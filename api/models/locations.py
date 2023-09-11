@@ -17,13 +17,12 @@ class Location(BaseModel):
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
-
                 "place_id": "76565765",
                 "account_location_tags": {
                     "123e4567-e89b-12d3-a456-426614174001": {"tag1", "tag2"},
                     "123e4567-e89b-12d3-a456-426614174002": {"tag3"},
                 },
-                "notes" : "notes 1"
+                "notes": "notes 1",
             }
         }
 
@@ -39,7 +38,7 @@ class LocationCreate(BaseModel):
             "example": {
                 "place_id": "76565765",
                 "favorite_status": True,
-                "account_id": "123e4567-e89b-12d3-a456-426614174001",  # example UUID
+                "account_id": "123e4567-e89b-12d3-a456-426614174001",
                 "account_location_tags": {
                     "123e4567-e89b-12d3-a456-426614174001": ["tag1", "tag2"],
                 },
@@ -75,21 +74,3 @@ class LocationUpdate(BaseModel):
                 },
             }
         }
-
-
-# class Location(BaseModel):
-#     place_id: str
-#     name: str
-#     address: str
-#     lat: float
-#     lon: float
-#     type: str
-#     category: str
-#     favoriteStatus: Optional[bool] = Field(None, description = "empty until selection process. all not favorited = False")
-#     notes: Optional[str] = Field(None, description = "collection of multiple comments about the location")
-#     hoursOfOperation: Optional[dict] = Field(None, description="dictionary with days as keys")
-#     website: Optional[HttpUrl]
-#     image: Optional[HttpUrl]
-
-# class LocationList(BaseModel):
-#     locations: List[Location]

@@ -1,4 +1,3 @@
-
 from typing import Dict, List
 from uuid import UUID, uuid4
 from clients.client import db
@@ -18,16 +17,13 @@ router = APIRouter()
 )
 def create_email(
     invitation: Dict = Depends(get_invitation),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    # dummy account for demonstration, replace with real account data
     account = {
         "id": "123e4567-e89b-12d3-a456-426614174001",
         "fullname": "Dummy Name",
         "email": "dummy.email@example.com",
     }
 
-    # create email context
     email_context_data = {
         "invitation_id": invitation.get("id"),
         "created_at": invitation.get("created"),
@@ -35,11 +31,10 @@ def create_email(
         "account": invitation.get("account"),
         "party_plan_id": invitation.get("party_plan_id"),
         "rsvp_status": invitation.get("rsvp_status"),
-        "sent_status": "pending",  # Assuming it's pending when created
+        "sent_status": "pending",
     }
     email_context = EmailContext(**email_context_data)
 
-    # id, timestamp, account info
     email_id = str(uuid4())
     email_data = {
         "id": email_id,
@@ -48,7 +43,6 @@ def create_email(
         "template": "some_template",
         "api_context": email_context.model_dump(),
     }
-    # add to db
     new_email = db.emails.insert_one(email_data)
     if not new_email.acknowledged:
         raise HTTPException(
@@ -56,7 +50,6 @@ def create_email(
             detail="Failed to add email to database.",
         )
 
-    # fetch the instance you just created
     created_email = db.emails.find_one({"id": email_id})
     if not created_email:
         raise HTTPException(
@@ -72,9 +65,7 @@ def create_email(
     response_description="List all emails",
     response_model=List[ApiEmail],
 )
-def list_emails(
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
+def list_emails():
     emails = list(db.emails.find(limit=100))
     return emails
 
@@ -86,7 +77,6 @@ def list_emails(
 )
 def find_email(
     id: str,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (email := db.emails.find_one({"id": id})) is not None:
         return email
@@ -104,7 +94,6 @@ def find_email(
 def update_email(
     id: UUID,
     email: ApiEmail = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_email = db.emails.find_one({"id": str(id)})
 
@@ -126,7 +115,6 @@ def update_email(
 def delete_email(
     id: str,
     response: Response,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     delete_result = db.emails.delete_one({"id": id})
     if delete_result.deleted_count == 1:
