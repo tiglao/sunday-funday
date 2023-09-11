@@ -45,9 +45,15 @@ def test_search_nearby():
         "keywords": ["Drinks", "Dinner"]
     }
     response = client.post('/party_plans/', json=party_plan_data)
+
     assert response.status_code == 201
+
     response_json = response.json()
+
     id = response_json.get('id')
+
     response = client.get('/locations/{id}/search_nearby')
+
     assert response.status_code == 200
+
     assert response != None
