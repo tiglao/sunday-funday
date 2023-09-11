@@ -1,14 +1,10 @@
-from fastapi import APIRouter, Body, HTTPException, status, Response
+from fastapi import APIRouter, Body, HTTPException, Response, status
 from typing import List
 from uuid import UUID, uuid4
-from models.invitations import Invitation, InvitationUpdate, InvitationCreate
+from models.invitations import Invitation, InvitationUpdate, InvitationPayload
 from clients.client import db
 from utils.email_service import send_email
 from datetime import datetime
-from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
-from fastapi.encoders import jsonable_encoder
-from models.invitations import Invitation, InvitationPayload, InvitationUpdate
-from utils.authenticator import authenticator
 import logging
 
 
@@ -105,8 +101,8 @@ def create_invitation(
     except Exception as e:
         logging.error(f"General Exception: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR 
+            detail=str(e),
         )
 
 
