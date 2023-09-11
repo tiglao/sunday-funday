@@ -81,16 +81,13 @@ def create_invitation(
 
         email_sent = send_email(
             to_email=account["email"],
-            to_email=account["email"],
             subject="You're Invited!",
-            content=email_content,
             content=email_content,
         )
         if not email_sent:
             logging.error("Failed to send invitation email.")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to send invitation email.",
                 detail="Failed to send invitation email.",
             )
         created_invitation = db.invitations.find_one({"id": invitation_id})
@@ -105,9 +102,11 @@ def create_invitation(
     except Exception as e:
         logging.error(f"General Exception: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
         )
+
+
 
 
 @router.get(

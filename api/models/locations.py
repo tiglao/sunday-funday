@@ -29,7 +29,6 @@ class Location(BaseModel):
 
 class LocationCreate(BaseModel):
     place_id: str
-    account_id: str
     account_location_tags: Optional[Dict[str, List[str]]]
 
     class Config:

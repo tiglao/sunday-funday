@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { baseUrl } from "../utils/config.js";
+import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { useAccountContext } from "../utils/AccountContext.js";
 
 export const PartyPlanForm = ({
@@ -9,6 +11,7 @@ export const PartyPlanForm = ({
   partyPlanData,
   refreshDashboard,
 }) => {
+  const navigate = useNavigate();
   // const { token } = useAuthContext();
   const { accountId } = useAccountContext();
 
@@ -18,9 +21,12 @@ export const PartyPlanForm = ({
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [jsonResponse, setJsonResponse] = useState(null);
+  const {partyplanid} = useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("Submit button clicked!");
     const data = {
       account_id: accountId,
       api_maps_location: [
@@ -78,14 +84,20 @@ export const PartyPlanForm = ({
       })
       .then((jsonResponse) => {
         if (jsonResponse) {
+          const createdParty = jsonResponse;
+          const createdPartyId = createdParty.id
           console.log("API Response:", jsonResponse); // Debugging
           refreshDashboard();
+          navigate(`/locations/${jsonResponse.id}/search_nearby`);
+
         }
       })
       .catch((error) => {
         console.log("Fetch error:", error); // Debugging
       });
   };
+
+
   useEffect(() => {
     if (partyPlanData) {
       setDescription(partyPlanData.description || "");

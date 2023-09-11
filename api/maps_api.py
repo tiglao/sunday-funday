@@ -11,6 +11,9 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
+
+
+
 def geo_code(address):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
 
