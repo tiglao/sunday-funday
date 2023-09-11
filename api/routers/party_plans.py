@@ -249,6 +249,23 @@ def update_party_plan(
 
     return db.party_plans.find_one({"id": str(id)})
 
+@router.put(
+    "/{id}/final/",
+    response_description="finalize a party plan",
+    response_model=PartyPlan,
+)
+def finalize_party_plan(
+    id: UUID,
+    party_plan: PartyPlanUpdate = Body(...),
+    # account: dict = Depends(authenticator.get_current_account_data),
+):
+    existing_party_plan = db.party_plans.find_one({"id": str(id)})
+    if not existing_party_plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Party with ID {id} not found",
+        )
+
 
 @router.delete("/{id}", response_description="Delete a party plan")
 def delete_party_plan(

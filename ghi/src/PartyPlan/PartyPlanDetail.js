@@ -15,6 +15,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [startDate, setStartDate] = useState("");
+  const[searchedlocations,setSearchedLocations] = useState("");
   const [, setEndDate] = useState("");
   const [, setDisplayTime] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -50,14 +51,25 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
         if (response.ok) {
           const data = await response.json();
           setPartyPlan(data);
+          console.log(data)
+
+
 
           const { startDate, startTime, endDate, endTime, displayTime } =
-            formatDateTime(data.start_time, data.end_time);
+          formatDateTime(data.start_time, data.end_time);
           setStartTime(startTime);
           setEndTime(endTime);
           setStartDate(startDate);
           setEndDate(endDate);
           setDisplayTime(displayTime);
+
+          if (data.searched_locations && data.searched_locations.length > 0) {
+          const searchedLocations = data.searched_locations.map(
+            (location) => location.place_id
+          );
+          setSearchedLocations(searchedLocations.join(", "));
+          }
+
         } else {
           console.log("Response not okay. Status:", response.status);
         }
@@ -189,6 +201,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
           {/* Description and Keywords */}
           <div className="keywords">{partyPlan.keywords.join(", ")}</div>
           <div className="description mb-3">{partyPlan.description}</div>
+          <div className="description mb-3">Searched Locations: {searchedlocations}</div>
         </div>
 
         <div className="col-md-6">

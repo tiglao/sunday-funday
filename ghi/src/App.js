@@ -2,10 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
 import { DateProvider } from "./utils/DateContext";
-import Main from "./Main";
-import Dashboard from "./Dashboard/Dashboard";
 import UserDashboard from "./Dashboard/UserDashboard";
+import Dashboard from "./Dashboard/Dashboard";
 import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
+import Main from "./Main";
+import SearchResult from "./SearchResults";
 import ProtectedRoute from "./ProtectedRoute";
 import { AccountContextProvider } from "./utils/AccountContext";
 
@@ -14,7 +15,7 @@ function App() {
   const basename = process.env.PUBLIC_URL.replace(domain, "");
   const baseUrl = process.env.REACT_APP_API_HOST;
 
-  return (
+return (
     <BrowserRouter basename={basename}>
       <AuthProvider baseUrl={baseUrl}>
         <DateProvider>
@@ -41,6 +42,12 @@ function App() {
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
               />
             </Route>
+
+            <Route path="/locations/:partyplanid/search_nearby" element={<SearchResult />} />
+              {/* <Route
+                path="party_plans/:partyplanid"
+                element={<PartyPlanDetail />} /> */}
+
           </Routes>
         </DateProvider>
       </AuthProvider>
