@@ -2,10 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional
 from uuid import UUID
-from models.invitations import Invitation
 from pydantic import BaseModel
-
-# needs to pull in account full name (no first name, use method to split string) account email
 
 
 class SentStatus(str, Enum):

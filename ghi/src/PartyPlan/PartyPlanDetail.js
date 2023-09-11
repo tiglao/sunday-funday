@@ -40,7 +40,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     return () => {
       window.removeEventListener("popstate", handleBrowserBackButton);
     };
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
@@ -96,7 +96,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
   if (!partyPlan) {
     return (
       <div className="container party-plan-detail">
-        <h1>Loading...</h1> {/* Or any other placeholder */}
+        <h1>Loading...</h1>
       </div>
     );
   }
@@ -197,8 +197,12 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
         </div>
         <div className="col-md-7 align-self-end"></div>
       </div>
-
-      <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
+      <InvitationForm
+        show={showInviteModal}
+        onHide={toggleInviteModal}
+        id={id}
+      />
+      {/* <InvitationForm show={showInviteModal} onHide={toggleInviteModal} /> */}
     </div>
   );
 };

@@ -6,9 +6,6 @@ import Main from "./Main";
 import Dashboard from "./Dashboard/Dashboard";
 import UserDashboard from "./Dashboard/UserDashboard";
 import PartyPlanDetail from "./PartyPlan/PartyPlanDetail";
-import InviteeDashboard from "./Dashboard/InviteeDashboard";
-import TestSpa from "./Tests/TestSpa";
-import { DashboardProvider } from "./utils/DashboardContext";
 import ProtectedRoute from "./ProtectedRoute";
 import { AccountContextProvider } from "./utils/AccountContext";
 
@@ -32,9 +29,7 @@ function App() {
                 <ProtectedRoute
                   element={
                     <AccountContextProvider>
-                      <DashboardProvider>
-                        <Dashboard />
-                      </DashboardProvider>
+                      <Dashboard />
                     </AccountContextProvider>
                   }
                 />
@@ -44,14 +39,6 @@ function App() {
               <Route
                 path="party_plans/:id"
                 element={<ProtectedRoute element={<PartyPlanDetail />} />}
-              />
-              <Route
-                path="invitee"
-                element={<ProtectedRoute element={<InviteeDashboard />} />}
-              />
-              <Route
-                path="test"
-                element={<ProtectedRoute element={<TestSpa />} />}
               />
             </Route>
           </Routes>

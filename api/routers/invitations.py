@@ -27,18 +27,34 @@ logging.basicConfig(level=logging.INFO)
 def create_invitation(
     party_plan_id: UUID,
     invitation_payload: InvitationPayload = None,
-    # invitation: InvitationCreate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
-    print("Debug: Received invitation_payload:", invitation_payload)
-    account = {
-        "id": "123e4567-e89b-12d3-a456-426614174001",
-        "fullname": "Dummy Name",
-        "email": "dummyemail@example.com", # input your email here for testing purposes
-    }
     try:
+        print("Debug: Received invitation_payload:", invitation_payload)
+        account = {
+            "id": "123e4567-e89b-12d3-a456-426614174001",
+            "fullname": invitation_payload.fullName
+            if invitation_payload
+            else "Example Name",
+            "email": invitation_payload.email
+            if invitation_payload
+            else "example.email@example.com",
+        }
+        print("Debug: Using dummy account:", account)
+        required_keys = ["id", "fullname", "email"]
+
+        account_info = {key: account.get(key) for key in required_keys}
+        print("Debug: account_info:", account_info)
+
+        if not all(account_info.get(key) for key in required_keys):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Required account information is missing",
+            )
+
         # find associated party plan
-        associated_party_plan = db.party_plans.find_one({"id": str(party_plan_id)})
+        associated_party_plan = db.party_plans.find_one(
+            {"id": str(party_plan_id)}
+        )
         if not associated_party_plan:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -68,15 +84,15 @@ def create_invitation(
 
         # Auto-Send the email
         email_sent = send_email(
-            to_email=account['email'],
+            to_email=account["email"],
             subject="You're Invited!",
-            content=email_content
+            content=email_content,
         )
         if not email_sent:
             logging.error("Failed to send invitation email.")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to send invitation email."
+                detail="Failed to send invitation email.",
             )
         # Fetch the created invitation from the database
         created_invitation = db.invitations.find_one({"id": invitation_id})
@@ -91,8 +107,7 @@ def create_invitation(
     except Exception as e:
         logging.error(f"General Exception: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )
 
 
