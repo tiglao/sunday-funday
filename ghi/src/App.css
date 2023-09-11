@@ -30,6 +30,12 @@
 
 /* global */
 
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 body {
   background-color: #1b3649;
   font-family: var(--sans-serif);
@@ -299,12 +305,6 @@ svg {
   margin-bottom: 30px;
 }
 
-.one-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* user dashboard - coming up section */
 
 .coming-up-card {
@@ -342,6 +342,18 @@ svg {
   position: relative;
 }
 
+.coming-up-image {
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border: none;
+}
+
 .description-under-card {
   padding-left: 8px;
   margin-top: 8px;
@@ -360,18 +372,6 @@ svg {
 
 .coming-up-arrow:active {
   transform: rotate(45deg) translateY(4px);
-}
-
-.coming-up-image {
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  border: none;
 }
 
 .no-outline {
@@ -494,34 +494,71 @@ svg {
 
 /* partyplandetail - invite card */
 
+.invited-card {
+  background-color: #fc2cbc;
+  color: #f0f0f0;
+  font-family: var(--sans-serif);
+  width: 100px;
+  height: 80px;
+  padding-bottom: 10px;
+  position: relative;
+  border: none;
+}
+
+.invited-col {
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.invited-card .card-body {
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(transparent, rgba(252, 44, 188, 0.9));
+  z-index: 2;
+}
+
+.invited-text {
+  margin: 0;
+  font-size: 0.9rem;
+  font-style: bold;
+  color: #ffffff;
+  z-index: 3;
+  position: relative;
+}
+
+.invited-image {
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border: none;
+}
+
+.description-under-card {
+  padding-left: 8px;
+  margin-top: 4px;
+  font-size: 0.7rem;
+}
+
 .card-img-wrapper {
   overflow: hidden;
   height: 80px;
 }
 
 .card-body a:hover {
-  color: #ffd700;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .invited-subtitle {
   font-size: 2rem;
-}
-
-.invite-card-container {
-  width: calc(25% - 1rem);
-  height: 170px;
-  margin: 0.5rem;
-}
-
-.invite-card-image-wrapper {
-  overflow: hidden;
-  height: 60px;
-}
-
-.invite-card-image {
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
 }
 
 .invite-card-content {
@@ -540,8 +577,4 @@ svg {
   text-decoration: none;
   position: relative;
   transition: all 0.3s ease;
-}
-
-.invite-card-link:hover {
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }

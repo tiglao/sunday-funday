@@ -40,7 +40,7 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     return () => {
       window.removeEventListener("popstate", handleBrowserBackButton);
     };
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const fetchPartyPlan = async () => {
@@ -93,10 +93,52 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
     fetchInvitations();
   }, [partyPlan]);
 
+  const renderInvitations = () => {
+    if (invitations) {
+      return invitations.map((invite, index) => {
+        const avatarUrl =
+          invite.account.avatar ||
+          "https://static.stereogum.com/uploads/2022/05/2020_06_23_MIA_S02_125-WEB-1653516622.jpg";
+
+        return (
+          <div
+            className="col-lg-4 col-md-6 col-sm-12 invited-col"
+            key={invite.id}
+          >
+            <div className="invited-card rounded">
+              <div
+                className="invited-image rounded"
+                style={{ backgroundImage: `url(${avatarUrl})` }}
+              ></div>
+
+              <div className="card-body">
+                <p className="card-text invited-text">
+                  <span className="one-line">{invite.account.fullname}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="description-under-card">
+              <small>
+                <a
+                  href={`mailto:${invite.account.email}`}
+                  className="invite-card-link"
+                >
+                  email
+                </a>
+              </small>
+            </div>
+          </div>
+        );
+      });
+    }
+    return null;
+  };
+
   if (!partyPlan) {
     return (
       <div className="container party-plan-detail">
-        <h1>Loading...</h1> {/* Or any other placeholder */}
+        <h1>Loading...</h1>
       </div>
     );
   }
@@ -151,41 +193,25 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
 
         <div className="col-md-6">
           {/* Invitations */}
-          <div className="d-flex flex-wrap justify-content-start">
-            {invitations.map((invite, index) => (
-              <div key={invite.id} className="m-2 invite-card-container">
-                <div className="invite-card">
-                  <div className="invite-card-image-wrapper">
-                    <img
-                      src={
-                        invite.account.avatar || "https://picsum.photos/140/80"
-                      }
-                      alt={`${invite.account.fullname}'s avatar`}
-                      className="invite-card-image"
-                    />
-                  </div>
-                  <div className="invite-card-content">
-                    <small className="invite-card-text font-monospace">
-                      <a
-                        href={`mailto:${invite.account.email}`}
-                        className="invite-card-link"
-                      >
-                        {invite.account.fullname}
-                      </a>
-                    </small>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
+          <h2>invited</h2>
           <div>
-            <Button variant="primary" onClick={openInviteModal}>
+            <Button
+              variant="link"
+              className="text-decoration-none no-outline"
+              onClick={openInviteModal}
+            >
               invite someone
             </Button>
-            <Button variant="secondary" onClick={emailAllGuests}>
+            <Button
+              variant="link"
+              className="text-decoration-none no-outline"
+              onClick={emailAllGuests}
+            >
               email all
             </Button>
+          </div>
+          <div className="d-flex flex-wrap justify-content-start">
+            {renderInvitations()}
           </div>
         </div>
       </div>
@@ -197,8 +223,11 @@ const PartyPlanDetail = ({ parentPartyPlan }) => {
         </div>
         <div className="col-md-7 align-self-end"></div>
       </div>
-
-      <InvitationForm show={showInviteModal} onHide={toggleInviteModal} />
+      <InvitationForm
+        show={showInviteModal}
+        onHide={toggleInviteModal}
+        id={id}
+      />
     </div>
   );
 };

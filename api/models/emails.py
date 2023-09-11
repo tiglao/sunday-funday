@@ -2,7 +2,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional
 from uuid import UUID
-from models.invitations import Invitation
 from pydantic import BaseModel
 
 

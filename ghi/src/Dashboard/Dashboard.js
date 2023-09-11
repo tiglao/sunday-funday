@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaCommentDots, FaArrowRight } from "react-icons/fa";
-import { useDashboard } from "../utils/DashboardContext";
 import SideNav from "../SideNav";
-import FeedbackModal from "../FeedbackModal";
-import PartyPlanDetail from "../PartyPlan/PartyPlanDetail.js";
-import UserDashboard from "./UserDashboard.js";
+import FeedbackModal from "./FeedbackModal";
 function Dashboard() {
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
-  const { currentView, setCurrentView, setSelectedPartyPlanId } =
-    useDashboard();
 
   return (
     <>
@@ -52,13 +47,6 @@ function Dashboard() {
             {/* Main Content Area */}
             <div className="dashboard-main col-md-10 col-12 p-0 extra-bottom-space">
               <Outlet />
-              {/* {currentView === "userDashboard" && (
-                <UserDashboard
-                  setCurrentView={setCurrentView}
-                  setSelectedPartyPlanId={setSelectedPartyPlanId}
-                />
-              )}
-              {currentView === "partyPlanDetail" && <PartyPlanDetail />} */}
             </div>
           </div>
         </div>
