@@ -3,8 +3,6 @@ from typing import Optional, Dict
 from uuid import UUID, uuid4
 from datetime import datetime
 
-# needs to pull in account full name (no first name, use method to split string) account email
-
 
 class Invitation(BaseModel):
     id: UUID
@@ -50,21 +48,6 @@ class InvitationCreate(BaseModel):
             "created_at": self.created_at,
         }
 
-# class InvitationCreate(BaseModel):
-#     account: Dict[str, str]
-
-#     class Config:
-#         allow_population_by_field_name = True
-#         schema_extra = {
-#             "example": {
-#                 "account": {
-#                     "id": "123e4567-e89b-12d3-a456-426614174001",
-#                     "fullname": "John Doe",
-#                     "email": "john.doe@example.com",
-#                 }
-#             }
-#         }
-
 
 class InvitationUpdate(BaseModel):
     sent_status: Optional[bool]
@@ -81,17 +64,3 @@ class InvitationUpdate(BaseModel):
 class InvitationPayload(BaseModel):
     fullName: str
     email: str
-
-
-# user inputs emails (has email strings that are associated with account).
-
-
-# from server to user // later
-# when an invitation is sent, it checks to see if the user has the email in their address book. if an account is associated with the email, it will just send from there.
-
-# now// from server to user// caveat
-# user will need to enter in all emails.
-
-# when an invitation is sent, it checks to see if the user exists.
-
-#

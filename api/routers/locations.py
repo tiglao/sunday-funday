@@ -5,7 +5,6 @@ from uuid import UUID, uuid4
 
 import fastapi
 import pydantic
-import requests
 from clients.client import db
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
@@ -16,6 +15,7 @@ from models.party_plans import PartyPlan
 
 router = APIRouter()
 
+
 @router.post(
     "/",
     response_description="Create a new location",
@@ -23,21 +23,16 @@ router = APIRouter()
     response_model=Location,
 )
 async def create_location(
-    location_create: LocationCreate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
+    location: Location = Body(...),
 ):
-    # check place_id error
-
-    locations = jsonable_encoder(location_create)
-    existing_location = db.locations.find_one({"place_id": locations["place_id"]})
+    location = jsonable_encoder(location)
+    existing_location = db.locations.find_one({"place_id": location.place_id})
     if existing_location:
         raise HTTPException(
             status_code=400,
             detail="Location with this place_id already exists",
         )
 
-    # conversion
-    # will need to add data validators later
 
     new_location = db.locations.insert_one(locations)
     if not new_location.acknowledged:
@@ -52,7 +47,7 @@ async def create_location(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Party plan with ID {locations['place_id']} not found after insertion.",
         )
-    # created_location["place_id"] = str(created_location["place_id"])
+
 
     return created_location
 
@@ -78,60 +73,51 @@ def find_party_plan(
 @router.get(
     "/{party_plan_id}/search_nearby",
     response_description="Search nearby locations",
-    # response_class=List[Location],
 )
 async def search_nearby(
-    # location: tuple, keywords: Optional[List[str]] = [],
     party_plan_id=str,
 ):
     party_plan = db.party_plans.find_one({"id": party_plan_id})
     if party_plan is not None:
         location = f'{party_plan["api_maps_location"][0]["geo"][0]},{party_plan["api_maps_location"][0]["geo"][1]}'
         keywords = party_plan["keywords"]
-        print(location)
-        print(keywords)
-        print(party_plan)
-        print(party_plan_id)
-        if location is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Latitude and/or longitude not available for this location",
-            )
+    if location is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Latitude and/or longitude not available for this location",
+        )
 
-        try:
-            results = nearby_search(location, keywords)
-            print(results)
-            if results == None:
-                print("none")
-            results_dict = [{"place_id": place["place_id"]} for place in results]
-            print(results_dict)
-        except NearbySearchError:
-            return fastapi.responses.JSONResponse(
-                content=jsonable_encoder({"message": "nearby search failed"}),
-                status_code=400,
-            )
-        locations = []
-        try:
-            for res in results_dict:
-                location = Location(**res)
-                locations.append(location)
-            return fastapi.responses.JSONResponse(
-                content=jsonable_encoder({"locations": locations}), status_code=200
-            )
-        except pydantic.ValidationError as e:
-            return fastapi.responses.JSONResponse(
-                content=jsonable_encoder({"message": e.errors()}),
-                status_code=400,
-            )
+    try:
+        results = nearby_search(location, keywords)
+        if results == None:
+            print("none")
+        results_dict = [{"place_id": place["place_id"]} for place in results]
+    except NearbySearchError:
+        return fastapi.responses.JSONResponse(
+            content=jsonable_encoder({"message": "nearby search failed"}),
+            status_code=400,
+        )
+    locations = []
+    try:
+        for res in results_dict:
+            location = Location(**res)
+            locations.append(location)
+        return fastapi.responses.JSONResponse(
+            content=jsonable_encoder({"locations": locations}), status_code=200
+        )
+    except pydantic.ValidationError as e:
+        return fastapi.responses.JSONResponse(
+            content=jsonable_encoder({"message": e.errors()}),
+            status_code=400,
+        )
+
 
 @router.get(
     "/",
     response_description="List all locations",
     response_model=List[Location],
 )
-def list_locations(
-    # account: dict = Depends(authenticator.get_current_account_data),
-):
+def list_locations():
     locations = list(db.locations.find(limit=100))
     return locations
 
@@ -143,7 +129,6 @@ def list_locations(
 )
 def find_location(
     place_id: str,
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     if (location := db.locations.find_one({"place_id": place_id})) is not None:
         return location
@@ -161,7 +146,6 @@ def find_location(
 def update_location(
     place_id = str,
     location: LocationUpdate = Body(...),
-    # account: dict = Depends(authenticator.get_current_account_data),
 ):
     existing_location = db.locations.find_one({"place_id": place_id})
 

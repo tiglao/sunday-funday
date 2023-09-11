@@ -1,15 +1,9 @@
-import { Modal, Button } from "react-bootstrap";
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { useDashboard } from "../utils/DashboardContext.js";
-import { useParams } from "react-router-dom";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 
-const InvitationForm = ({ show, onHide, partyPlanId }) => {
+const InvitationForm = ({ show, onHide, id }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const { selectedPartyPlanId } = useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,7 +13,8 @@ const InvitationForm = ({ show, onHide, partyPlanId }) => {
       email,
     };
 
-    const apiUrl = `http://127.0.0.1:8000/invitations/?party_plan_id=${selectedPartyPlanId}`;
+    const apiUrl = `http://127.0.0.1:8000/invitations/?party_plan_id=${id}`;
+    console.log("apiUrl", apiUrl);
     const fetchConfig = {
       method: "POST",
       body: JSON.stringify(payload),
@@ -29,9 +24,10 @@ const InvitationForm = ({ show, onHide, partyPlanId }) => {
     };
 
     const response = await fetch(apiUrl, fetchConfig);
+    console.log("response", response);
 
     if (response.ok) {
-      const newInvitation = await response.json();
+      await response.json();
     } else {
       console.log("Failed to create invitation");
     }

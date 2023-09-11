@@ -4,12 +4,12 @@ import { Button } from "react-bootstrap";
 import { FaArrowUp } from "react-icons/fa";
 import { baseUrl } from "../utils/config.js";
 import { formatDateTime } from "../utils/dashboardDateTime.js";
-import { PartyPlanForm } from "../PartyPlanModal.js";
+import { PartyPlanForm } from "../PartyPlan/PartyPlanModal.js";
 import { useAccountContext } from "../utils/AccountContext.js";
 
 function UserDashboard() {
   const { accountEmail, accountId } = useAccountContext();
-  const [_, setSelectedLink] = useState("parties");
+  const [, setSelectedLink] = useState("parties");
   const [partyPlans, setPartyPlans] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const [currentData, setCurrentData] = useState([]);
@@ -50,10 +50,6 @@ function UserDashboard() {
     await fetchPlans();
     closePartyPlanForm();
   };
-
-  useEffect(() => {
-    setCurrentData([...partyPlans, ...invitations]);
-  }, [partyPlans, invitations]);
 
   const fetchInvitations = useCallback(async () => {
     try {
@@ -105,15 +101,17 @@ function UserDashboard() {
     fetchData();
   }, [fetchPlans, fetchInvitations]);
 
+  useEffect(() => {
+    setCurrentData([...partyPlans, ...invitations]);
+  }, [partyPlans, invitations]);
+
   //render functions
   const renderComingUp = () => {
     if (currentData) {
       return currentData.map((item, index) => {
-        let displayContent, partyPath, startTime, endTime, imageUrl;
+        let startTime, endTime, imageUrl;
 
         if (item.type === "partyPlan") {
-          displayContent = item.description;
-          partyPath = `/party_plans/${item.id}`;
           startTime = item.start_time;
           endTime = item.end_time;
           imageUrl = item.image;
@@ -140,6 +138,7 @@ function UserDashboard() {
                 className="coming-up-image rounded"
                 style={{ backgroundImage: `url(${imageUrl})` }}
               ></div>
+
               <div className="card-body">
                 <div
                   className="coming-up-arrow"
@@ -149,13 +148,15 @@ function UserDashboard() {
                 >
                   <FaArrowUp style={{ transform: "rotate(45deg)" }} />
                 </div>
+
                 <p className="card-text coming-up-text">
                   <span className="one-line">{startDate.toLowerCase()}</span>
                 </p>
               </div>
             </div>
+
             <div className="description-under-card">
-              <span className="coming-up-time">
+              <span>
                 {displayTime}
                 <br />
               </span>
