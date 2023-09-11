@@ -49,3 +49,23 @@ def nearby_search(location, keywords):
     data = response.json()
     if data["status"] == "OK":
         return data["results"]
+
+
+
+class PlaceError(Exception):
+    pass
+
+
+def get_place_info(place_id) -> dict:
+    url = "https://maps.googleapis.com/maps/api/place/details/json"
+    params = {
+        "place_id": place_id,
+        "key": API_KEY
+    }
+
+    response = requests.get(url, params=params)
+
+    if response.status_code != 200:
+        raise PlaceError()
+    data = response.json()
+    return data["result"]
