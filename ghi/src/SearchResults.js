@@ -108,8 +108,9 @@ function SearchResult(){
     console.log("2",results)
     return(
         <>
+        <div className="container party-plan-detail">
         <h1>Generating potential party place ...</h1>
-
+        </div>
         </>
     );
 }
